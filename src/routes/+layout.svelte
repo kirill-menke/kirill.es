@@ -1,0 +1,10 @@
+<style>
+    @font-face {
+        font-family: 'Geist';
+        src: url('/fonts/Geist-VariableFont_wght.ttf') format('truetype');
+        font-weight: 100 900;
+        font-style: normal;
+    }
+</style>
+
+<slot />
