@@ -13,7 +13,6 @@
 		color: #333;
 		text-align: center;
 		margin-top: 40vh;
-		font-family: 'Geist', system-ui, -apple-system, sans-serif;
 	}
 	
 	p {
@@ -21,6 +20,5 @@
 		color: #666;
 		text-align: center;
 		margin: 1rem 0;
-		font-family: 'Geist', system-ui, -apple-system, sans-serif;
 	}
 </style>
