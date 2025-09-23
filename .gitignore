@@ -4,7 +4,6 @@ node_modules/
 # Build outputs
 build/
 .svelte-kit/
-dist/
 
 # Environment files
 .env
@@ -18,15 +17,8 @@ logs/
 # SSL certificates (sensitive)
 ssl/
 
-# OS files
-.DS_Store
-Thumbs.db
-
 # IDE files
 .vscode/
-.idea/
-*.swp
-*.swo
 
 # Temporary files
 tmp/
