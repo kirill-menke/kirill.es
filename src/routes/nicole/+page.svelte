@@ -65,7 +65,7 @@
 
 	<div class="photo-container">
 		<div class="photo-frame">
-			<img src="/nicole.jpeg" alt="The fabulous Nicole" class="nicole-photo">
+			<img src="/photos/misc/nicole.jpeg" alt="The fabulous Nicole" class="nicole-photo">
 		</div>
 		<div class="photo-caption">
 			<p>"Looking absolutely stunning as always" - Your loving (and slightly jealous) brother 😏</p>
