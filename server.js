@@ -2,13 +2,13 @@ import fs from 'fs';
 import http from 'http';
 import { handler } from './build/handler.js';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const HOST = '0.0.0.0';
 
 const server = http.createServer(handler);
 
 server.listen(PORT, HOST, () => {
-	console.log(`HTTP server running on https://${HOST}:${PORT}`);
+	console.log(`HTTP DEV server running on http://${HOST}:${PORT}`);
 });
 
 process.on('SIGTERM', () => {
