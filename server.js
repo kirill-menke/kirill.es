@@ -1,19 +1,14 @@
 import fs from 'fs';
-import https from 'https';
+import http from 'http';
 import { handler } from './build/handler.js';
 
-const PORT = 443;
+const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
 
-const SSL_OPTIONS = {
-	key: fs.readFileSync('./ssl/private.key'),
-	cert: fs.readFileSync('./ssl/certificate.crt')
-};
-
-const server = https.createServer(SSL_OPTIONS, handler);
+const server = http.createServer(handler);
 
 server.listen(PORT, HOST, () => {
-	console.log(`HTTPS server running on https://${HOST}:${PORT}`);
+	console.log(`HTTP server running on https://${HOST}:${PORT}`);
 });
 
 process.on('SIGTERM', () => {
