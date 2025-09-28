@@ -8,7 +8,7 @@ const HOST = '0.0.0.0';
 const server = http.createServer(handler);
 
 server.listen(PORT, HOST, () => {
-	console.log(`HTTP server running on https://${HOST}:${PORT}`);
+	console.log(`HTTP PROD server running on http://${HOST}:${PORT}`);
 });
 
 process.on('SIGTERM', () => {
