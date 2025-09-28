@@ -23,3 +23,7 @@ ssl/
 # Temporary files
 tmp/
 temp/
+
+# Dotenv Files
+.env.dev
+.env.prod
