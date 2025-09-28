@@ -1,22 +1,52 @@
+const fs = require('fs');
+const path = require('path');
 const dotenv = require('dotenv');
 
-const envFile = process.env.NODE_ENV === 'prod' 
-  ? '.env.prod' 
-  : '.env.dev';
+function loadEnvFile(filename) {
+  const filepath = path.resolve(__dirname, filename);
+  try {
+    const content = fs.readFileSync(filepath);
+    return dotenv.parse(content); // returns an object of key: value strings
+  } catch (err) {
+    // missing file -> return empty object
+    return {};
+  }
+}
 
-dotenv.config({ path: envFile });
+const prodEnv = loadEnvFile('.env.prod');
+const devEnv = loadEnvFile('.env.dev');
 
 module.exports = {
-  apps: [{
-    name: 'sveltekit-app',
-    script: 'build/index.js',
-    env: {
-      ...process.env,
-      NODE_ENV: 'development'
+  apps: [
+    {
+      name: 'kirill.es',
+      script: 'build/index.js',
+      env: prodEnv,
+      instances: 1,
+      exec_mode: 'cluster',
+      autorestart: true,
+      watch: false,
+      max_restarts: 10,
+      restart_delay: 5000,
+      error_file: './logs/pm2-kirill.es-error.log',
+      out_file: './logs/pm2-kirill.es-out.log',
+      combine_logs: true
     },
-    env_production: {
-      ...process.env,
-      NODE_ENV: 'production'
+
+    {
+      name: 'dev.kirill.es',
+      script: 'build/index.js',
+      env: devEnv,
+      instances: 1,
+      exec_mode: 'fork',
+      autorestart: true,
+      watch: true,
+      max_restarts: 10,
+      restart_delay: 3000,
+      error_file: './logs/pm2-dev.kirill.es-error.log',
+      out_file: './logs/pm2-dev.kirill.es-out.log',
+      combine_logs: true
     }
-  }]
+  ]
 };
+
