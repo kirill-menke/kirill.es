@@ -4,7 +4,7 @@
 </svelte:head>
 
 <h1>Hi, ich bin Kirill 👋</h1>
-<p>Willkommen auf meiner Website!</p>
+<p>Willkommen auf meiner Website</p>
 
 <style>
 	h1 {

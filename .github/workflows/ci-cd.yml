@@ -61,7 +61,7 @@ jobs:
                   port: ${{ vars.SERVER_PORT || 22 }}
                   script: |
                       cd ~/dev.kirill.es
-                      git pull origin dev
+                      git pull
                       npm ci
                       npm run build
                       pm2 restart dev.kirill.es
