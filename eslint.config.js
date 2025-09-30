@@ -20,7 +20,6 @@ export default [
 		rules: {
 			'svelte/no-navigation-without-resolve': 'off',
 			'svelte/require-each-key': 'off',
-			'no-console': 'error',
 			'no-unused-vars': 'error',
 			'no-undef': 'error'
 		}
