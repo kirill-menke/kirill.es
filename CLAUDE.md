@@ -44,6 +44,7 @@ npm run start
 ## Production Deployment
 
 The production server requires:
+
 1. SSL certificates in `./ssl/` directory
 2. Build artifacts from `npm run build`
 3. Access to port 443

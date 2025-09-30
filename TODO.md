@@ -1,13 +1,11 @@
 # Things I want to look into
+
 - Rate Limiting (IP-based, Router-based?)
     - Performed via Cloudflare, express-rate-limitng, fail2bain, or nginx?
 - Check if firewall really allows only connections from 443 and 80, and 22
 
-- Automatic deplyoment with autonpm or smthng? PM2
-- Hostname-based routing on VPS using reverse-proxy or just with node?
-
 - For now: Hold both repos on the VPS and built them there after synchronization. Later, build the server with github actions and then just push the artefacts.
-
+- Later: push artifacts + packages.json from CI build and install npm packages on server
 
 - CI/CD pipeline of Github actions:
     - CI:
@@ -19,3 +17,5 @@
         - Deploy to production when merging to main
         - Deploy to staging when pushing on dev branch
         - Create releases and artifacts?
+
+- Karteikartenapp

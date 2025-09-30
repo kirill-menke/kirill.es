@@ -37,7 +37,7 @@ const deleteTileStmt = db.prepare('DELETE FROM tiles WHERE position = ?');
 export const getTiles = () => getTilesStmt.all();
 export const getTileByPosition = (position) => getTileByPositionStmt.get(position);
 export const upsertTile = (position, imageUrl, prompt) => {
-  return upsertTileStmt.run(position, imageUrl, prompt);
+	return upsertTileStmt.run(position, imageUrl, prompt);
 };
 export const deleteTile = (position) => deleteTileStmt.run(position);
 

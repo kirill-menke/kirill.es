@@ -1,13 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
-	
+
 	let catCount = 2;
-	let daysAlive = 4;
-	let swissChocolateConsumed = "🍫🍫🍫";
 	let secretPlanRevealed = false;
-	
+
 	onMount(() => {
-		setTimeout(() => secretPlanRevealed = true, 2000);
+		setTimeout(() => (secretPlanRevealed = true), 2000);
 	});
 </script>
 
@@ -24,13 +22,17 @@
 	<div class="thank-you-card">
 		<div class="main-message">
 			<h2>Dear Master of Secret Plans & Cat Whisperer,</h2>
-			
+
 			<p>
 				This is to officially certify that <strong>Nadege</strong> has successfully:
 			</p>
-			
+
 			<ul class="achievements">
-				<li>✅ Provided mysterious accommodation with {secretPlanRevealed ? 'REVEALED' : 'SECRET'} location</li>
+				<li>
+					✅ Provided mysterious accommodation with {secretPlanRevealed
+						? 'REVEALED'
+						: 'SECRET'} location
+				</li>
 				<li>✅ Entrusted us with the sacred duty of keeping {catCount} cats alive</li>
 				<li>✅ Offered mattresses, sheets, and "probably towels" (luxury!)</li>
 				<li>✅ Provided free airport tickets knowledge (Swiss life hack!)</li>
@@ -40,19 +42,19 @@
 			<div class="highlight-box">
 				<h3>🏆 Achievement Unlocked: Ultimate Host</h3>
 				<p>
-					Successfully convinced two slightly lost friends to fly to Geneva 
-					for a weekend of cat-sitting and Swiss adventures!
+					Successfully convinced two slightly lost friends to fly to Geneva for a weekend
+					of cat-sitting and Swiss adventures!
 				</p>
 			</div>
 
 			<div class="chat-memories">
 				<div class="chat-bubble">
-					<strong>Kirill:</strong> "oh secret plan 😏"<br>
-					<strong>Nadege:</strong> "Be careful" 
+					<strong>Kirill:</strong> "oh secret plan 😏"<br />
+					<strong>Nadege:</strong> "Be careful"
 					<span class="comment">← Still don't know what this means... 🤔</span>
 				</div>
 				<div class="chat-bubble">
-					<strong>Nadege:</strong> "Our goal is to keep the two cats alive"<br>
+					<strong>Nadege:</strong> "Our goal is to keep the two cats alive"<br />
 					<span class="comment">← No pressure AT ALL 🐱💀</span>
 				</div>
 			</div>
@@ -60,14 +62,12 @@
 			<div class="gratitude-section">
 				<h3>💝 Seriously Though...</h3>
 				<p>
-					Thank you for opening your (brother's) home to us, sharing your beautiful city, 
-					and trusting us with feline lives. You're the kind of friend who makes 
+					Thank you for opening your (brother's) home to us, sharing your beautiful city,
+					and trusting us with feline lives. You're the kind of friend who makes
 					spontaneous adventures possible and life infinitely more fun!
 				</p>
-				
-				<p>
-					We promise to:
-				</p>
+
+				<p>We promise to:</p>
 				<ul class="promises">
 					<li>Keep the cats very much alive ✨</li>
 					<li>Not break anything (probably)</li>
@@ -78,12 +78,12 @@
 
 			<div class="footer-message">
 				<p class="signature">
-					With infinite gratitude and slightly nervous excitement,<br>
+					With infinite gratitude and slightly nervous excitement,<br />
 					<strong>Kirill 🍀 & Emery 💯</strong>
 				</p>
 				<p class="ps">
-					P.S. - Still recovering from being sick during holidays. 
-					Your healing Swiss mountain air better work! 🏔️✨
+					P.S. - Still recovering from being sick during holidays. Your healing Swiss
+					mountain air better work! 🏔️✨
 				</p>
 			</div>
 		</div>
@@ -121,8 +121,8 @@
 		right: 0;
 		bottom: 0;
 		background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3), transparent 50%),
-					radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3), transparent 50%),
-					radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2), transparent 50%);
+			radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3), transparent 50%),
+			radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2), transparent 50%);
 		pointer-events: none;
 		z-index: 0;
 	}
@@ -144,23 +144,34 @@
 		margin: 0;
 		font-weight: 800;
 		letter-spacing: -0.02em;
-		text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+		text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 		animation: float 3s ease-in-out infinite;
 		background: linear-gradient(45deg, #ffffff, #f7fafc, #ffffff);
 		background-size: 200% 200%;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
-		animation: float 3s ease-in-out infinite, shimmer 2s ease-in-out infinite alternate;
+		animation:
+			float 3s ease-in-out infinite,
+			shimmer 2s ease-in-out infinite alternate;
 	}
 
 	@keyframes float {
-		0%, 100% { transform: translateY(0px); }
-		50% { transform: translateY(-8px); }
+		0%,
+		100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
 	}
 
 	@keyframes shimmer {
-		0% { background-position: 0% 50%; }
-		100% { background-position: 100% 50%; }
+		0% {
+			background-position: 0% 50%;
+		}
+		100% {
+			background-position: 100% 50%;
+		}
 	}
 
 	@keyframes fadeInUp {
@@ -192,24 +203,30 @@
 		opacity: 0.95;
 		font-weight: 300;
 		letter-spacing: 0.5px;
-		text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	}
 
 	.thank-you-card {
 		background: rgba(255, 255, 255, 0.95);
 		border-radius: 24px;
-		box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.1);
+		box-shadow:
+			0 25px 50px rgba(0, 0, 0, 0.15),
+			0 0 0 1px rgba(255, 255, 255, 0.1);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 		overflow: hidden;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		animation: fadeInUp 0.8s ease-out;
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
 	}
 
 	.thank-you-card:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 35px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
+		box-shadow:
+			0 35px 60px rgba(0, 0, 0, 0.2),
+			0 0 0 1px rgba(255, 255, 255, 0.1);
 	}
 
 	.main-message {
@@ -244,7 +261,9 @@
 		border-radius: 16px;
 		border: none;
 		margin: 2rem 0;
-		box-shadow: 0 8px 25px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+		box-shadow:
+			0 8px 25px rgba(0, 0, 0, 0.08),
+			inset 0 1px 0 rgba(255, 255, 255, 0.6);
 		position: relative;
 		overflow: hidden;
 	}
@@ -281,7 +300,9 @@
 		border-radius: 20px;
 		margin: 3rem 0;
 		text-align: center;
-		box-shadow: 0 15px 35px rgba(255, 215, 0, 0.25), 0 5px 15px rgba(0,0,0,0.08);
+		box-shadow:
+			0 15px 35px rgba(255, 215, 0, 0.25),
+			0 5px 15px rgba(0, 0, 0, 0.08);
 		position: relative;
 		overflow: hidden;
 		border: 1px solid rgba(255, 255, 255, 0.3);
@@ -294,7 +315,7 @@
 		left: 0;
 		right: 0;
 		height: 2px;
-		background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
 	}
 
 	.highlight-box h3 {
@@ -302,7 +323,7 @@
 		color: #744210;
 		font-size: clamp(1.3rem, 2.5vw, 1.6rem);
 		font-weight: 700;
-		text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 		margin-bottom: 1rem;
 	}
 
@@ -311,7 +332,9 @@
 		padding: 2rem;
 		border-radius: 18px;
 		margin: 3rem 0;
-		box-shadow: 0 10px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+		box-shadow:
+			0 10px 25px rgba(0, 0, 0, 0.06),
+			inset 0 1px 0 rgba(255, 255, 255, 0.6);
 		border: 1px solid rgba(255, 255, 255, 0.4);
 	}
 
@@ -322,14 +345,16 @@
 		border-radius: 20px;
 		border: 1px solid rgba(226, 232, 240, 0.6);
 		position: relative;
-		box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 		backdrop-filter: blur(5px);
 	}
 
 	.chat-bubble:hover {
 		transform: translateY(-1px);
-		box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 	}
 
 	.chat-bubble::before {
@@ -346,7 +371,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
 
 	.comment {
@@ -366,7 +391,9 @@
 		padding: 2.5rem;
 		border-radius: 20px;
 		margin: 3rem 0;
-		box-shadow: 0 15px 35px rgba(102, 126, 234, 0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+		box-shadow:
+			0 15px 35px rgba(102, 126, 234, 0.1),
+			inset 0 1px 0 rgba(255, 255, 255, 0.6);
 		border: 1px solid rgba(255, 255, 255, 0.3);
 		backdrop-filter: blur(5px);
 	}
@@ -376,7 +403,7 @@
 		padding: 1.5rem;
 		border-radius: 12px;
 		border: none;
-		box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 		position: relative;
 		overflow: hidden;
 	}
@@ -455,29 +482,51 @@
 		animation-fill-mode: both;
 	}
 
-	.achievements li:nth-child(1) { animation-delay: 0.1s; }
-	.achievements li:nth-child(2) { animation-delay: 0.2s; }
-	.achievements li:nth-child(3) { animation-delay: 0.3s; }
-	.achievements li:nth-child(4) { animation-delay: 0.4s; }
-	.achievements li:nth-child(5) { animation-delay: 0.5s; }
+	.achievements li:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+	.achievements li:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.achievements li:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+	.achievements li:nth-child(4) {
+		animation-delay: 0.4s;
+	}
+	.achievements li:nth-child(5) {
+		animation-delay: 0.5s;
+	}
 
 	.chat-bubble {
 		animation: fadeInUp 0.8s ease-out;
 		animation-fill-mode: both;
 	}
 
-	.chat-bubble:nth-of-type(1) { animation-delay: 0.2s; }
-	.chat-bubble:nth-of-type(2) { animation-delay: 0.4s; }
+	.chat-bubble:nth-of-type(1) {
+		animation-delay: 0.2s;
+	}
+	.chat-bubble:nth-of-type(2) {
+		animation-delay: 0.4s;
+	}
 
 	.promises li {
 		animation: fadeInUp 0.5s ease-out;
 		animation-fill-mode: both;
 	}
 
-	.promises li:nth-child(1) { animation-delay: 0.1s; }
-	.promises li:nth-child(2) { animation-delay: 0.2s; }
-	.promises li:nth-child(3) { animation-delay: 0.3s; }
-	.promises li:nth-child(4) { animation-delay: 0.4s; }
+	.promises li:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+	.promises li:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.promises li:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+	.promises li:nth-child(4) {
+		animation-delay: 0.4s;
+	}
 
 	/* Smooth scrolling */
 	html {
@@ -486,8 +535,13 @@
 
 	/* Loading states */
 	@keyframes pulse {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0.5; }
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.5;
+		}
 	}
 
 	/* Enhanced Mobile Styles */
@@ -495,61 +549,65 @@
 		.container {
 			padding: 1rem 0.75rem;
 		}
-		
+
 		.main-message {
 			padding: 1.5rem;
 		}
-		
+
 		header {
 			padding: 1.5rem 0;
 			margin-bottom: 2rem;
 		}
-		
-		.achievements, .chat-memories, .gratitude-section {
+
+		.achievements,
+		.chat-memories,
+		.gratitude-section {
 			padding: 1.5rem;
 			margin: 2rem 0;
 		}
-		
+
 		.highlight-box {
 			padding: 2rem 1.5rem;
 			margin: 2rem 0;
 		}
-		
+
 		.chat-bubble {
 			padding: 1.25rem;
 			margin: 1.25rem 0;
 		}
-		
+
 		.chat-bubble::before {
 			left: -8px;
 			width: 30px;
 			height: 30px;
 			font-size: 1.2rem;
 		}
-		
+
 		.footer-message {
 			margin-top: 3rem;
 			padding-top: 2rem;
 		}
 	}
-	
+
 	@media (max-width: 480px) {
 		.container {
 			padding: 0.75rem 0.5rem;
 		}
-		
+
 		.main-message {
 			padding: 1.25rem;
 		}
-		
-		.achievements, .chat-memories, .gratitude-section {
+
+		.achievements,
+		.chat-memories,
+		.gratitude-section {
 			padding: 1.25rem;
 		}
-		
+
 		.highlight-box {
 			padding: 1.5rem 1.25rem;
 		}
-		
+
 		.chat-bubble::before {
 			display: none;
 		}
