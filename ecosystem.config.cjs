@@ -15,7 +15,7 @@ function loadEnvFile(filename) {
 
 const prodEnv = loadEnvFile('.env.prod');
 const devEnv = loadEnvFile('.env.dev');
-console.log("devEnv:", devEnv);
+console.log('devEnv:', devEnv);
 
 module.exports = {
 	apps: [
@@ -32,16 +32,16 @@ module.exports = {
 			combine_logs: true
 		},
 
-		    {
-		      name: 'dev.kirill.es',
-		      script: 'build/index.js',
-		      env: devEnv,
-		      autorestart: true,
-		      max_restarts: 10,
-		      restart_delay: 3000,
-		      error_file: './logs/pm2-dev.kirill.es-error.log',
-		      out_file: './logs/pm2-dev.kirill.es-out.log',
-		      combine_logs: true
-		    }
-		  ]
+		{
+			name: 'dev.kirill.es',
+			script: 'build/index.js',
+			env: devEnv,
+			autorestart: true,
+			max_restarts: 10,
+			restart_delay: 3000,
+			error_file: './logs/pm2-dev.kirill.es-error.log',
+			out_file: './logs/pm2-dev.kirill.es-out.log',
+			combine_logs: true
+		}
+	]
 };
