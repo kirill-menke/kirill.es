@@ -1,4 +1,5 @@
-# Things I want to look into
+- Look at why pre-commit hook with automatic formatting and lint fixing is not working
+- Install pre-push hook which checks if the code is formatted correctly and no linting errors occur
 
 - Rate Limiting (IP-based, Router-based?)
     - Performed via Cloudflare, express-rate-limitng, fail2bain, or nginx?
