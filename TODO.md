@@ -1,5 +1,3 @@
-# Things I want to look into
-
 - Rate Limiting (IP-based, Router-based?)
     - Performed via Cloudflare, express-rate-limitng, fail2bain, or nginx?
 - Check if firewall really allows only connections from 443 and 80, and 22
