@@ -37,21 +37,6 @@ jobs:
         # Only deploy on direct pushes to dev (not PRs) and if quality checks passed
         if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
         steps:
-            - name: Verify secrets are set
-              run: |
-                  if [ -z "${{ vars.SERVER_HOST }}" ]; then
-                    echo "❌ ERROR: SERVER_HOST secret is not set"
-                    exit 1
-                  fi
-                  if [ -z "${{ vars.SERVER_USER }}" ]; then
-                    echo "❌ ERROR: SERVER_USER secret is not set"
-                    exit 1
-                  fi
-                  if [ -z "${{ secrets.SERVER_SSH_KEY }}" ]; then
-                    echo "❌ ERROR: SERVER_SSH_KEY secret is not set"
-                    exit 1
-                  fi
-                  echo "✅ All required secrets are configured"
             - name: Deploy to development server
               uses: appleboy/ssh-action@v1.0.3
               with:

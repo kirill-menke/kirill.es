@@ -1,10 +1,10 @@
 <svelte:head>
 	<title>Kirill's Garden</title>
-	<meta name="description" content="Kirill's personal developer website" />
+	<meta name="description" content="Kirill's personal website" />
 </svelte:head>
 
 <h1>Hi, ich bin Kirill 👋</h1>
-<p>Willkommen auf meiner Website</p>
+<p>Willkommen auf meiner Entwickler-Website</p>
 
 <style>
 	h1 {
