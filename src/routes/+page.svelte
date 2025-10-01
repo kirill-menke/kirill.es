@@ -1,6 +1,6 @@
 <svelte:head>
 	<title>Kirill's Garden</title>
-	<meta name="description" content="Kirill's personal website!" />
+	<meta name="description" content="Kirill's personal developer website" />
 </svelte:head>
 
 <h1>Hi, ich bin Kirill 👋</h1>
