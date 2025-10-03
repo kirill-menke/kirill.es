@@ -179,28 +179,27 @@ jobs:
 
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         steps:
-            -name: Deploy to production server
-            uses: appleboy/ssh-action@v1.0.3
-            with:
-                host: ${{ vars.SERVER_HOST }}
-                username: ${{ vars.SERVER_USER }}
-                key: ${{ secrets.SERVER_SSH_KEY }}
-                port: ${{ vars.SERVER_PORT || 22 }}
-                script: |
-                    export NVM_DIR="$HOME/.nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                    nvm use 22
-                    cd ~/kirill.es
-                    git pull
-                    npm ci
-                    npm run build
-                    pm2 restart kirill.es
-
-            -name: Deployment notification
-            if: success()
-            run: echo "✅ Successfully deployed to prod server"
-            -name: Deployment failed
-            if: failure()
-            run: |
-                echo "❌ Deployment failed - check logs"
-                exit 1
+            - name: Deploy to production server
+              uses: appleboy/ssh-action@v1.0.3
+              with:
+                  host: ${{ vars.SERVER_HOST }}
+                  username: ${{ vars.SERVER_USER }}
+                  key: ${{ secrets.SERVER_SSH_KEY }}
+                  port: ${{ vars.SERVER_PORT || 22 }}
+                  script: |
+                      export NVM_DIR="$HOME/.nvm"
+                      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                      nvm use 22
+                      cd ~/kirill.es
+                      git pull
+                      npm ci
+                      npm run build
+                      pm2 restart kirill.es
+            - name: Deployment notification
+              if: success()
+              run: echo "✅ Successfully deployed to prod server"
+            - name: Deployment failed
+              if: failure()
+              run: |
+                  echo "❌ Deployment failed - check logs"
+                  exit 1
