@@ -36,8 +36,8 @@ jobs:
         needs: quality-check
         runs-on: ubuntu-latest
 
-        # Only run on PRs to main
-        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        # Only run on PRs to master
+        if: github.event_name == 'pull_request' && github.base_ref == 'master'
         permissions:
             pull-requests: write
             contents: read
