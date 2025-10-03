@@ -197,10 +197,10 @@ jobs:
                     pm2 restart kirill.es
 
             -name: Deployment notification
-              if: success()
-              run: echo "✅ Successfully deployed to prod server"
+            if: success()
+            run: echo "✅ Successfully deployed to prod server"
             -name: Deployment failed
-              if: failure()
-              run: |
-                  echo "❌ Deployment failed - check logs"
-                  exit 1
+            if: failure()
+            run: |
+                echo "❌ Deployment failed - check logs"
+                exit 1
