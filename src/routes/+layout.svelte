@@ -28,4 +28,11 @@
 		font-weight: 100 900;
 		font-style: normal;
 	}
+
+	@font-face {
+		font-family: "NanumMyeongjo";
+		src: url("/fonts/NanumMyeongjo-Regular.ttf") format("truetype");
+		font-weight: normal;
+		font-style: normal;
+	}
 </style>

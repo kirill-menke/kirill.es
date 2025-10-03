@@ -4,56 +4,52 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal website built with SvelteKit and configured to run as an HTTPS server. The site appears to be a multilingual personal portfolio/garden with individual pages for different people (Felix, Nadège, Nicole).
-
-## Architecture
-
-- **Framework**: SvelteKit with Node.js adapter
-- **Server**: Custom HTTPS server (server.js) that wraps the SvelteKit handler
-- **SSL**: Requires SSL certificates in `./ssl/` directory (private.key and certificate.crt)
-- **Logging**: Custom access logging middleware in hooks.server.js that logs to `logs/access.log`
-- **Port**: Configured to run on port 443 (HTTPS)
-- **Font**: Uses Geist variable font loaded from `/static/fonts/`
+Personal website built with SvelteKit 5 (using Svelte 5 runes) and adapter-node. Features an interactive landscape grid powered by Google Gemini AI for generating pixel art tiles stored in SQLite.
 
 ## Development Commands
 
 ```bash
-# Development server
-npm run dev
+npm run dev         # Start dev server on http://localhost:5173
+npm run build       # Production build to build/ directory
+npm run preview     # Preview production build locally
+npm start           # Run production build (node build/index.js)
+node server.js      # HTTP production server on port 3000
 
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Start production server (requires SSL certs)
-npm run start
+# Code quality
+npm run lint        # Run ESLint with max-warnings 0
+npm run lint:fix    # Auto-fix ESLint issues
+npm run format      # Format code with Prettier
+npm run format:check # Check formatting without changes
 ```
 
-## Key Files and Structure
+## Architecture
 
-- `server.js` - Custom HTTPS server wrapper around SvelteKit
-- `src/hooks.server.js` - Request logging middleware
-- `src/routes/+layout.svelte` - Global layout with Geist font setup
-- `src/routes/+page.svelte` - Main homepage
-- `src/routes/[person]/+page.svelte` - Individual person pages
-- `static/fonts/` - Contains Geist variable font
-- `ssl/` - Required SSL certificate directory (not in repo)
+### Core Components
 
-## Production Deployment
+- **SvelteKit app**: ESM + Svelte 5 with file-based routing
+- **Database**: `src/lib/db.js` wraps better-sqlite3, creates `landscape.db` in repo root with tiles table (position, image_url, prompt)
+- **Request logging**: `src/hooks.server.js` logs all requests to console and `logs/access.log`
+- **Build output**: `build/` directory created by adapter-node (generates `build/index.js` and `build/handler.js`)
 
-The production server requires:
+### API Endpoints
 
-1. SSL certificates in `./ssl/` directory
-2. Build artifacts from `npm run build`
-3. Access to port 443
-4. `logs/` directory for access logging
+- `GET /api/tiles` - Fetch all tiles from database
+- `POST /api/tiles` - Upsert tile (position 0-79, image_url, prompt required)
+- `DELETE /api/tiles?position=N` - Delete tile at position N
+- `POST /api/generate-image` - Generate pixel art with Gemini AI (accepts prompt and neighbors object)
+
+### Deployment Configuration
+
+- **PM2**: `ecosystem.config.cjs` configures two apps (kirill.es for prod, dev.kirill.es for dev) with environment-specific `.env.prod` and `.env.dev` files
+- **Production server**: `server.js` wraps `build/handler.js` with HTTP server, listens on PORT env var (default 3000)
+- **CI/CD**: `.github/workflows/ci-cd.yml` runs quality checks (format, lint, build), AI code review on PRs to master, and auto-deploys dev/master branches via SSH
 
 ## Important Notes
 
-- The server expects to run with root privileges (port 443)
-- SSL certificates are required and loaded from filesystem
-- Access logs are written to `logs/access.log`
-- The project uses ES modules (`"type": "module"`)
-- Graceful shutdown handling for SIGTERM and SIGINT
+- Use Conventional Commits format (`feat:`, `fix:`, `chore:`, etc.)
+- Svelte 5 uses runes syntax - no `$:` reactive statements, use `$derived` and `$effect` instead
+- Database is single-file SQLite at repo root, prepared statements in `src/lib/db.js`
+- PM2 requires `.env.prod` and `.env.dev` files (see `.env.example`)
+- Logs directory (`logs/`) must exist locally but is gitignored
+- Husky + lint-staged runs pre-commit hooks for ESLint and Prettier
+- Main branch is `master` (not main), development happens on `dev` branch
