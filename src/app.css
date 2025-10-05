@@ -1,0 +1,36 @@
+/* Font Faces */
+@font-face {
+	font-family: 'Geist';
+	src: url('/fonts/Geist-VariableFont_wght.ttf') format('truetype');
+	font-weight: 100 900;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'NanumMyeongjo';
+	src: url('/fonts/NanumMyeongjo-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/* CSS Variables */
+:root {
+  --color-font-dark: #333;
+  --color-font-light: #AAA;
+  
+  --color-background: #f5f5f5;
+  --color-text: #1a1a1a;
+  --color-primary: #3b82f6;
+
+  
+  --font-primary: "Geist", sans-serif;
+  --font-secondary: "NanumMyeongjo", serif;
+}
+
+/* Global styles */
+body {
+	margin: 0;
+	padding: 0;
+	font-family: 'Geist', sans-serif;
+	background-color: #f5f5f5;
+}

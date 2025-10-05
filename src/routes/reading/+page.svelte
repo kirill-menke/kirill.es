@@ -1,124 +1,79 @@
 <script>
-	let books = [
-		{
-			status: 'TO-READ',
-			title: 'Thinking in Systems',
-			author: 'Donella H. Meadows',
-			coverUrl: 'book-covers/thinking-in-systems.jpg'
-		},
-		{
-			status: 'TO-READ',
-			title: 'Why Greatness Cannot Be Planned',
-			author: 'Kenneth O. Stanley, Joel Lehman',
-			coverUrl: 'book-covers/why-greatness-cannot-be-planned.jpg'
-		},
-		{
-			status: 'READING',
-			title: 'Algorithms to Live by',
-			author: 'Brian Christian, Tom Griffiths',
-			coverUrl: 'book-covers/algorithms-to-live-by.jpg'
-		},
-		{
-			status: 'READING',
-			title: 'A Little Princess',
-			author: 'Frances Hodgson Burnett',
-			coverUrl: 'book-covers/a-little-princess.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'Thinking, Fast and Slow',
-			author: 'Daniel Kahneman',
-			coverUrl: 'book-covers/thinking-fast-and-slow.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'How to Win Friends & Influence People',
-			author: 'Dale Carnegie',
-			coverUrl: 'book-covers/how-to-win-friends.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'Norwegian Wood',
-			author: 'Haruki Murakami',
-			coverUrl: 'book-covers/norwegian-wood.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'Hard-Boiled Wonderland and the End of the World',
-			author: 'Haruki Murakami',
-			coverUrl: 'book-covers/hard-boiled-wonderland.jpg'
-		},
-		{
-			status: 'READ',
-			title: "I'm Glad My Mom Died",
-			author: 'Jennette McCurdy',
-			coverUrl: 'book-covers/im-glad-my-mom-died.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'Zen and the Art of Motorcycle Maintenance',
-			author: 'Robert Pirsig',
-			coverUrl: 'book-covers/zen.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'What You Are Looking For Is in the Library',
-			author: 'Michiko Aoyama',
-			coverUrl: 'book-covers/what-you-are-looking-for.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'Ikigai',
-			author: 'Ken Mogi',
-			coverUrl: 'book-covers/ikigai.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'Atomic Habits',
-			author: 'James Clear',
-			coverUrl: 'book-covers/atomic-habits.jpg'
-		},
-		{
-			status: 'READ',
-			title: "Can't Hurt Me",
-			author: 'David Goggins',
-			coverUrl: 'book-covers/cant-hurt-me.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'The Things We Leave Unfinished ',
-			author: 'Rebecca Yarros',
-			coverUrl: 'book-covers/the-things-we-leave-unfinished.jpg'
-		},
-		{
-			status: 'READ',
-			title: 'A Brief History of Time',
-			author: 'Stephen Hawking',
-			coverUrl: 'book-covers/a-brief-history-of-time.jpg'
+	import { onMount } from 'svelte';
+	import { ArrowUpRight } from '@lucide/svelte';
+	import { fly } from 'svelte/transition';
+	import { backInOut } from 'svelte/easing';
+	import { navigating } from '$app/stores';
+
+	export let data;
+	let { books } = data;
+
+	let visible = false;
+	let fromHomePage = false;
+	let previousRoute = null;
+
+	// Subscribe to navigation changes to track the previous route
+	navigating.subscribe((nav) => {
+		if (nav && nav.from) {
+			previousRoute = nav.from.url.pathname;
 		}
-	];
+	});
+
+	onMount(() => {
+		// Check if we came from home page or it's a direct access/reload
+		fromHomePage = previousRoute === '/' || previousRoute === null;
+		visible = true;
+	});
 </script>
 
 <div class="container">
-	<header>
-		<h1>reading.</h1>
-		<p class="subtitle">The books I'm reading, what I've read, and what I hope to read next.</p>
-	</header>
+	<h1>reading.</h1>
+	<p class="subtitle">
+		All the books I'm reading, what I've read, and what I hope to read next.<br />
+		Recommendations are always welcome!
+	</p>
 
 	<div class="books-grid">
-		{#each books as book}
-			<div class="book-tile">
-				<img src={book.coverUrl} alt="{book.title} cover" class="book-cover" />
-				<div class="book-info">
-					<span
-						class="book-status"
-						data-status={book.status.toLowerCase().replace(' ', '-')}
-						>{book.status.replace('-', ' ')}</span
-					>
-					<h3 class="book-title">{book.title}</h3>
-					<p class="book-author">{book.author}</p>
+		{#each books as book, index}
+			{#if visible}
+				<div
+					role="presentation"
+					class="book-tile-wrap"
+					in:fly={{
+						y: -15,
+						opacity: 0,
+						duration: 600,
+						delay: fromHomePage ? index * 125 : 0,
+						easing: backInOut
+					}}
+				>
+					<div class="book-tile-header">
+						<span class="book-tile-header-text">Reading · Books</span>
+						<a
+							href={book.link}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="book-tile-anchor"
+							aria-label="View on Goodreads"
+						>
+							<span class="tooltip">View on Goodreads</span>
+							<ArrowUpRight strokeWidth="2" size="16" /></a
+						>
+					</div>
+					<div class="book-tile">
+						<img src={book.coverUrl} alt="{book.title} cover" class="book-cover" />
+						<div class="book-info">
+							<span
+								class="book-status"
+								data-status={book.status.toLowerCase().replace(' ', '-')}
+								>{book.status.replace('-', ' ')}</span
+							>
+							<h3 class="book-title">{book.title}</h3>
+							<p class="book-author">{book.author}</p>
+						</div>
+					</div>
 				</div>
-			</div>
+			{/if}
 		{/each}
 	</div>
 </div>
@@ -128,22 +83,18 @@
 		max-width: 1600px;
 	}
 
-	header {
-		margin-bottom: 3rem;
-	}
-
 	h1 {
 		font-size: 5.5rem;
 		font-weight: 400;
-		margin: 0 0 0.5rem 0;
-		color: #333;
-		font-family: 'NanumMyeongjo', serif;
+		margin: 0.5rem 0;
+		color: var(--color-font-dark);
+		font-family: var(--font-secondary);
 	}
 
 	.subtitle {
 		font-size: 1.1rem;
-		color: #888;
-		margin: 0;
+		color: var(--color-font-light);
+		margin-bottom: 2.5rem;
 	}
 
 	.books-grid {
@@ -171,30 +122,98 @@
 		}
 	}
 
+	.book-tile-wrap {
+		display: flex;
+		background-color: #f5f5f5;
+		border-radius: 6px;
+		box-sizing: border-box;
+		flex-direction: column;
+	}
+
+	.book-tile-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0.5rem 0.5rem 0 1.25rem;
+		margin-bottom: 2.5rem;
+	}
+
+	.book-tile-header-text {
+		font-size: 0.9rem;
+		color: var(--color-font-light);
+	}
+
+	.book-tile-anchor {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 100%;
+		background-color: transparent;
+		border: 0.5px solid transparent;
+		padding: 6px;
+		transition: all 0.2s ease;
+		color: var(--color-font-light);
+		position: relative;
+	}
+
+	.tooltip {
+		position: absolute;
+		right: calc(100% + 8px);
+		top: 50%;
+		transform: translateX(5%) translateY(-50%);
+		background-color: var(--color-font-dark);
+		color: white;
+		padding: 6px 10px;
+		border-radius: 6px;
+		font-size: 0.85rem;
+		white-space: nowrap;
+		opacity: 0;
+		visibility: hidden;
+		transition:
+			opacity 0.2s ease,
+			visibility 0.2s ease,
+			transform 0.2s ease;
+		pointer-events: none;
+	}
+
+	.book-tile-anchor:hover .tooltip {
+		opacity: 1;
+		visibility: visible;
+		transform: translateX(0%) translateY(-50%);
+	}
+
+	.book-tile-wrap:hover .book-tile-anchor {
+		background-color: white;
+		border: 0.5px solid lightgrey;
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.15);
+		color: var(--color-font-dark);
+	}
+
+	.book-tile-wrap:hover .book-tile-anchor :global(svg) {
+		color: var(--color-font-dark);
+	}
+
 	.book-tile {
 		display: flex;
 		gap: 2rem;
-		background-color: #f5f5f5;
-		border-radius: 6px;
-		padding: 3rem 2rem 3rem 3rem;
-		box-sizing: border-box;
+		padding: 0rem 2rem 2.5rem 2rem;
+		align-items: flex-end;
 	}
 
-	.book-tile:hover {
+	.book-tile-wrap:hover {
 		background-color: #f0f0f0;
 	}
 
 	.book-cover {
 		width: 140px;
 		height: 210px;
-		object-fit: cover;
 		border-radius: 4px;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 		flex-shrink: 0;
 		transition: transform 0.1s linear;
 	}
 
-	.book-tile:hover .book-cover {
+	.book-tile-wrap:hover .book-cover {
 		transform: rotate(-5deg) scale(1.1);
 		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 	}
@@ -207,7 +226,7 @@
 	}
 
 	.book-status {
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 		font-weight: 600;
 		border-radius: 5px;
 		text-transform: uppercase;
@@ -218,7 +237,7 @@
 		text-align: center;
 		width: fit-content;
 		border: 1px solid currentColor;
-		box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+		box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 	}
 
 	.book-status[data-status='reading'] {
@@ -238,15 +257,16 @@
 
 	.book-title {
 		font-size: 1rem;
-		font-weight: 600;
+		font-weight: 500;
+		line-height: 1.5;
+		color: var(--color-font-dark);
 		margin: 0 0 0.25rem 0;
-		color: #333;
-		line-height: 1.3;
 	}
 
 	.book-author {
-		font-size: 0.95rem;
-		color: #666;
+		font-size: 1rem;
+		line-height: 1.5;
+		color: var(--color-font-light);
 		margin: 0;
 	}
 </style>

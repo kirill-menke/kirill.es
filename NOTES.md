@@ -1,3 +1,7 @@
+- Next: Add animation to Navbar
+- Add GitHub and CV
+- Fix hover on NavBarw
+
 - Instruct AI to make code suggestions in a review which I can accept
     - I think AI has to actively start a code review on the code then IF it has suggestions. Currently it just looks a the code and posts a comment.
 
@@ -20,3 +24,6 @@
         - Create releases and artifacts?
 
 - Karteikartenapp
+
+- https://lucide.dev/
+- https://phosphoricons.com
