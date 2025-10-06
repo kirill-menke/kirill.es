@@ -1,52 +1,58 @@
-<!-- NavBar.svelte -->
 <script>
 	import { page } from '$app/stores';
 
 	const navItems = [
 		{ label: 'Kirill', href: '/' },
 		{ label: 'Projects', href: '/projects' },
-		{ label: 'Gallery', href: '/gallery' },
+		// { label: 'Gallery', href: '/gallery' },
 		{ label: 'Reading', href: '/reading' },
 		{ label: 'Hobbies', href: '/hobbies' }
 	];
 
-	$: currentPath = $page.url.pathname;
+	let currentPath = $derived($page.url.pathname);
 
-	let hoverIndex = -1;
-	let indicatorStyle = '';
-	let navMenuElement;
+	let hoveredIndex = $state(null);
+	let highlightStyle = $state('');
+	let navMenuElement = $state(null);
 
-	function handleMouseEnter(index, event) {
-		hoverIndex = index;
-		updateIndicatorPosition(event.target);
+	function handleMouseEnter(index) {
+		const fromOutside = !hoveredIndex;
+		hoveredIndex = index;
+		updateHighlight(fromOutside);
 	}
 
 	function handleMouseLeave() {
-		hoverIndex = -1;
+		hoveredIndex = null;
+		updateHighlight();
 	}
 
-	function updateIndicatorPosition(element) {
-		if (!navMenuElement || !element) return;
+	function updateHighlight(fromOutside) {
+		if (hoveredIndex === null || !navMenuElement) {
+			highlightStyle = 'opacity: 0;';
+			return;
+		}
 
+		const items = navMenuElement.querySelectorAll('.nav-item');
+		const hoveredItem = items[hoveredIndex];
+
+		const rect = hoveredItem.getBoundingClientRect();
 		const menuRect = navMenuElement.getBoundingClientRect();
-		const itemRect = element.getBoundingClientRect();
+		const left = rect.left - menuRect.left;
+		const width = rect.width;
 
-		const left = itemRect.left - menuRect.left;
-		const width = itemRect.width;
-
-		indicatorStyle = `transform: translateX(${left}px); width: ${width}px; opacity: 1;`;
+		highlightStyle = `transform: translateX(${left}px) translateY(-10%); width: ${width}px; opacity: 1;`;
+		if (fromOutside) {
+			highlightStyle += 'transition: none';
+		}
 	}
 </script>
 
 <nav class="navbar">
-	<div class="nav-container">
-		<ul class="nav-menu" bind:this={navMenuElement} on:mouseleave={handleMouseLeave}>
-			<div
-				class="hover-indicator"
-				style={hoverIndex >= 0 ? indicatorStyle : 'opacity: 0;'}
-			></div>
+	<div class="nav-container" role="presentation" onmouseleave={handleMouseLeave}>
+		<ul class="nav-menu" bind:this={navMenuElement}>
+			<div class="hover-highlight" style={highlightStyle}></div>
 			{#each navItems as item, index}
-				<li class="nav-item" on:mouseenter={(e) => handleMouseEnter(index, e)}>
+				<li class="nav-item" onmouseenter={() => handleMouseEnter(index)}>
 					<a
 						href={item.href}
 						class="nav-link"
@@ -86,7 +92,8 @@
 		align-items: center;
 		padding: 0 5px;
 		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-		background-color: #f5f5f5;
+		background-color: #f5f5f5bf;
+		backdrop-filter: blur(12px);
 	}
 
 	.nav-menu {
@@ -95,18 +102,6 @@
 		margin: 0;
 		padding: 0;
 		position: relative;
-	}
-
-	.hover-indicator {
-		position: absolute;
-		top: -4px;
-		bottom: -4px;
-		left: 0;
-		background-color: rgba(220, 220, 220, 0.5);
-		border-radius: 6px;
-		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-		pointer-events: none;
-		z-index: -1;
 	}
 
 	.nav-item {
@@ -130,5 +125,17 @@
 
 	.nav-link.active {
 		color: #000000;
+	}
+
+	.hover-highlight {
+		position: absolute;
+		transform: translateY(-10%);
+		height: 125%;
+		background-color: #e9e9e9;
+		border-radius: 0.25rem;
+		transition: all 0.15s ease;
+		pointer-events: none;
+		z-index: 0;
+		opacity: 0;
 	}
 </style>

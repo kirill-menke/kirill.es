@@ -42,7 +42,7 @@
 					in:fly={{
 						y: -15,
 						opacity: 0,
-						duration: 600,
+						duration: fromHomePage ? 600 : 300,
 						delay: fromHomePage ? index * 125 : 0,
 						easing: backInOut
 					}}
