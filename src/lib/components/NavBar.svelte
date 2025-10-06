@@ -1,5 +1,7 @@
 <script>
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { fly, fade } from 'svelte/transition';
 
 	const navItems = [
 		{ label: 'Kirill', href: '/' },
@@ -11,9 +13,14 @@
 
 	let currentPath = $derived($page.url.pathname);
 
+	let visible = $state(false);
 	let hoveredIndex = $state(null);
 	let highlightStyle = $state('');
 	let navMenuElement = $state(null);
+
+	onMount(() => {
+		visible = true;
+	});
 
 	function handleMouseEnter(index) {
 		const fromOutside = !hoveredIndex;
@@ -48,23 +55,43 @@
 </script>
 
 <nav class="navbar">
-	<div class="nav-container" role="presentation" onmouseleave={handleMouseLeave}>
-		<ul class="nav-menu" bind:this={navMenuElement}>
-			<div class="hover-highlight" style={highlightStyle}></div>
-			{#each navItems as item, index}
-				<li class="nav-item" onmouseenter={() => handleMouseEnter(index)}>
-					<a
-						href={item.href}
-						class="nav-link"
-						class:active={currentPath === item.href}
-						data-svelte-preload-data
-					>
-						{item.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</div>
+	{#if visible}
+		<div
+			class="nav-container"
+			role="presentation"
+			onmouseleave={handleMouseLeave}
+			in:fly={{
+				y: -50,
+				opacity: 0,
+				duration: 400
+			}}
+		>
+			<ul class="nav-menu" bind:this={navMenuElement}>
+				<div class="hover-highlight" style={highlightStyle}></div>
+				{#each navItems as item, index}
+					<li class="nav-item" onmouseenter={() => handleMouseEnter(index)}>
+						<a
+							href={item.href}
+							class="nav-link"
+							class:active={currentPath === item.href}
+							data-svelte-preload-data
+						>
+							{item.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</div>
+
+		<div class="personal-links" in:fade={{ duration: 200, delay: 1000 }}>
+			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
+				>GitHub</a
+			>
+			<!-- <a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
+				>CV</a
+			> -->
+		</div>
+	{/if}
 </nav>
 
 <style>
@@ -82,6 +109,7 @@
 		max-width: 1500px;
 		margin: 0 auto;
 		align-items: center;
+		justify-content: space-between;
 	}
 
 	.nav-container {
@@ -137,5 +165,21 @@
 		pointer-events: none;
 		z-index: 0;
 		opacity: 0;
+	}
+
+	.personal-links {
+		display: flex;
+		font-size: 0.9rem;
+	}
+
+	.personal-links a {
+		color: var(--color-font-light);
+		padding: 0 0.5rem;
+		text-decoration: none;
+		transition: color 0.05s linear;
+	}
+
+	.personal-links a:hover {
+		color: var(--color-font-dark);
 	}
 </style>
