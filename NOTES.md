@@ -1,7 +1,12 @@
-- Next: Add animation to Navbar
-- Add GitHub and CV
-- Fix hover on NavBar
-- Testing wbsite under load
+- At least one project and one hobby to fill the website
+- Karteikartenapp
+
+- When using shadows: Hard-short + soft-long
+- Change to okhcl color palette: Add warn colors used for book status
+
+- Correct layouting
+- Cool Footer
+- Testing website under load
 
 - Instruct AI to make code suggestions in a review which I can accept
     - I think AI has to actively start a code review on the code then IF it has suggestions. Currently it just looks a the code and posts a comment.
@@ -23,8 +28,6 @@
         - Deploy to production when merging to main
         - Deploy to staging when pushing on dev branch
         - Create releases and artifacts?
-
-- Karteikartenapp
 
 - https://lucide.dev/
 - https://phosphoricons.com
