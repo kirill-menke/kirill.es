@@ -17,6 +17,8 @@
 	let hoveredIndex = $state(null);
 	let highlightStyle = $state('');
 	let navMenuElement = $state(null);
+	let scrollY = $state(0);
+	let isFaded = $derived(scrollY >= 35);
 
 	onMount(() => {
 		visible = true;
@@ -54,6 +56,8 @@
 	}
 </script>
 
+<svelte:window bind:scrollY />
+
 <nav class="navbar">
 	{#if visible}
 		<div
@@ -63,7 +67,8 @@
 			in:fly={{
 				y: -50,
 				opacity: 0,
-				duration: 400
+				duration: 500,
+				delay: 300
 			}}
 		>
 			<ul class="nav-menu" bind:this={navMenuElement}>
@@ -83,13 +88,13 @@
 			</ul>
 		</div>
 
-		<div class="personal-links" in:fade={{ duration: 200, delay: 1000 }}>
+		<div class="personal-links" class:faded={isFaded} in:fade={{ duration: 200, delay: 600 }}>
 			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
 				>GitHub</a
 			>
-			<!-- <a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
+			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
 				>CV</a
-			> -->
+			>
 		</div>
 	{/if}
 </nav>
@@ -97,31 +102,29 @@
 <style>
 	.navbar {
 		display: flex;
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
+		align-items: center;
+		justify-content: space-between;
+		position: sticky;
+		inset: 0;
 
 		background-color: transparent;
 		z-index: 1000;
-		padding: 0 2rem;
-		height: 80px;
-		max-width: 1500px;
+		height: 70px;
 		margin: 0 auto;
-		align-items: center;
-		justify-content: space-between;
 	}
 
 	.nav-container {
 		height: 35px;
 		display: inline-flex;
-		border: 1px solid #e5e5e5;
+		border: 1px solid var(--color-background-dark);
 		border-radius: 0.5rem;
 		align-items: center;
 		padding: 0 5px;
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-		background-color: #f5f5f5bf;
-		backdrop-filter: blur(12px);
+		margin: 0 auto;
+		box-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.1),
+			0 3px 6px rgba(0, 0, 0, 0.05);
+		backdrop-filter: blur(24px) brightness(1.25);
 	}
 
 	.nav-menu {
@@ -137,7 +140,7 @@
 	}
 
 	.nav-link {
-		color: #9c9c9c;
+		color: var(--color-font-light);
 		text-decoration: none;
 		font-size: 0.9rem;
 		font-weight: 400;
@@ -148,18 +151,18 @@
 	}
 
 	.nav-link:hover {
-		color: #000000;
+		color: var(--color-font-dark);
 	}
 
-	.nav-link.active {
-		color: #000000;
+	a.active {
+		color: var(--color-font-dark);
 	}
 
 	.hover-highlight {
 		position: absolute;
 		transform: translateY(-10%);
 		height: 125%;
-		background-color: #e9e9e9;
+		background-color: var(--color-background-dark);
 		border-radius: 0.25rem;
 		transition: all 0.15s ease;
 		pointer-events: none;
@@ -168,8 +171,22 @@
 	}
 
 	.personal-links {
-		display: flex;
+		display: none;
 		font-size: 0.9rem;
+		transition: opacity 0.1s linear;
+	}
+
+	.personal-links.faded {
+		opacity: 0;
+	}
+
+	@media (min-width: 640px) {
+		.personal-links {
+			display: flex;
+		}
+		.nav-container {
+			margin: 0;
+		}
 	}
 
 	.personal-links a {
