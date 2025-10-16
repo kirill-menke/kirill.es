@@ -3,16 +3,39 @@
 	import '../app.css';
 </script>
 
-<NavBar />
-
 <main>
+	<NavBar />
 	<slot />
 </main>
 
 <style>
 	main {
-		max-width: 1500px;
+		max-width: 600px;
 		margin: 0 auto;
-		padding: 80px 2rem 2rem 2rem;
+		padding: 0 2rem;
+	}
+
+	@media (min-width: 480px) {
+		main {
+			max-width: 600px;
+		}
+	}
+
+	@media (min-width: 640px) {
+		main {
+			max-width: 700px;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		main {
+			max-width: 950px;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		main {
+			max-width: 1450px;
+		}
 	}
 </style>
