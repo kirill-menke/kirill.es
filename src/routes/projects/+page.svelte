@@ -27,7 +27,7 @@
 </p>
 
 <div class="grid-container">
-	{#each Object.entries(projects) as [_, project], index}
+	{#each Object.values(projects) as project, index}
 		{#if visible}
 			{@const square = project.layout === 'square'}
 			<div class="grid-item" class:span-2-cols={!square} class:aspect-wide={!square}>

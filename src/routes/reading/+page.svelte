@@ -27,7 +27,7 @@
 </p>
 
 <div class="grid-container">
-	{#each Object.entries(books) as [_, book], index}
+	{#each Object.values(books) as book, index}
 		{#if visible}
 			<BookTile
 				{book}
