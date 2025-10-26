@@ -35,7 +35,9 @@
 		"@google/genai": "^1.20.0",
 		"@lucide/svelte": "^0.544.0",
 		"better-sqlite3": "^12.2.0",
-		"dotenv": "^17.2.2"
+		"canvas": "^3.2.0",
+		"dotenv": "^17.2.2",
+		"gif-encoder-2": "^1.0.5"
 	},
 	"lint-staged": {
 		"*.js": [
