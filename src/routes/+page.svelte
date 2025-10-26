@@ -3,10 +3,12 @@
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
 	import ProjectTile from '$lib/components/ProjectTile.svelte';
-	import HobbyTile from '$lib/components/HobbyTile.svelte';
+	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
+	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
 	import BookTile from '$lib/components/BookTile.svelte';
 	import { projects, hobbies, books } from '$lib/tile-data.js';
 
+	// To prevent server-side rendering and play animation
 	let visible = $state(false);
 	onMount(() => {
 		visible = true;
@@ -52,37 +54,63 @@
 			<ProjectTile project={projects.word_by_word} duration={500} delay={400} useHyperLink />
 		</div>
 		<div class="grid-item aspect-square">
-			<HobbyTile hobby={hobbies.bouldering} duration={500} delay={600} useHyperLink />
+			<HobbyTileSlide
+				hobby={hobbies.bouldering_regensburg}
+				duration={500}
+				delay={600}
+				useHyperLink
+			/>
 		</div>
 		<div class="grid-item aspect-square">
 			<BookTile book={books.algorithms_to_live_by} duration={500} delay={800} useHyperLink />
 		</div>
 		<div
 			class="grid-item"
-			class:span-2-cols={projects.tile_by_tile.layout === 'wide'}
-			class:aspect-wide={projects.tile_by_tile.layout === 'wide'}
+			class:span-2-cols={hobbies.skiing_oppdal.layout === 'wide'}
+			class:aspect-wide={hobbies.skiing_oppdal.layout === 'wide'}
 		>
-			<ProjectTile project={projects.tile_by_tile} duration={500} delay={1000} useHyperLink />
+			<HobbyTileSlide
+				hobby={hobbies.skiing_oppdal}
+				duration={500}
+				delay={1000}
+				useHyperLink
+			/>
 		</div>
 		<div class="grid-item aspect-square">
 			<BookTile book={books.a_little_princess} duration={500} delay={1200} useHyperLink />
 		</div>
 		<div class="grid-item aspect-square">
-			<HobbyTile hobby={hobbies.bouldering} duration={500} delay={1400} useHyperLink />
+			<HobbyTileFade hobby={hobbies.anime_frieren} duration={500} delay={1400} useHyperLink />
 		</div>
 		<div class="grid-item aspect-square">
-			<HobbyTile hobby={hobbies.bouldering} duration={500} delay={1600} useHyperLink />
+			<HobbyTileSlide
+				hobby={hobbies.vietnam_ninh_binh}
+				duration={500}
+				delay={1600}
+				useHyperLink
+			/>
 		</div>
 		<div class="grid-item aspect-square">
-			<HobbyTile hobby={hobbies.bouldering} duration={500} delay={1800} useHyperLink />
+			<HobbyTileFade
+				hobby={hobbies.anime_dandadan}
+				duration={500}
+				delay={1800}
+				useHyperLink
+			/>
 		</div>
 		<div class="grid-item aspect-square">
-			<HobbyTile hobby={hobbies.bouldering} duration={500} delay={2000} useHyperLink />
+			<HobbyTileSlide
+				hobby={hobbies.vietnam_sa_phin}
+				duration={500}
+				delay={2000}
+				useHyperLink
+			/>
 		</div>
 	</div>
 {/if}
 
 <style>
+	/* Styles for introduction text */
 	p {
 		font-size: 1.4rem;
 		font-weight: 400;

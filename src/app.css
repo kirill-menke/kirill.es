@@ -18,9 +18,10 @@
 	--color-font-dark: oklch(0.3 0 0);
 	--color-font-light: oklch(0.7 0 0);
 
-	--color-background: oklch(0.97 0 0);
+	--color-background: oklch(1 0 0);
 	--color-background-dark: oklch(0.93 0 0);
-	--color-background-tile: oklch(0.96 0 0);
+	--color-background-tile: oklch(0.985 0 0);
+	--color-background-tile-hover: oklch(0.975 0 0);
 
 	--color-primary: #000;
 	--color-secondary: #000;
@@ -122,10 +123,11 @@ body {
 	box-sizing: border-box;
 	flex-direction: column;
 	position: relative;
+	background: var(--color-background-tile);
 }
 
 .tile:hover {
-	background-color: var(--color-background-tile);
+	background-color: var(--color-background-tile-hover);
 }
 
 .tile-header-text {

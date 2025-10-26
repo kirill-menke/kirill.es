@@ -14,39 +14,90 @@ export const projects = {
 };
 
 export const hobbies = {
-	anime: {
-		name: 'Dan Da Dan',
+	anime_dandadan: {
+		name: 'Anime',
+		title: 'Dandadan',
 		link: '/hobbies',
-		preview: 'hobby-previews/dandadan.png'
+		preview: 'hobby-previews/dandadan.png',
+		tags: ['Comedy', 'Shōnen'],
+		tileType: 'fade',
+		layout: 'square'
 	},
-	bouldering: {
-		name: 'Bouldering',
-		link: '/hobbies',
-		preview: 'hobby-previews/bouldering.png'
-	},
-	skiing: {
+	skiing_oppdal: {
 		name: 'Skiing',
+		title: '2023-09-23 @ Oppdal',
 		link: '/hobbies',
-		preview: 'hobby-previews/skiing.png'
+		preview: 'hobby-previews/skiing-oppdal.png',
+		tags: [],
+		tileType: 'slide',
+		layout: 'wide'
 	},
-	chess: {
-		name: 'Chess',
-		link: 'hobbies',
-		preview: 'hobby-previews/chess.png'
+	anime_frieren: {
+		name: 'Anime',
+		title: 'Frieren',
+		link: '/hobbies',
+		preview: 'hobby-previews/frieren.png',
+		tags: ['Iyashikei'],
+		tileType: 'fade',
+		layout: 'square'
 	},
-	anime_2: {
-		name: 'Frieren',
-		link: 'hobbies',
-		preview: 'hobby-previews/frieren.png'
+	bouldering_regensburg: {
+		name: 'Bouldering',
+		title: '2025-08-30 @ Boulderwelt Regensburg',
+		link: '/hobbies',
+		preview: 'hobby-previews/bouldering.png',
+		tags: [],
+		tileType: 'slide',
+		layout: 'square'
+	},
+	anime_aot: {
+		name: 'Anime',
+		title: 'Attack on Titan',
+		link: '/hobbies',
+		preview: 'hobby-previews/aot.png',
+		tags: ['Action', 'Horror'],
+		tileType: 'fade',
+		layout: 'square'
+	},
+	anime_hxh: {
+		name: 'Anime',
+		title: 'Hunter x Hunter',
+		link: '/hobbies',
+		preview: 'hobby-previews/hxh.png',
+		tags: ['Shōnen'],
+		tileType: 'fade',
+		layout: 'square'
+	},
+	vietnam_children: {
+		name: 'Traveling',
+		title: '2024-11-25 @ Hà Giang',
+		link: '/hobbies',
+		preview: 'hobby-previews/vietnam-children.png',
+		tags: [],
+		tileType: 'slide',
+		layout: 'square'
+	},
+	vietnam_ninh_binh: {
+		name: 'Traveling',
+		title: '2024-11-27 @ Ninh Bình',
+		link: '/hobbies',
+		preview: 'hobby-previews/vietnam-ninh-binh.JPG',
+		tags: [],
+		tileType: 'slide',
+		layout: 'square'
+	},
+	vietnam_sa_phin: {
+		name: 'Traveling',
+		title: '2024-11-25 @ Sà Phìn',
+		link: '/hobbies',
+		preview: 'hobby-previews/vietnam-sa-phin.JPG',
+		tags: [],
+		tileType: 'slide',
+		layout: 'square'
 	}
 
-	// Order:
-	// Dan Da Dan, Traveling (double), Frieren
-	// Bouldering, Attack on Titan, Hunter x Hunter, Skiing,
 	// Running, Chess, Gym, League of Legends
-
-	// Traveling double, Skiing, Running, Gym, Chess, Anime, League of Legends
-	// Naruto, Chainsaw Man, Spy x Family, Attack on Titan, Hunter x Hunter, Demon Slayer
+	// Naruto, Chainsaw Man, Spy x Family, Demon Slayer, Death Note
 };
 
 export const books = {

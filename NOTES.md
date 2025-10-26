@@ -1,3 +1,11 @@
+- Also add pre-push hook to PC
+- Reduce image size of skiing image
+- Fix overlap of tool tip in project + reading tiles
+- Fix animation in hobbies route
+- Fix jagged outline for anime previews
+- Fix header background blur
+- Conversion to webp makes images dark
+
 - At least one project and one hobby to fill the website
 - Karteikartenapp
 
@@ -31,3 +39,6 @@
 
 - https://lucide.dev/
 - https://phosphoricons.com
+
+- Bookbridge: Bridge the language gap
+- Adapt color gradient on transparent hobby tiles to the image colors

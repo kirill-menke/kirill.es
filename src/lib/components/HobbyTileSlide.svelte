@@ -9,11 +9,14 @@
 
 	export let showArrowLink = false;
 	export let useHyperLink = false;
+
+	const aspect = hobby.layout === 'square' ? 1 : 2;
 </script>
 
 <div
 	role="presentation"
 	class="tile"
+	style="aspect-ratio: {aspect}"
 	in:fly={{ y: -20, opacity: 0, duration, delay, easing: backInOut }}
 >
 	<div class="hobby-tile-bg" style="background-image: url('{hobby.preview}')"></div>
@@ -41,11 +44,14 @@
 			<ArrowUpRight strokeWidth="2" size="16" /></a
 		>
 	</div>
+
+	<div class="tile-title">{hobby.title}</div>
 </div>
 
 <style>
 	.tile {
 		aspect-ratio: 1;
+		justify-content: space-between;
 	}
 
 	.hobby-tile-bg {
@@ -73,5 +79,24 @@
 		align-items: center;
 		padding: 0.5rem 0.5rem 0 1.25rem;
 		z-index: 0;
+	}
+
+	.tile-title {
+		width: fit-content;
+		padding: 0.3rem 0.5rem;
+		margin: 0.6rem;
+		background-color: transparent;
+		font-family: var(--font-primary);
+		color: #fff;
+		font-size: 0.9rem;
+		border-radius: 0.5rem;
+		z-index: 2;
+		transition: background-color 0.1s linear;
+		backdrop-filter: blur(1px) brightness(0.7);
+	}
+
+	.tile:hover .tile-title {
+		background-color: var(--color-font-dark);
+		opacity: 0.9;
 	}
 </style>

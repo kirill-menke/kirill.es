@@ -1,168 +1,139 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
+
 	export let hobby;
 	export let duration;
 	export let delay;
+
 	export let useHyperLink = false;
+
+	const aspect = hobby.layout === 'square' ? 1 : 2;
 </script>
 
 <div
 	role="presentation"
-	class="tile-container"
+	class="tile"
+	style="aspect-ratio: {aspect}"
 	in:fly={{ y: -20, opacity: 0, duration, delay, easing: backInOut }}
 >
-	<div class="tile">
-		<div class="tile-inner">
-			<img src={hobby.preview} alt={hobby.name} class="tile-image" />
+	<img class="hobby-tile-bg" src={hobby.preview} alt={hobby.name} />
 
-			<div class="tile-header">
-				<span class="breadcrumb">
-					{#if useHyperLink}
-						<a href="/hobbies">Hobbies</a>
-					{:else}
-						Hobbies
-					{/if}
-					&nbsp;·&nbsp;{hobby.name}
-				</span>
-			</div>
+	<div class="hobby-tile-content">
+		<span class="tile-header-text">
+			{#if useHyperLink}
+				<a href="/hobbies">Hobbies</a>
+				<span class="tooltip">Browse hobbies</span>
+			{:else}
+				Hobbies
+			{/if}
+			&nbsp;·&nbsp;{hobby.name}
+		</span>
 
-			<div class="tile-footer">
-				{#if hobby.category || hobby.family}
-					<div class="tags">
-						<div class="tag">
-							<span>{hobby.category || hobby.family}</span>
-						</div>
+		<div class="tile-footer">
+			<div class="tags">
+				{#each hobby.tags as tag}
+					<div class="tag" {tag}>
+						<span>{tag}</span>
 					</div>
-				{/if}
-				<h3 class="tile-title">{hobby.title || hobby.name}</h3>
+				{/each}
 			</div>
+			<h3 class="tile-title">{hobby.title}</h3>
 		</div>
 	</div>
 </div>
 
 <style>
-	.tile-container {
-		aspect-ratio: 1 / 1;
-		padding: 0 4px 8px;
-	}
-
 	.tile {
-		height: 100%;
-		width: 100%;
 		overflow: hidden;
-		border-radius: 12px;
-		background: #fafafa;
-		transition: background-color 0.2s;
-		position: relative;
 	}
 
-	.tile:hover,
-	.tile:focus-within {
-		background: #f5f5f5;
-	}
-
-	.tile-inner {
-		position: relative;
-		isolation: isolate;
-		display: flex;
-		height: 100%;
-		width: 100%;
-		flex-direction: column;
-		justify-content: space-between;
-	}
-
-	.tile-image {
-		pointer-events: none;
+	.hobby-tile-bg {
 		position: absolute;
-		z-index: -1;
-		height: 100%;
 		width: 100%;
-		object-fit: cover;
 		transition: transform 0.3s ease;
 	}
 
-	.tile:hover .tile-image {
+	.tile:hover .hobby-tile-bg {
 		z-index: 10;
 		transform: scale(1.05);
 	}
 
-	.tile-header {
+	.hobby-tile-content {
 		display: flex;
-		align-items: center;
+		flex-direction: column;
 		justify-content: space-between;
-		padding: 8px 8px 8px 16px;
-		font-size: 14px;
-		letter-spacing: -0.01em;
-		color: #a3a3a3;
-	}
-
-	.breadcrumb {
-		padding: 6px 0;
-	}
-
-	.breadcrumb a {
-		color: inherit;
-		text-decoration: none;
-		transition: color 0.2s;
-	}
-
-	.breadcrumb a:hover,
-	.breadcrumb a:focus-visible {
-		color: #737373;
-		text-decoration: underline;
-	}
-
-	.breadcrumb a:focus-visible {
-		outline: 4px solid #bfdbfe;
-		outline-offset: 2px;
+		flex-grow: 1;
+		padding: 1rem 1.25rem 0.45rem 1.25rem;
+		z-index: 0;
+		background: linear-gradient(to top, #fafafa, transparent);
+		transition: opacity 0.3s;
 	}
 
 	.tile-footer {
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
-		flex-grow: 1;
-		gap: 12px;
-		padding: 20px;
-		background: linear-gradient(to top, #fafafa, transparent);
-		transition: opacity 0.2s;
+		gap: 10px;
 	}
 
 	.tile:hover .tile-footer,
 	.tile:focus-within .tile-footer {
-		opacity: 0.2;
+		opacity: 0.3;
 	}
+
+	/* Tag styles */
 
 	.tags {
 		display: flex;
-		gap: 8px;
+		gap: 0.5rem;
 	}
 
 	.tag {
-		display: inline-block;
-		background: rgba(56, 189, 248, 0.4);
-		color: #0c4a6e;
-		border-radius: 4px;
-		padding: 2px 6px 4px;
-		font-family: 'Courier New', monospace;
-		font-size: 14px;
-		letter-spacing: -0.01em;
-		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+		font-size: 0.7rem;
+		font-weight: 600;
+		border-radius: 5px;
 		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		padding: 0.3rem 0.4rem;
+		display: inline-block;
+		text-align: center;
+		width: fit-content;
+		border: 1px solid currentColor;
+		box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+		opacity: 0.85;
+	}
+
+	.tag[tag='Horror'] {
+		background-color: oklch(0.65 0.1 18);
+		color: oklch(0.35 0.1 18);
+	}
+
+	.tag[tag='Comedy'] {
+		background-color: oklch(1 0.12 100);
+		color: oklch(0.65 0.12 100);
+	}
+
+	.tag[tag='Shōnen'] {
+		background-color: oklch(0.67 0.15 25);
+		color: oklch(0.45 0.15 25);
+	}
+
+	.tag[tag='Iyashikei'] {
+		background-color: oklch(0.85 0.039 310);
+		color: oklch(0.5 0.039 310);
+	}
+
+	.tag[tag='Action'] {
+		background-color: oklch(0.8 0.13 54);
+		color: oklch(0.6 0.18 54);
 	}
 
 	.tile-title {
-		font-family: Georgia, 'Times New Roman', serif;
-		font-size: 36px;
-		font-weight: 300;
-		line-height: 1.2;
-		color: #171717;
-	}
-
-	@media (min-width: 640px) {
-		.tile-title {
-			font-size: 40px;
-		}
+		font-family: var(--font-secondary);
+		color: black;
+		font-size: 2.5rem;
+		font-weight: 400;
+		margin: 0;
 	}
 </style>

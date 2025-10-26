@@ -1,7 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
-	import HobbyTile from '$lib/components/HobbyTileFade.svelte';
+	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
+	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
 	import { hobbies } from '$lib/tile-data.js';
 
 	let visible = false;
@@ -27,13 +28,27 @@
 </p>
 
 <div class="grid-container">
-	{#each Object.entries(hobbies) as [_, hobby], index}
+	{#each Object.values(hobbies) as hobby, index}
 		{#if visible}
-			<HobbyTile
-				{hobby}
-				duration={fromHomePage ? 600 : 300}
-				delay={fromHomePage ? index * 125 : 0}
-			/>
+			<div
+				class="grid-item"
+				class:span-2-cols={hobby.layout === 'wide'}
+				class:aspect-wide={hobby.layout === 'wide'}
+			>
+				{#if hobby.tileType === 'fade'}
+					<HobbyTileFade
+						{hobby}
+						duration={fromHomePage ? 600 : 300}
+						delay={fromHomePage ? index * 125 : 0}
+					/>
+				{:else}
+					<HobbyTileSlide
+						{hobby}
+						duration={fromHomePage ? 600 : 300}
+						delay={fromHomePage ? index * 125 : 0}
+					/>
+				{/if}
+			</div>
 		{/if}
 	{/each}
 </div>

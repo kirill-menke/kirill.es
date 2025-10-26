@@ -2,7 +2,6 @@
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
 	import { ArrowUpRight } from '@lucide/svelte';
-	import { Github } from '@lucide/svelte';
 
 	export let project;
 
@@ -27,9 +26,8 @@
 		easing: backInOut
 	}}
 >
-	<div class="bg-wrapper">
-		<div class="project-tile-bg" style="background-image: url('{project.preview}')"></div>
-	</div>
+	<div class="project-tile-bg-image" style="background-image: url('{project.preview}')"></div>
+
 	<div class="project-tile-content">
 		<span class="tile-header-text">
 			{#if useHyperLink}
@@ -57,22 +55,21 @@
 </div>
 
 <style>
-	.project-tile-bg {
+	.tile {
+		overflow: hidden;
+	}
+
+	.project-tile-bg-image {
 		position: absolute;
 		inset: 0;
 		background-size: cover;
 		background-position: center;
 		transition: transform 0.1s linear;
-	}
-
-	.bg-wrapper {
-		position: absolute;
-		inset: 0;
 		overflow: hidden;
 		border-radius: inherit;
 	}
 
-	.tile:hover .project-tile-bg {
+	.tile:hover .project-tile-bg-image {
 		transform: scale(1.05);
 	}
 
