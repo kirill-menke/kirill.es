@@ -40,7 +40,7 @@
 			<span class="dark-font">projects</span>, and whatever's caught my attention lately.
 		</p>
 		<div
-			class="grid-item"
+			class="grid-item aspect-square"
 			class:span-2-cols={projects.tile_by_tile.layout === 'wide'}
 			class:aspect-wide={projects.tile_by_tile.layout === 'wide'}
 		>

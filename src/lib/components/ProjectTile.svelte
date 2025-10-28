@@ -26,7 +26,9 @@
 		easing: backInOut
 	}}
 >
-	<div class="project-tile-bg-image" style="background-image: url('{project.preview}')"></div>
+	<div class="image-container">
+		<div class="project-tile-bg-image" style="background-image: url('{project.preview}')"></div>
+	</div>
 
 	<div class="project-tile-content">
 		<span class="tile-header-text">
@@ -55,8 +57,11 @@
 </div>
 
 <style>
-	.tile {
+	.image-container {
+		position: absolute; /* Fill the entire tile */
+		inset: 0;
 		overflow: hidden;
+		border-radius: inherit;
 	}
 
 	.project-tile-bg-image {
@@ -65,7 +70,6 @@
 		background-size: cover;
 		background-position: center;
 		transition: transform 0.1s linear;
-		overflow: hidden;
 		border-radius: inherit;
 	}
 

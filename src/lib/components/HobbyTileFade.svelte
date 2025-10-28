@@ -66,7 +66,7 @@
 		flex-grow: 1;
 		padding: 1rem 1.25rem 0.45rem 1.25rem;
 		z-index: 0;
-		background: linear-gradient(to top, #fafafa, transparent);
+		background: linear-gradient(to top, #fafafa, transparent 50%);
 		transition: opacity 0.3s;
 	}
 
@@ -132,7 +132,7 @@
 	.tile-title {
 		font-family: var(--font-secondary);
 		color: black;
-		font-size: 2.5rem;
+		font-size: 2.25rem;
 		font-weight: 400;
 		margin: 0;
 	}

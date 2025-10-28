@@ -18,7 +18,7 @@ export const hobbies = {
 		name: 'Anime',
 		title: 'Dandadan',
 		link: '/hobbies',
-		preview: 'hobby-previews/dandadan.png',
+		preview: 'hobby-previews/dandadan.webp',
 		tags: ['Comedy', 'Shōnen'],
 		tileType: 'fade',
 		layout: 'square'
@@ -27,7 +27,7 @@ export const hobbies = {
 		name: 'Skiing',
 		title: '2023-09-23 @ Oppdal',
 		link: '/hobbies',
-		preview: 'hobby-previews/skiing-oppdal.png',
+		preview: 'hobby-previews/skiing-oppdal.webp',
 		tags: [],
 		tileType: 'slide',
 		layout: 'wide'
@@ -36,7 +36,7 @@ export const hobbies = {
 		name: 'Anime',
 		title: 'Frieren',
 		link: '/hobbies',
-		preview: 'hobby-previews/frieren.png',
+		preview: 'hobby-previews/frieren.webp',
 		tags: ['Iyashikei'],
 		tileType: 'fade',
 		layout: 'square'
@@ -45,7 +45,7 @@ export const hobbies = {
 		name: 'Bouldering',
 		title: '2025-08-30 @ Boulderwelt Regensburg',
 		link: '/hobbies',
-		preview: 'hobby-previews/bouldering.png',
+		preview: 'hobby-previews/bouldering.webp',
 		tags: [],
 		tileType: 'slide',
 		layout: 'square'
@@ -54,7 +54,7 @@ export const hobbies = {
 		name: 'Anime',
 		title: 'Attack on Titan',
 		link: '/hobbies',
-		preview: 'hobby-previews/aot.png',
+		preview: 'hobby-previews/aot-scarf.webp',
 		tags: ['Action', 'Horror'],
 		tileType: 'fade',
 		layout: 'square'
@@ -63,7 +63,7 @@ export const hobbies = {
 		name: 'Anime',
 		title: 'Hunter x Hunter',
 		link: '/hobbies',
-		preview: 'hobby-previews/hxh.png',
+		preview: 'hobby-previews/hxh-fishing.webp',
 		tags: ['Shōnen'],
 		tileType: 'fade',
 		layout: 'square'
@@ -72,7 +72,7 @@ export const hobbies = {
 		name: 'Traveling',
 		title: '2024-11-25 @ Hà Giang',
 		link: '/hobbies',
-		preview: 'hobby-previews/vietnam-children.png',
+		preview: 'hobby-previews/vietnam-children.webp',
 		tags: [],
 		tileType: 'slide',
 		layout: 'square'
@@ -81,7 +81,7 @@ export const hobbies = {
 		name: 'Traveling',
 		title: '2024-11-27 @ Ninh Bình',
 		link: '/hobbies',
-		preview: 'hobby-previews/vietnam-ninh-binh.JPG',
+		preview: 'hobby-previews/vietnam-ninh-binh.webp',
 		tags: [],
 		tileType: 'slide',
 		layout: 'square'
@@ -90,7 +90,7 @@ export const hobbies = {
 		name: 'Traveling',
 		title: '2024-11-25 @ Sà Phìn',
 		link: '/hobbies',
-		preview: 'hobby-previews/vietnam-sa-phin.JPG',
+		preview: 'hobby-previews/vietnam-sa-phin.webp',
 		tags: [],
 		tileType: 'slide',
 		layout: 'square'

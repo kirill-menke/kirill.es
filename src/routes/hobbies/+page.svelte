@@ -29,26 +29,25 @@
 
 <div class="grid-container">
 	{#each Object.values(hobbies) as hobby, index}
-		{#if visible}
-			<div
-				class="grid-item"
-				class:span-2-cols={hobby.layout === 'wide'}
-				class:aspect-wide={hobby.layout === 'wide'}
-			>
-				{#if hobby.tileType === 'fade'}
-					<HobbyTileFade
-						{hobby}
-						duration={fromHomePage ? 600 : 300}
-						delay={fromHomePage ? index * 125 : 0}
-					/>
-				{:else}
-					<HobbyTileSlide
-						{hobby}
-						duration={fromHomePage ? 600 : 300}
-						delay={fromHomePage ? index * 125 : 0}
-					/>
-				{/if}
-			</div>
-		{/if}
+		<div
+			class="grid-item"
+			class:span-2-cols={hobby.layout === 'wide'}
+			class:aspect-wide={hobby.layout === 'wide'}
+		>
+			<!-- Moved visible condition inside to make svelte animations work -->
+			{#if visible && hobby.tileType === 'fade'}
+				<HobbyTileFade
+					{hobby}
+					duration={fromHomePage ? 600 : 300}
+					delay={fromHomePage ? index * 125 : 0}
+				/>
+			{:else if visible}
+				<HobbyTileSlide
+					{hobby}
+					duration={fromHomePage ? 600 : 300}
+					delay={fromHomePage ? index * 125 : 0}
+				/>
+			{/if}
+		</div>
 	{/each}
 </div>
