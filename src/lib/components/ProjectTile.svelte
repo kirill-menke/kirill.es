@@ -58,7 +58,7 @@
 
 <style>
 	.image-container {
-		position: absolute; /* Fill the entire tile */
+		position: absolute;
 		inset: 0;
 		overflow: hidden;
 		border-radius: inherit;

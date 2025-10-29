@@ -17,35 +17,41 @@
 	style="aspect-ratio: {aspect}"
 	in:fly={{ y: -20, opacity: 0, duration, delay, easing: backInOut }}
 >
-	<img class="hobby-tile-bg" src={hobby.preview} alt={hobby.name} />
-
+	<div class="image-container">
+		<img class="hobby-tile-bg" src={hobby.preview} alt={hobby.name} />
+	</div>
 	<div class="hobby-tile-content">
 		<span class="tile-header-text">
 			{#if useHyperLink}
-				<a href="/hobbies">Hobbies</a>
-				<span class="tooltip">Browse hobbies</span>
+				<a href="/hobbies">
+					Hobbies
+					<span class="tooltip">Browse hobbies</span>
+				</a>
 			{:else}
 				Hobbies
 			{/if}
-			&nbsp;·&nbsp;{hobby.name}
+			· {hobby.name}
 		</span>
+	</div>
 
-		<div class="tile-footer">
-			<div class="tags">
-				{#each hobby.tags as tag}
-					<div class="tag" {tag}>
-						<span>{tag}</span>
-					</div>
-				{/each}
-			</div>
-			<h3 class="tile-title">{hobby.title}</h3>
+	<div class="tile-footer">
+		<div class="tags">
+			{#each hobby.tags as tag}
+				<div class="tag" {tag}>
+					<span>{tag}</span>
+				</div>
+			{/each}
 		</div>
+		<h3 class="tile-title">{hobby.title}</h3>
 	</div>
 </div>
 
 <style>
-	.tile {
+	.image-container {
+		position: absolute;
+		inset: 0;
 		overflow: hidden;
+		border-radius: inherit;
 	}
 
 	.hobby-tile-bg {
@@ -55,26 +61,25 @@
 	}
 
 	.tile:hover .hobby-tile-bg {
-		z-index: 10;
+		z-index: 1;
 		transform: scale(1.05);
 	}
 
 	.hobby-tile-content {
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		flex-grow: 1;
 		padding: 1rem 1.25rem 0.45rem 1.25rem;
-		z-index: 0;
-		background: linear-gradient(to top, #fafafa, transparent 50%);
-		transition: opacity 0.3s;
+		z-index: 2;
 	}
 
 	.tile-footer {
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-end;
+		flex-grow: 1;
+		z-index: 0;
+		padding: 1rem 1.25rem 0.45rem 1.25rem;
 		gap: 10px;
+		background: linear-gradient(to top, #fafafa, transparent 60%);
+		transition: opacity 0.1s linear;
 	}
 
 	.tile:hover .tile-footer,
@@ -83,7 +88,6 @@
 	}
 
 	/* Tag styles */
-
 	.tags {
 		display: flex;
 		gap: 0.5rem;
