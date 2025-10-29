@@ -114,17 +114,18 @@
 	}
 
 	.nav-container {
-		height: 35px;
 		display: inline-flex;
+		align-items: center;
+		height: 35px;
 		border: 1px solid var(--color-background-dark);
 		border-radius: 0.5rem;
-		align-items: center;
 		padding: 0 5px;
 		margin: 0 auto;
 		box-shadow:
 			0 1px 2px rgba(0, 0, 0, 0.1),
 			0 3px 6px rgba(0, 0, 0, 0.05);
-		backdrop-filter: blur(24px) brightness(1.25);
+		background: rgba(255, 255, 255, 0.75);
+		backdrop-filter: blur(30px);
 	}
 
 	.nav-menu {
