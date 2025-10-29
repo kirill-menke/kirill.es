@@ -87,7 +87,7 @@
 		margin: 0.6rem;
 		background-color: transparent;
 		font-family: var(--font-primary);
-		color: #fff;
+		color: white;
 		font-size: 0.9rem;
 		border-radius: 0.5rem;
 		z-index: 2;

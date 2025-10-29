@@ -109,28 +109,28 @@
 	}
 
 	.tag[tag='Horror'] {
-		background-color: oklch(0.65 0.1 18);
-		color: oklch(0.35 0.1 18);
+		background-color: oklch(0.7 0.1 18);
+		color: oklch(0.45 0.1 18);
 	}
 
 	.tag[tag='Comedy'] {
-		background-color: oklch(1 0.12 100);
-		color: oklch(0.65 0.12 100);
+		background-color: oklch(0.8 0.1 85);
+		color: oklch(0.5 0.1 85);
 	}
 
 	.tag[tag='Shōnen'] {
-		background-color: oklch(0.67 0.15 25);
-		color: oklch(0.45 0.15 25);
+		background-color: oklch(0.7 0.1 25);
+		color: oklch(0.45 0.1 25);
 	}
 
 	.tag[tag='Iyashikei'] {
-		background-color: oklch(0.85 0.039 310);
-		color: oklch(0.5 0.039 310);
+		background-color: oklch(0.85 0.04 310);
+		color: oklch(0.5 0.04 310);
 	}
 
 	.tag[tag='Action'] {
-		background-color: oklch(0.8 0.13 54);
-		color: oklch(0.6 0.18 54);
+		background-color: oklch(0.8 0.1 54);
+		color: oklch(0.55 0.1 54);
 	}
 
 	.tile-title {

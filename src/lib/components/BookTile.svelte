@@ -82,14 +82,18 @@
 		width: 140px;
 		height: 210px;
 		border-radius: 4px;
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+		box-shadow:
+			0 2px 4px rgba(0, 0, 0, 0.1),
+			0 4px 8px rgba(0, 0, 0, 0.1);
 		flex-shrink: 0;
 		transition: transform 0.1s linear;
 	}
 
 	.tile:hover .book-cover {
 		transform: rotate(-5deg) scale(1.1);
-		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+		box-shadow:
+			0 4px 8px rgba(0, 0, 0, 0.1),
+			0 8px 16px rgba(0, 0, 0, 0.1);
 	}
 
 	.book-info {
@@ -111,22 +115,24 @@
 		text-align: center;
 		width: fit-content;
 		border: 1px solid currentColor;
-		box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+		box-shadow:
+			1px 1px 0px rgba(0, 0, 0, 0.1),
+			1px 1px 2px rgba(0, 0, 0, 0.1);
 	}
 
 	.book-status[data-status='reading'] {
-		background-color: #ffffba;
-		color: #878759;
+		background-color: oklch(93% 0.05 80);
+		color: oklch(62% 0.06 108);
 	}
 
 	.book-status[data-status='read'] {
-		background-color: #e2f0cb;
-		color: #7e8c67;
+		background-color: oklch(93% 0.05 124);
+		color: oklch(62% 0.06 125);
 	}
 
 	.book-status[data-status='to-read'] {
-		background-color: #ffb3ba;
-		color: #976266;
+		background-color: oklch(93% 0.05 13);
+		color: oklch(63% 0.06 15);
 	}
 
 	.book-title {
