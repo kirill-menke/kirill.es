@@ -1,91 +1,131 @@
-<!-- NavBar.svelte -->
 <script>
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import { fly, fade } from 'svelte/transition';
 
 	const navItems = [
 		{ label: 'Kirill', href: '/' },
 		{ label: 'Projects', href: '/projects' },
-		{ label: 'Gallery', href: '/gallery' },
+		// { label: 'Gallery', href: '/gallery' },
 		{ label: 'Reading', href: '/reading' },
 		{ label: 'Hobbies', href: '/hobbies' }
 	];
 
-	$: currentPath = $page.url.pathname;
+	let currentPath = $derived($page.url.pathname);
 
-	let hoverIndex = -1;
-	let indicatorStyle = '';
-	let navMenuElement;
+	let visible = $state(false);
+	let hoveredIndex = $state(null);
+	let highlightStyle = $state('');
+	let navMenuElement = $state(null);
+	let scrollY = $state(0);
+	let isFaded = $derived(scrollY >= 35);
 
-	function handleMouseEnter(index, event) {
-		hoverIndex = index;
-		updateIndicatorPosition(event.target);
+	onMount(() => {
+		visible = true;
+	});
+
+	function handleMouseEnter(index) {
+		const fromOutside = !hoveredIndex;
+		hoveredIndex = index;
+		updateHighlight(fromOutside);
 	}
 
 	function handleMouseLeave() {
-		hoverIndex = -1;
+		hoveredIndex = null;
+		updateHighlight();
 	}
 
-	function updateIndicatorPosition(element) {
-		if (!navMenuElement || !element) return;
+	function updateHighlight(fromOutside) {
+		if (hoveredIndex === null || !navMenuElement) {
+			highlightStyle = 'opacity: 0;';
+			return;
+		}
 
+		const items = navMenuElement.querySelectorAll('.nav-item');
+		const hoveredItem = items[hoveredIndex];
+
+		const rect = hoveredItem.getBoundingClientRect();
 		const menuRect = navMenuElement.getBoundingClientRect();
-		const itemRect = element.getBoundingClientRect();
+		const left = rect.left - menuRect.left;
+		const width = rect.width;
 
-		const left = itemRect.left - menuRect.left;
-		const width = itemRect.width;
-
-		indicatorStyle = `transform: translateX(${left}px); width: ${width}px; opacity: 1;`;
+		highlightStyle = `transform: translateX(${left}px) translateY(-10%); width: ${width}px; opacity: 1;`;
+		if (fromOutside) {
+			highlightStyle += 'transition: none';
+		}
 	}
 </script>
 
+<svelte:window bind:scrollY />
+
 <nav class="navbar">
-	<div class="nav-container">
-		<ul class="nav-menu" bind:this={navMenuElement} on:mouseleave={handleMouseLeave}>
-			<div
-				class="hover-indicator"
-				style={hoverIndex >= 0 ? indicatorStyle : 'opacity: 0;'}
-			></div>
-			{#each navItems as item, index}
-				<li class="nav-item" on:mouseenter={(e) => handleMouseEnter(index, e)}>
-					<a
-						href={item.href}
-						class="nav-link"
-						class:active={currentPath === item.href}
-						data-svelte-preload-data
-					>
-						{item.label}
-					</a>
-				</li>
-			{/each}
-		</ul>
-	</div>
+	{#if visible}
+		<div
+			class="nav-container"
+			role="presentation"
+			onmouseleave={handleMouseLeave}
+			in:fly={{
+				y: -50,
+				opacity: 0,
+				duration: 500,
+				delay: 300
+			}}
+		>
+			<ul class="nav-menu" bind:this={navMenuElement}>
+				<div class="hover-highlight" style={highlightStyle}></div>
+				{#each navItems as item, index}
+					<li class="nav-item" onmouseenter={() => handleMouseEnter(index)}>
+						<a
+							href={item.href}
+							class="nav-link"
+							class:active={currentPath === item.href}
+							data-svelte-preload-data
+						>
+							{item.label}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</div>
+
+		<div class="personal-links" class:faded={isFaded} in:fade={{ duration: 200, delay: 600 }}>
+			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
+				>GitHub</a
+			>
+			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
+				>CV</a
+			>
+		</div>
+	{/if}
 </nav>
 
 <style>
 	.navbar {
 		display: flex;
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
+		align-items: center;
+		justify-content: space-between;
+		position: sticky;
+		inset: 0;
 
 		background-color: transparent;
 		z-index: 1000;
-		padding: 0 2rem;
-		height: 80px;
-		max-width: 1500px;
+		height: 70px;
 		margin: 0 auto;
-		align-items: center;
 	}
 
 	.nav-container {
-		height: 35px;
 		display: inline-flex;
-		border: 1px solid #e5e5e5;
-		border-radius: 0.5rem;
 		align-items: center;
+		height: 35px;
+		border: 1px solid var(--color-background-dark);
+		border-radius: 0.5rem;
 		padding: 0 5px;
-		box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+		margin: 0 auto;
+		box-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.1),
+			0 3px 6px rgba(0, 0, 0, 0.1);
+		background: rgba(255, 255, 255, 0.75);
+		backdrop-filter: blur(30px);
 	}
 
 	.nav-menu {
@@ -96,24 +136,12 @@
 		position: relative;
 	}
 
-	.hover-indicator {
-		position: absolute;
-		top: -4px;
-		bottom: -4px;
-		left: 0;
-		background-color: rgba(220, 220, 220, 0.5);
-		border-radius: 6px;
-		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-		pointer-events: none;
-		z-index: -1;
-	}
-
 	.nav-item {
 		position: relative;
 	}
 
 	.nav-link {
-		color: #9c9c9c;
+		color: var(--color-font-light);
 		text-decoration: none;
 		font-size: 0.9rem;
 		font-weight: 400;
@@ -124,10 +152,52 @@
 	}
 
 	.nav-link:hover {
-		color: #000000;
+		color: var(--color-font-dark);
 	}
 
-	.nav-link.active {
-		color: #000000;
+	a.active {
+		color: var(--color-font-dark);
+	}
+
+	.hover-highlight {
+		position: absolute;
+		transform: translateY(-10%);
+		height: 125%;
+		background-color: var(--color-background-dark);
+		border-radius: 0.25rem;
+		transition: all 0.15s ease;
+		pointer-events: none;
+		z-index: 0;
+		opacity: 0;
+	}
+
+	.personal-links {
+		display: none;
+		font-size: 0.9rem;
+		transition: opacity 0.1s linear;
+	}
+
+	.personal-links.faded {
+		opacity: 0;
+	}
+
+	@media (min-width: 640px) {
+		.personal-links {
+			display: flex;
+		}
+		.nav-container {
+			margin: 0;
+		}
+	}
+
+	.personal-links a {
+		color: var(--color-font-light);
+		padding: 0 0.5rem;
+		text-decoration: none;
+		transition: color 0.05s linear;
+	}
+
+	.personal-links a:hover {
+		color: var(--color-font-dark);
 	}
 </style>

@@ -1,31 +1,43 @@
 <script>
-	import NavBar from "$lib/components/NavBar.svelte";
+	import NavBar from '$lib/components/NavBar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import '../app.css';
 </script>
 
-<NavBar />
-
 <main>
+	<NavBar />
 	<slot />
+	<Footer />
 </main>
 
 <style>
-	:global(body) {
-		margin: 0;
-		padding: 0;
-		font-family: "Geist", sans-serif;
-		background-color: #f5f5f5;
-	}
-
 	main {
-		max-width: 1500px;
+		max-width: 600px;
 		margin: 0 auto;
-		padding: 80px 2rem 2rem 2rem;
+		padding: 0 2rem;
 	}
 
-	@font-face {
-		font-family: "Geist";
-		src: url("/fonts/Geist-VariableFont_wght.ttf") format("truetype");
-		font-weight: 100 900;
-		font-style: normal;
+	@media (min-width: 480px) {
+		main {
+			max-width: 600px;
+		}
+	}
+
+	@media (min-width: 640px) {
+		main {
+			max-width: 700px;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		main {
+			max-width: 950px;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		main {
+			max-width: 1450px;
+		}
 	}
 </style>

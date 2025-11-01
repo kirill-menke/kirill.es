@@ -2,6 +2,12 @@ import { writeFileSync } from 'fs';
 import { join } from 'path';
 
 export async function handle({ event, resolve }) {
+	// Skip logging during prerendering
+	const isPrerendering = !event.platform;
+	if (isPrerendering) {
+		return await resolve(event);
+	}
+
 	const clientIP = event.getClientAddress();
 	const method = event.request.method;
 	const path = event.url.pathname + event.url.search;

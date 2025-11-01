@@ -27,3 +27,6 @@ temp/
 # Dotenv Files
 .env.dev
 .env.prod
+
+# Notes
+NOTES.md
