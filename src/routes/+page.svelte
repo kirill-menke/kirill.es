@@ -2,10 +2,12 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
-	import ProjectTile from '$lib/components/ProjectTile.svelte';
+	// import ProjectTile from '$lib/components/ProjectTile.svelte';
 	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
 	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
 	import BookTile from '$lib/components/BookTile.svelte';
+	// import WIPTile from '$lib/components/WIPTile.svelte';
+	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
 	import { projects, hobbies, books } from '$lib/tile-data.js';
 
 	// To prevent server-side rendering and play animation
@@ -44,14 +46,25 @@
 			class:span-2-cols={projects.tile_by_tile.layout === 'wide'}
 			class:aspect-wide={projects.tile_by_tile.layout === 'wide'}
 		>
-			<ProjectTile project={projects.tile_by_tile} duration={500} delay={200} useHyperLink />
+			<WIPTileImages
+				project={projects.tile_by_tile}
+				duration={500}
+				delay={200}
+				useHyperLink
+			/>
 		</div>
+
 		<div
 			class="grid-item"
 			class:span-2-cols={projects.word_by_word.layout === 'wide'}
 			class:aspect-wide={projects.word_by_word.layout === 'wide'}
 		>
-			<ProjectTile project={projects.word_by_word} duration={500} delay={400} useHyperLink />
+			<WIPTileImages
+				project={projects.word_by_word}
+				duration={500}
+				delay={400}
+				useHyperLink
+			/>
 		</div>
 		<div class="grid-item aspect-square">
 			<HobbyTileSlide
