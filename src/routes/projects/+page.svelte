@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { navigating } from '$app/stores';
-	import ProjectTile from '$lib/components/ProjectTile.svelte';
+	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
 	import { projects } from '$lib/tile-data.js';
 
 	let visible = false;
@@ -31,7 +31,7 @@
 		{#if visible}
 			{@const square = project.layout === 'square'}
 			<div class="grid-item" class:span-2-cols={!square} class:aspect-wide={!square}>
-				<ProjectTile
+				<WIPTileImages
 					{project}
 					duration={fromHomePage ? 600 : 300}
 					delay={fromHomePage ? index * 125 : 0}
