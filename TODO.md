@@ -20,3 +20,11 @@
         - Create releases and artifacts?
 
 - Karteikartenapp
+
+Variations of tile generation:
+
+1. No neighbors -> Still needs the same isometric view, same angle
+2. One neighbor: left/right
+3. Two neighbors
+4. Three neighbors
+5. four neighbors
