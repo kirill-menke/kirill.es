@@ -120,7 +120,8 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3), transparent 50%),
+		background:
+			radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3), transparent 50%),
 			radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3), transparent 50%),
 			radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2), transparent 50%);
 		pointer-events: none;

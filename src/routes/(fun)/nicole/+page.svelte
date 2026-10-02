@@ -1,6 +1,9 @@
 <svelte:head>
 	<title>Nicole's Fabulous Page 💖 | University Bound! 🎓</title>
-	<meta name="description" content="Celebrating Nicole's admission to University of Augsburg for International Management!" />
+	<meta
+		name="description"
+		content="Celebrating Nicole's admission to University of Augsburg for International Management!"
+	/>
 </svelte:head>
 
 <div class="nicole-container">
@@ -12,7 +15,7 @@
 		<div class="heart">💘</div>
 		<div class="heart">💞</div>
 	</div>
-	
+
 	<div class="sparkles">
 		<div class="sparkle">✨</div>
 		<div class="sparkle">⭐</div>
@@ -23,7 +26,7 @@
 	</div>
 
 	<h1 class="main-title">Welcome to Nicole's Kingdom! 👑</h1>
-	
+
 	<div class="subtitle-container">
 		<p class="subtitle bouncing">The One, The Only, The Legendary...</p>
 		<h2 class="name-title rainbow-text">NICOLE!</h2>
@@ -42,12 +45,12 @@
 				<span class="emoji">🇩🇪</span>
 			</div>
 		</div>
-		
+
 		<div class="university-details">
 			<h3 class="university-title shaking">Nicole Got Accepted!</h3>
 			<p class="university-info">
-				🌟 <strong>University of Augsburg</strong> 🌟<br>
-				🎯 <strong>International Management</strong> 🎯<br>
+				🌟 <strong>University of Augsburg</strong> 🌟<br />
+				🎯 <strong>International Management</strong> 🎯<br />
 				🚀 <strong>Future CEO in the making!</strong> 🚀
 			</p>
 			<div class="excitement-meter">
@@ -57,18 +60,23 @@
 				</div>
 			</div>
 			<p class="proud-message">
-				So proud of you, sis! 🥺💕<br>
-				<small>(Even though you'll probably boss me around with your fancy business degree)</small>
+				So proud of you, sis! 🥺💕<br />
+				<small
+					>(Even though you'll probably boss me around with your fancy business degree)</small
+				>
 			</p>
 		</div>
 	</div>
 
 	<div class="photo-container">
 		<div class="photo-frame">
-			<img src="/photos/misc/nicole.jpeg" alt="The fabulous Nicole" class="nicole-photo">
+			<img src="/photos/misc/nicole.jpeg" alt="The fabulous Nicole" class="nicole-photo" />
 		</div>
 		<div class="photo-caption">
-			<p>"Looking absolutely stunning as always" - Your loving (and slightly jealous) brother 😏</p>
+			<p>
+				"Looking absolutely stunning as always" - Your loving (and slightly jealous) brother
+				😏
+			</p>
 		</div>
 	</div>
 
@@ -84,7 +92,9 @@
 	</div>
 
 	<div class="bottom-message">
-		<p class="love-message pulsing">Made with love (and a healthy dose of sibling mockery) by your brother 💛</p>
+		<p class="love-message pulsing">
+			Made with love (and a healthy dose of sibling mockery) by your brother 💛
+		</p>
 	</div>
 </div>
 
@@ -99,9 +109,15 @@
 	}
 
 	@keyframes gradientShift {
-		0% { background-position: 0% 50%; }
-		50% { background-position: 100% 50%; }
-		100% { background-position: 0% 50%; }
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 
 	.nicole-container {
@@ -130,12 +146,36 @@
 		opacity: 0.7;
 	}
 
-	.heart:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 8s; }
-	.heart:nth-child(2) { left: 25%; animation-delay: 2s; animation-duration: 6s; }
-	.heart:nth-child(3) { left: 50%; animation-delay: 4s; animation-duration: 7s; }
-	.heart:nth-child(4) { left: 75%; animation-delay: 1s; animation-duration: 9s; }
-	.heart:nth-child(5) { left: 90%; animation-delay: 3s; animation-duration: 5s; }
-	.heart:nth-child(6) { left: 35%; animation-delay: 5s; animation-duration: 8s; }
+	.heart:nth-child(1) {
+		left: 10%;
+		animation-delay: 0s;
+		animation-duration: 8s;
+	}
+	.heart:nth-child(2) {
+		left: 25%;
+		animation-delay: 2s;
+		animation-duration: 6s;
+	}
+	.heart:nth-child(3) {
+		left: 50%;
+		animation-delay: 4s;
+		animation-duration: 7s;
+	}
+	.heart:nth-child(4) {
+		left: 75%;
+		animation-delay: 1s;
+		animation-duration: 9s;
+	}
+	.heart:nth-child(5) {
+		left: 90%;
+		animation-delay: 3s;
+		animation-duration: 5s;
+	}
+	.heart:nth-child(6) {
+		left: 35%;
+		animation-delay: 5s;
+		animation-duration: 8s;
+	}
 
 	@keyframes floatHeart {
 		0% {
@@ -171,22 +211,53 @@
 		animation: sparkleAnimation 4s ease-in-out infinite;
 	}
 
-	.sparkle:nth-child(1) { top: 20%; left: 15%; animation-delay: 0s; }
-	.sparkle:nth-child(2) { top: 35%; right: 20%; animation-delay: 1s; }
-	.sparkle:nth-child(3) { top: 60%; left: 10%; animation-delay: 2s; }
-	.sparkle:nth-child(4) { top: 80%; right: 15%; animation-delay: 0.5s; }
-	.sparkle:nth-child(5) { top: 15%; left: 60%; animation-delay: 1.5s; }
-	.sparkle:nth-child(6) { top: 70%; right: 50%; animation-delay: 2.5s; }
+	.sparkle:nth-child(1) {
+		top: 20%;
+		left: 15%;
+		animation-delay: 0s;
+	}
+	.sparkle:nth-child(2) {
+		top: 35%;
+		right: 20%;
+		animation-delay: 1s;
+	}
+	.sparkle:nth-child(3) {
+		top: 60%;
+		left: 10%;
+		animation-delay: 2s;
+	}
+	.sparkle:nth-child(4) {
+		top: 80%;
+		right: 15%;
+		animation-delay: 0.5s;
+	}
+	.sparkle:nth-child(5) {
+		top: 15%;
+		left: 60%;
+		animation-delay: 1.5s;
+	}
+	.sparkle:nth-child(6) {
+		top: 70%;
+		right: 50%;
+		animation-delay: 2.5s;
+	}
 
 	@keyframes sparkleAnimation {
-		0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
-		50% { opacity: 1; transform: scale(1) rotate(180deg); }
+		0%,
+		100% {
+			opacity: 0;
+			transform: scale(0) rotate(0deg);
+		}
+		50% {
+			opacity: 1;
+			transform: scale(1) rotate(180deg);
+		}
 	}
 
 	.main-title {
 		font-size: 3.5rem;
 		color: #fff;
-		text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+		text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
 		margin: 2rem 0;
 		animation: bounce 2s ease-in-out infinite;
 		position: relative;
@@ -194,8 +265,13 @@
 	}
 
 	@keyframes bounce {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-20px); }
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-20px);
+		}
 	}
 
 	.subtitle-container {
@@ -207,7 +283,7 @@
 	.subtitle {
 		font-size: 1.5rem;
 		color: #fff;
-		text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 		margin: 1rem 0;
 	}
 
@@ -216,19 +292,33 @@
 	}
 
 	@keyframes subtleBounce {
-		0%, 100% { transform: translateY(0); }
-		50% { transform: translateY(-10px); }
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
 	}
 
 	.name-title {
 		font-size: 4rem;
 		margin: 1rem 0;
 		font-weight: bold;
-		text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+		text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
 	}
 
 	.rainbow-text {
-		background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+		background: linear-gradient(
+			45deg,
+			#ff0000,
+			#ff7f00,
+			#ffff00,
+			#00ff00,
+			#0000ff,
+			#4b0082,
+			#9400d3
+		);
 		background-size: 400% 400%;
 		-webkit-background-clip: text;
 		background-clip: text;
@@ -237,9 +327,15 @@
 	}
 
 	@keyframes rainbow {
-		0% { background-position: 0% 50%; }
-		50% { background-position: 100% 50%; }
-		100% { background-position: 0% 50%; }
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 
 	.funny-subtitle {
@@ -247,7 +343,7 @@
 		color: #fff;
 		font-style: italic;
 		opacity: 0.9;
-		text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 	}
 
 	.photo-container {
@@ -263,13 +359,20 @@
 		display: inline-block;
 		transform: rotate(-2deg);
 		animation: frameWiggle 4s ease-in-out infinite;
-		box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 	}
 
 	@keyframes frameWiggle {
-		0%, 100% { transform: rotate(-2deg); }
-		25% { transform: rotate(1deg); }
-		75% { transform: rotate(-1deg); }
+		0%,
+		100% {
+			transform: rotate(-2deg);
+		}
+		25% {
+			transform: rotate(1deg);
+		}
+		75% {
+			transform: rotate(-1deg);
+		}
 	}
 
 	.nicole-photo {
@@ -277,14 +380,14 @@
 		height: 300px;
 		object-fit: cover;
 		border-radius: 10px;
-		box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 	}
 
 	.photo-caption {
 		margin-top: 1rem;
 		font-size: 1.1rem;
 		color: #fff;
-		text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 		font-style: italic;
 	}
 
@@ -293,7 +396,7 @@
 		padding: 2.5rem;
 		border-radius: 25px;
 		margin: 3rem 0;
-		box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 		position: relative;
 		z-index: 10;
 		border: 4px solid #ffd700;
@@ -302,12 +405,17 @@
 	}
 
 	@keyframes celebrationGlow {
-		0%, 100% { 
-			box-shadow: 0 15px 35px rgba(0,0,0,0.3), 0 0 20px rgba(255,215,0,0.5);
+		0%,
+		100% {
+			box-shadow:
+				0 15px 35px rgba(0, 0, 0, 0.3),
+				0 0 20px rgba(255, 215, 0, 0.5);
 			transform: scale(1);
 		}
-		50% { 
-			box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(255,215,0,0.8);
+		50% {
+			box-shadow:
+				0 20px 40px rgba(0, 0, 0, 0.4),
+				0 0 30px rgba(255, 215, 0, 0.8);
 			transform: scale(1.02);
 		}
 	}
@@ -325,22 +433,34 @@
 	}
 
 	@keyframes capFloat {
-		0%, 100% { transform: translateY(0) rotate(0deg); }
-		50% { transform: translateY(-10px) rotate(5deg); }
+		0%,
+		100% {
+			transform: translateY(0) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-10px) rotate(5deg);
+		}
 	}
 
 	.announcement-title {
 		color: #ffd700;
 		font-size: 2.5rem;
 		font-weight: bold;
-		text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 		margin: 1rem 0;
 		animation: titleShine 2s ease-in-out infinite;
 	}
 
 	@keyframes titleShine {
-		0%, 100% { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-		50% { text-shadow: 2px 2px 4px rgba(0,0,0,0.5), 0 0 20px rgba(255,215,0,0.8); }
+		0%,
+		100% {
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+		}
+		50% {
+			text-shadow:
+				2px 2px 4px rgba(0, 0, 0, 0.5),
+				0 0 20px rgba(255, 215, 0, 0.8);
+		}
 	}
 
 	.celebration-emojis {
@@ -355,19 +475,34 @@
 		animation: emojiDance 1.5s ease-in-out infinite;
 	}
 
-	.celebration-emojis .emoji:nth-child(1) { animation-delay: 0s; }
-	.celebration-emojis .emoji:nth-child(2) { animation-delay: 0.2s; }
-	.celebration-emojis .emoji:nth-child(3) { animation-delay: 0.4s; }
-	.celebration-emojis .emoji:nth-child(4) { animation-delay: 0.6s; }
-	.celebration-emojis .emoji:nth-child(5) { animation-delay: 0.8s; }
+	.celebration-emojis .emoji:nth-child(1) {
+		animation-delay: 0s;
+	}
+	.celebration-emojis .emoji:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.celebration-emojis .emoji:nth-child(3) {
+		animation-delay: 0.4s;
+	}
+	.celebration-emojis .emoji:nth-child(4) {
+		animation-delay: 0.6s;
+	}
+	.celebration-emojis .emoji:nth-child(5) {
+		animation-delay: 0.8s;
+	}
 
 	@keyframes emojiDance {
-		0%, 100% { transform: translateY(0) scale(1); }
-		50% { transform: translateY(-15px) scale(1.2); }
+		0%,
+		100% {
+			transform: translateY(0) scale(1);
+		}
+		50% {
+			transform: translateY(-15px) scale(1.2);
+		}
 	}
 
 	.university-details {
-		background: rgba(255,255,255,0.95);
+		background: rgba(255, 255, 255, 0.95);
 		padding: 2rem;
 		border-radius: 20px;
 		color: #333;
@@ -386,9 +521,16 @@
 	}
 
 	@keyframes shake {
-		0%, 100% { transform: translateX(0); }
-		25% { transform: translateX(-5px); }
-		75% { transform: translateX(5px); }
+		0%,
+		100% {
+			transform: translateX(0);
+		}
+		25% {
+			transform: translateX(-5px);
+		}
+		75% {
+			transform: translateX(5px);
+		}
 	}
 
 	.university-info {
@@ -422,7 +564,9 @@
 	.meter-fill {
 		background: linear-gradient(45deg, #ff6b9d, #c44569, #f8b500, #ff6348);
 		background-size: 400% 400%;
-		animation: gradientShift 2s ease infinite, meterFill 3s ease-out;
+		animation:
+			gradientShift 2s ease infinite,
+			meterFill 3s ease-out;
 		height: 100%;
 		display: flex;
 		align-items: center;
@@ -430,12 +574,16 @@
 		color: white;
 		font-weight: bold;
 		font-size: 1.1rem;
-		text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 	}
 
 	@keyframes meterFill {
-		0% { width: 0%; }
-		100% { width: 100%; }
+		0% {
+			width: 0%;
+		}
+		100% {
+			width: 100%;
+		}
 	}
 
 	.proud-message {
@@ -447,16 +595,21 @@
 	}
 
 	@keyframes heartPulse {
-		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.05); }
+		0%,
+		100% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.05);
+		}
 	}
 
 	.fun-facts {
-		background: rgba(255,255,255,0.95);
+		background: rgba(255, 255, 255, 0.95);
 		padding: 2rem;
 		border-radius: 20px;
 		margin: 3rem 0;
-		box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 		position: relative;
 		z-index: 10;
 	}
@@ -472,9 +625,16 @@
 	}
 
 	@keyframes wiggle {
-		0%, 100% { transform: rotate(0deg); }
-		25% { transform: rotate(-3deg); }
-		75% { transform: rotate(3deg); }
+		0%,
+		100% {
+			transform: rotate(0deg);
+		}
+		25% {
+			transform: rotate(-3deg);
+		}
+		75% {
+			transform: rotate(3deg);
+		}
 	}
 
 	.facts-list {
@@ -490,11 +650,21 @@
 		animation-fill-mode: both;
 	}
 
-	.fact-item:nth-child(1) { animation-delay: 0.2s; }
-	.fact-item:nth-child(2) { animation-delay: 0.4s; }
-	.fact-item:nth-child(3) { animation-delay: 0.6s; }
-	.fact-item:nth-child(4) { animation-delay: 0.8s; }
-	.fact-item:nth-child(5) { animation-delay: 1.0s; }
+	.fact-item:nth-child(1) {
+		animation-delay: 0.2s;
+	}
+	.fact-item:nth-child(2) {
+		animation-delay: 0.4s;
+	}
+	.fact-item:nth-child(3) {
+		animation-delay: 0.6s;
+	}
+	.fact-item:nth-child(4) {
+		animation-delay: 0.8s;
+	}
+	.fact-item:nth-child(5) {
+		animation-delay: 1s;
+	}
 
 	@keyframes slideIn {
 		from {
@@ -516,8 +686,8 @@
 	.love-message {
 		font-size: 1.3rem;
 		color: #fff;
-		text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-		background: rgba(0,0,0,0.2);
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+		background: rgba(0, 0, 0, 0.2);
 		padding: 1.5rem;
 		border-radius: 15px;
 		display: inline-block;
@@ -528,14 +698,28 @@
 	}
 
 	@keyframes pulse {
-		0%, 100% { transform: scale(1); }
-		50% { transform: scale(1.05); }
+		0%,
+		100% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.05);
+		}
 	}
 
 	@media (max-width: 600px) {
-		.main-title { font-size: 2.5rem; }
-		.name-title { font-size: 3rem; }
-		.nicole-photo { width: 250px; height: 250px; }
-		.nicole-container { padding: 1rem; }
+		.main-title {
+			font-size: 2.5rem;
+		}
+		.name-title {
+			font-size: 3rem;
+		}
+		.nicole-photo {
+			width: 250px;
+			height: 250px;
+		}
+		.nicole-container {
+			padding: 1rem;
+		}
 	}
 </style>
