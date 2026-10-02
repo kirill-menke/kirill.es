@@ -15,7 +15,6 @@ function loadEnvFile(filename) {
 
 const prodEnv = loadEnvFile('.env.prod');
 const devEnv = loadEnvFile('.env.dev');
-console.log('devEnv:', devEnv);
 
 module.exports = {
 	apps: [

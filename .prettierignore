@@ -2,3 +2,7 @@
 build
 node_modules
 package-lock.json
+.claude/
+landscape.db
+debug/
+logs/
