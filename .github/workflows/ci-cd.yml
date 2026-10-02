@@ -108,7 +108,7 @@ jobs:
                     -H "x-api-key: $ANTHROPIC_API_KEY" \
                     -H "anthropic-version: 2023-06-01" \
                     -d "{
-                      \"model\": \"claude-sonnet-4-20250514\",
+                      \"model\": \"claude-sonnet-5\",
                       \"max_tokens\": 4000,
                       \"messages\": [{
                         \"role\": \"user\",
@@ -158,9 +158,14 @@ jobs:
                   script: |
                       export NVM_DIR="$HOME/.nvm"
                       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                      nvm use 22
+                      nvm use 22 || exit 1
+                      # Fail fast so a failed pull/install/build never restarts PM2
+                      # (enabled after nvm, whose scripts are not set -e safe)
+                      set -e
                       cd ~/dev.kirill.es
                       git pull
+                      # One-time migration: the DB used to live in build/ (wiped by every build)
+                      if [ ! -f landscape.db ] && [ -f build/landscape.db ]; then cp build/landscape.db landscape.db; fi
                       npm ci
                       npm run build
                       pm2 restart dev.kirill.es
@@ -190,9 +195,14 @@ jobs:
                   script: |
                       export NVM_DIR="$HOME/.nvm"
                       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                      nvm use 22
+                      nvm use 22 || exit 1
+                      # Fail fast so a failed pull/install/build never restarts PM2
+                      # (enabled after nvm, whose scripts are not set -e safe)
+                      set -e
                       cd ~/kirill.es
                       git pull
+                      # One-time migration: the DB used to live in build/ (wiped by every build)
+                      if [ ! -f landscape.db ] && [ -f build/landscape.db ]; then cp build/landscape.db landscape.db; fi
                       npm ci
                       npm run build
                       pm2 restart kirill.es
