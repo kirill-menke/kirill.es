@@ -1,26 +1,32 @@
 import { json } from '@sveltejs/kit';
 import { GoogleGenAI, Modality } from '@google/genai';
 import sharp from 'sharp';
-import { readFileSync, readdirSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'fs';
+import { join } from 'path';
 import { tmpdir } from 'os';
 import yaml from 'js-yaml';
 import pkg from 'stability-ai';
+import { env } from '$env/dynamic/private';
+import { createRateLimiter } from '$lib/server/rate-limit.js';
+import promptsYaml from '$lib/prompts.yaml?raw';
 const StabilityAI = pkg.default || pkg;
 
-const GEMINI_API_KEY = 'AIzaSyBsNaydZySQ8kU0ZS5mnRerOKpsGsSJTZ0';
-const STABILITY_API_KEY = 'sk-IiJJvgSTHWqfR016iwm0q1bbx6fJrmsrPA80gCcRWTBZqD8I';
 const TILE_SIZE = 256;
 const INPAINT_BORDER = 40; // Width of the inpainting border in pixels
-const DEBUG_PIPELINE = true; // Set to true to save debug images
 
-// Load prompts from YAML file
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+// Debug images are written to <cwd>/debug (PM2 runs from the repo root; build/ is wiped on every build)
+const debugPath = join(process.cwd(), 'debug');
 
-// Debug directory path (from src/routes/api/generate-image up to project root)
-const debugPath = join(__dirname, '../../../../debug');
+// Per-IP limit for generation requests (each one triggers paid Gemini + Stability calls)
+const checkRateLimit = createRateLimiter({ limit: 20, windowMs: 60 * 60 * 1000 });
+
+/**
+ * Whether debug pipeline images should be saved (set DEBUG_PIPELINE=true to enable).
+ * @returns {boolean}
+ */
+function isDebugEnabled() {
+	return env.DEBUG_PIPELINE === 'true';
+}
 
 /**
  * Converts image data to a buffer.
@@ -51,9 +57,11 @@ function toBuffer(imageData) {
  * @param {string} debugId - Unique ID for this generation run
  */
 async function saveCombinedDebugImage(debugData, debugId) {
-	if (!DEBUG_PIPELINE) return;
+	if (!isDebugEnabled()) return;
 
 	try {
+		mkdirSync(debugPath, { recursive: true });
+
 		const { genaiInput, genaiOutput, downsampledGrid, mask, finalResult } = debugData;
 
 		const padding = 10; // Padding between images
@@ -176,12 +184,11 @@ async function saveCombinedDebugImage(debugData, debugId) {
 	}
 }
 
-// Navigate from src/routes/api/generate-image up to src/lib
-const promptsPath = join(__dirname, '../../../lib/prompts.yaml');
-const prompts = yaml.load(readFileSync(promptsPath, 'utf8'));
+// Prompts YAML is bundled at build time (file paths relative to this module break after bundling)
+const prompts = yaml.load(promptsYaml);
 
-// Path to landscape reference images (from src/routes/api/generate-image up to static)
-const referencesPath = join(__dirname, '../../../../static/landscape-references');
+// Landscape reference images, resolved from the repo root (PM2 cwd)
+const referencesPath = join(process.cwd(), 'static', 'landscape-references');
 
 /**
  * Selects a random reference image from the landscape-references directory.
@@ -502,14 +509,21 @@ async function inpaintGridSeams(
 	prompt
 ) {
 	// Create mask for all seams
-	const mask = await createGridMask(gridWidth, gridHeight, centerOffsetX, centerOffsetY, neighbors);
+	const mask = await createGridMask(
+		gridWidth,
+		gridHeight,
+		centerOffsetX,
+		centerOffsetY,
+		neighbors
+	);
 
-	if (!STABILITY_API_KEY) {
+	const stabilityApiKey = env.STABILITY_API_KEY;
+	if (!stabilityApiKey) {
 		console.warn('STABILITY_API_KEY not set, skipping inpainting');
 		return { inpaintedGrid: gridBuffer, mask };
 	}
 
-	const stability = new StabilityAI(STABILITY_API_KEY);
+	const stability = new StabilityAI(stabilityApiKey);
 
 	try {
 		// Write grid image and mask to temp files (stability-ai SDK requires file paths)
@@ -519,14 +533,10 @@ async function inpaintGridSeams(
 		writeFileSync(maskPath, mask);
 
 		console.log('Debug: calling Stability AI inpaint on full grid');
-		const result = await stability.v2beta.stableImage.edit.inpaint(
-			gridPath,
-			prompt,
-			{
-				mask: maskPath,
-				output_format: 'png'
-			}
-		);
+		const result = await stability.v2beta.stableImage.edit.inpaint(gridPath, prompt, {
+			mask: maskPath,
+			output_format: 'png'
+		});
 
 		// Read the result file
 		const inpaintedBuffer = readFileSync(result.filepath);
@@ -603,7 +613,21 @@ function selectAndFillPrompt(userPrompt, neighbors) {
 	return filledPrompt;
 }
 
-export async function POST({ request }) {
+export async function POST({ request, getClientAddress }) {
+	const geminiApiKey = env.GEMINI_API_KEY;
+	if (!geminiApiKey) {
+		console.error('GEMINI_API_KEY not configured');
+		return json({ error: 'GEMINI_API_KEY not configured' }, { status: 500 });
+	}
+
+	const { allowed, retryAfter } = checkRateLimit(getClientAddress());
+	if (!allowed) {
+		return json(
+			{ error: 'Too many generation requests. Please try again later.' },
+			{ status: 429, headers: { 'Retry-After': String(retryAfter) } }
+		);
+	}
+
 	try {
 		const { prompt, neighbors } = await request.json();
 
@@ -616,7 +640,7 @@ export async function POST({ request }) {
 		console.log(`Debug: starting generation with ID ${debugId}`);
 
 		// Initialize Gemini AI
-		const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+		const ai = new GoogleGenAI({ apiKey: geminiApiKey });
 
 		// Build the contents array for multi-modal generation
 		const contents = [];
