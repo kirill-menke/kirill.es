@@ -4,14 +4,9 @@
 # as a hardened systemd service. Whatever proxies to it (cloudflared in the
 # NAS guest) is the consumer's business.
 #
-# What the app expects at runtime and how this maps it:
-#
-#   <cwd>/logs/access.log              -> StateDirectory kirill-es/logs (cwd = state dir)
-#   <cwd>/debug/ (DEBUG_PIPELINE)      -> created by the app inside the state dir
-#   <cwd>/static/landscape-references  -> symlink to the package's build/client
-#   DATABASE_PATH                      -> <state dir>/landscape.db
-#   os.tmpdir() (Stability SDK files)  -> PrivateTmp
-#   secrets via process.env            -> EnvironmentFile (read by PID 1, root-only file)
+# The app needs no secrets and opens no outbound connections. Its only state
+# is <cwd>/logs/access.log, which lands in StateDirectory kirill-es/logs
+# (cwd = state dir).
 self:
 {
   config,
@@ -61,29 +56,13 @@ in
       example = "CF-Connecting-IP";
       description = ''
         Header with the real client IP (adapter-node ADDRESS_HEADER), used by
-        the access log and the /api/generate-image rate limit. Only set this
+        the access log. Only set this
         when every request passes through a proxy that overwrites the header.
         Otherwise clients can spoof it.
       '';
     };
 
-    debugPipeline = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "DEBUG_PIPELINE: write tile-pipeline debug images to <state dir>/debug.";
-    };
 
-    environmentFile = lib.mkOption {
-      type = lib.types.nullOr lib.types.path;
-      default = null;
-      example = "/run/host-secrets/app.env";
-      description = ''
-        dotenv-style file with the secrets: ADMIN_PASSWORD (required in
-        production, else /landscape and /api/* answer 503), GEMINI_API_KEY,
-        optional STABILITY_API_KEY. Pass it as a string path. A Nix path
-        literal would copy the secrets into the world-readable store.
-      '';
-    };
 
     extraEnvironment = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
@@ -106,20 +85,16 @@ in
         HOST = cfg.host;
         PORT = toString cfg.port;
         ORIGIN = cfg.origin;
-        DATABASE_PATH = "${stateDir}/landscape.db";
-        DEBUG_PIPELINE = lib.boolToString cfg.debugPipeline;
       }
       // lib.optionalAttrs (cfg.addressHeader != null) { ADDRESS_HEADER = cfg.addressHeader; }
       // cfg.extraEnvironment;
 
       serviceConfig = {
-        ExecStartPre = "${pkgs.coreutils}/bin/ln -sfn ${cfg.package}/${cfg.package.staticDir} ${stateDir}/static";
         ExecStart = lib.getExe cfg.package;
         WorkingDirectory = stateDir;
-        EnvironmentFile = lib.mkIf (cfg.environmentFile != null) cfg.environmentFile;
 
         DynamicUser = true;
-        # /var/lib/private/kirill-es (+ the /var/lib/kirill-es symlink): DB, logs/, debug/.
+        # /var/lib/private/kirill-es (+ the /var/lib/kirill-es symlink): logs/.
         StateDirectory = [
           "kirill-es"
           "kirill-es/logs"
@@ -129,9 +104,8 @@ in
 
         Restart = "on-failure";
         RestartSec = 5;
-        # adapter-node drains in-flight requests on SIGTERM. A tile generation
-        # (Gemini + Stability round trips) can take a while.
-        TimeoutStopSec = 60;
+        # adapter-node drains in-flight requests on SIGTERM.
+        TimeoutStopSec = 30;
 
         # Writes nothing but its StateDirectory and private /tmp.
         ProtectSystem = "strict";
@@ -171,22 +145,14 @@ in
         # makes node abort at startup.
         MemoryDenyWriteExecute = false;
 
-        # SSRF damage limit: the app only ever talks to loopback (cloudflared
-        # in) and public APIs (Gemini, Stability out). Private and CGNAT ranges
-        # are refused at the socket level, a second fence behind the host's
-        # nftables rules.
-        IPAddressDeny = [
-          "10.0.0.0/8"
-          "172.16.0.0/12"
-          "192.168.0.0/16"
-          "100.64.0.0/10"
-          "169.254.0.0/16"
-          "fc00::/7"
-          "fe80::/10"
-        ];
+        # The server only answers requests (cloudflared connects in over
+        # loopback); it never opens a connection of its own. So no network
+        # beyond loopback at all, a second fence behind the host's nftables.
+        IPAddressDeny = "any";
+        IPAddressAllow = "localhost";
 
-        MemoryHigh = "600M";
-        MemoryMax = "800M";
+        MemoryHigh = "200M";
+        MemoryMax = "300M";
       };
     };
   };

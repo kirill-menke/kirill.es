@@ -1,13 +1,13 @@
 export const projects = {
 	tile_by_tile: {
 		name: 'Tile by Tile',
-		link: '/landscape',
+		link: '/projects',
 		preview: 'project-previews/website.png',
 		layout: 'wide'
 	},
 	word_by_word: {
 		name: 'BookBridge',
-		link: '/landscape',
+		link: '/projects',
 		preview: 'project-previews/translate.png',
 		layout: 'square'
 	}
