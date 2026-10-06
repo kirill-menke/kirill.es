@@ -1,12 +1,9 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
-import { building, dev } from '$app/environment';
-import { env } from '$env/dynamic/private';
-import { checkBasicAuth, isProtectedPath } from '$lib/server/auth.js';
+import { building } from '$app/environment';
 
 export async function handle({ event, resolve }) {
-	// Skip auth and logging during prerendering (only public pages are prerendered,
-	// and neither the client address nor dynamic env are available at build time)
+	// Skip logging during prerendering (no client address at build time)
 	if (building) {
 		return await resolve(event);
 	}
@@ -16,12 +13,7 @@ export async function handle({ event, resolve }) {
 	const path = event.url.pathname + event.url.search;
 	const userAgent = event.request.headers.get('user-agent') || '';
 
-	// Guard the landscape tool and the API with HTTP Basic auth
-	const authFailure = isProtectedPath(event.url.pathname)
-		? checkBasicAuth(event.request, env.ADMIN_PASSWORD, dev)
-		: null;
-
-	const response = authFailure ?? (await resolve(event));
+	const response = await resolve(event);
 	const status = response.status;
 
 	const logMessage = `[${new Date().toISOString()}] ${method} ${path} ${status} - ${clientIP} "${userAgent}"`;
