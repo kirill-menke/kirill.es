@@ -1,12 +1,10 @@
 import Database from 'better-sqlite3';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { env } from '$env/dynamic/private';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Create database file in project root
-const dbPath = path.join(__dirname, '../../landscape.db');
+// Resolve against the working directory (repo root under PM2 and `vite dev`),
+// not the module location: bundled code lives in build/, which is wiped on every build.
+const dbPath = env.DATABASE_PATH || path.resolve(process.cwd(), 'landscape.db');
 const db = new Database(dbPath);
 
 // Initialize tiles table

@@ -30,3 +30,19 @@ temp/
 
 # Notes
 NOTES.md
+
+# Local SQLite database
+landscape.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Debug output
+debug/
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# Nix build output
+result
+result-*

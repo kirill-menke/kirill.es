@@ -6,7 +6,6 @@
 	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
 	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
 	import BookTile from '$lib/components/BookTile.svelte';
-	// import WIPTile from '$lib/components/WIPTile.svelte';
 	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
 	import { projects, hobbies, books } from '$lib/tile-data.js';
 

@@ -7,6 +7,10 @@
 	let promptText = '';
 	let isGenerating = false;
 	let errorMessage = '';
+	let errorTimeout;
+
+	/** Error carrying a message that is safe to show to the user */
+	class RequestError extends Error {}
 
 	onMount(() => {
 		loadTiles();
@@ -28,10 +32,50 @@
 						};
 					}
 				});
+			} else {
+				throw new RequestError(await getErrorMessage(response));
 			}
 		} catch (error) {
 			console.error('Failed to load tiles:', error);
+			showError(error instanceof RequestError ? error.message : 'Failed to load tiles');
 		}
+	}
+
+	/**
+	 * Builds a readable error message from a failed API response.
+	 * @param {Response} response
+	 * @returns {Promise<string>}
+	 */
+	async function getErrorMessage(response) {
+		if (response.status === 401) {
+			return 'Not authorized. Please reload the page and log in.';
+		}
+		if (response.status === 503) {
+			return 'The landscape tool is not configured on the server.';
+		}
+
+		// API endpoints return { error } JSON bodies
+		try {
+			const data = await response.json();
+			if (data.error) return data.error;
+		} catch {
+			// Non-JSON body, fall through
+		}
+
+		if (response.status === 429) {
+			return 'Too many requests. Please try again later.';
+		}
+		return 'Oops something went wrong';
+	}
+
+	function showError(message) {
+		errorMessage = message;
+
+		// Clear error message after 5 seconds
+		clearTimeout(errorTimeout);
+		errorTimeout = setTimeout(() => {
+			errorMessage = '';
+		}, 5000);
 	}
 
 	function openModal(index) {
@@ -105,7 +149,7 @@
 			});
 
 			if (!generateResponse.ok) {
-				throw new Error('Failed to generate image');
+				throw new RequestError(await getErrorMessage(generateResponse));
 			}
 
 			const { imageUrl } = await generateResponse.json();
@@ -124,7 +168,7 @@
 			});
 
 			if (!saveResponse.ok) {
-				throw new Error('Failed to save tile');
+				throw new RequestError(await getErrorMessage(saveResponse));
 			}
 
 			// Update the local tiles array
@@ -139,13 +183,8 @@
 			promptText = '';
 		} catch (error) {
 			console.error('Generation failed:', error);
-			errorMessage = 'Oops something went wrong';
+			showError(error instanceof RequestError ? error.message : 'Oops something went wrong');
 			showModal = false;
-
-			// Clear error message after 3 seconds
-			setTimeout(() => {
-				errorMessage = '';
-			}, 3000);
 		} finally {
 			isGenerating = false;
 		}

@@ -108,7 +108,7 @@ jobs:
                     -H "x-api-key: $ANTHROPIC_API_KEY" \
                     -H "anthropic-version: 2023-06-01" \
                     -d "{
-                      \"model\": \"claude-sonnet-4-20250514\",
+                      \"model\": \"claude-sonnet-5\",
                       \"max_tokens\": 4000,
                       \"messages\": [{
                         \"role\": \"user\",
@@ -140,67 +140,16 @@ jobs:
                         body: `## 🤖 AI Code Review by Claude\n\n${review}\n\n---\n*This is an automated review. Please use your judgment when addressing the feedback.*`
                       });
 
-    deploy-dev:
-        name: Deploy to Dev Server
+    nix-build:
+        name: Nix Package Build
         needs: quality-check
         runs-on: ubuntu-latest
-
-        # Only deploy on direct pushes to dev (not PRs) and if quality checks passed
-        if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
+        # The NAS deploys this package (nix/package.nix); building it here catches
+        # lockfile and native-module breakage before a NAS rebuild does.
         steps:
-            - name: Deploy to development server
-              uses: appleboy/ssh-action@v1.0.3
-              with:
-                  host: ${{ vars.SERVER_HOST }}
-                  username: ${{ vars.SERVER_USER }}
-                  key: ${{ secrets.SERVER_SSH_KEY }}
-                  port: ${{ vars.SERVER_PORT || 22 }}
-                  script: |
-                      export NVM_DIR="$HOME/.nvm"
-                      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                      nvm use 22
-                      cd ~/dev.kirill.es
-                      git pull
-                      npm ci
-                      npm run build
-                      pm2 restart dev.kirill.es
-            - name: Deployment notification
-              if: success()
-              run: echo "✅ Successfully deployed to dev server"
-            - name: Deployment failed
-              if: failure()
-              run: |
-                  echo "❌ Deployment failed - check logs"
-                  exit 1
-
-    deploy-master:
-        name: Deploy to Prod Server
-        needs: quality-check
-        runs-on: ubuntu-latest
-
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        steps:
-            - name: Deploy to production server
-              uses: appleboy/ssh-action@v1.0.3
-              with:
-                  host: ${{ vars.SERVER_HOST }}
-                  username: ${{ vars.SERVER_USER }}
-                  key: ${{ secrets.SERVER_SSH_KEY }}
-                  port: ${{ vars.SERVER_PORT || 22 }}
-                  script: |
-                      export NVM_DIR="$HOME/.nvm"
-                      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                      nvm use 22
-                      cd ~/kirill.es
-                      git pull
-                      npm ci
-                      npm run build
-                      pm2 restart kirill.es
-            - name: Deployment notification
-              if: success()
-              run: echo "✅ Successfully deployed to prod server"
-            - name: Deployment failed
-              if: failure()
-              run: |
-                  echo "❌ Deployment failed - check logs"
-                  exit 1
+            - name: Checkout code
+              uses: actions/checkout@v4
+            - name: Install Nix
+              uses: cachix/install-nix-action@v31
+            - name: Build and check
+              run: nix flake check -L

@@ -1,17 +1,17 @@
 <script>
 	import { onMount } from 'svelte';
-	
+
 	let yearsAtFujitsu = 0;
 	let coffeesCounted = 47;
 	let projectsLaunched = 0;
 	let techStackMastered = false;
-	
+
 	onMount(() => {
-		setTimeout(() => techStackMastered = true, 2000);
+		setTimeout(() => (techStackMastered = true), 2000);
 		const interval = setInterval(() => {
 			if (yearsAtFujitsu < 1) yearsAtFujitsu += 0.1;
 		}, 100);
-		
+
 		return () => clearInterval(interval);
 	});
 </script>
@@ -29,14 +29,18 @@
 	<div class="welcome-card">
 		<div class="main-message">
 			<h2>Dear Code Wizard & Future Tech Leader,</h2>
-			
+
 			<p>
 				This is to officially celebrate that <strong>Felix</strong> has successfully:
 			</p>
-			
+
 			<ul class="achievements">
-				<li>✅ Landed a position at {techStackMastered ? 'THE LEGENDARY' : 'THE AMAZING'} Fujitsu</li>
-				<li>✅ Traded student life for corporate coffee ({coffeesCounted} cups and counting)</li>
+				<li>
+					✅ Landed a position at {techStackMastered ? 'THE LEGENDARY' : 'THE AMAZING'} Fujitsu
+				</li>
+				<li>
+					✅ Traded student life for corporate coffee ({coffeesCounted} cups and counting)
+				</li>
 				<li>✅ Acquired official business email ending in @fujitsu.com</li>
 				<li>✅ Mastered the art of looking busy in meetings 📊</li>
 				<li>✅ Ready to revolutionize enterprise technology ⚡</li>
@@ -45,18 +49,19 @@
 			<div class="highlight-box">
 				<h3>🏆 Achievement Unlocked: Corporate Developer</h3>
 				<p>
-					Successfully transitioned from coding for fun to coding for profit!
-					Watch out world, Felix is bringing fresh ideas to enterprise tech.
+					Successfully transitioned from coding for fun to coding for profit! Watch out
+					world, Felix is bringing fresh ideas to enterprise tech.
 				</p>
 			</div>
 
 			<div class="fujitsu-facts">
 				<div class="fact-bubble">
-					<strong>Fun Fact:</strong> Fujitsu has been around since 1935<br>
+					<strong>Fun Fact:</strong> Fujitsu has been around since 1935<br />
 					<span class="comment">← That's like... ancient in tech years! 👴💻</span>
 				</div>
 				<div class="fact-bubble">
-					<strong>Mission:</strong> "Make the world more sustainable by building trust in society"<br>
+					<strong>Mission:</strong> "Make the world more sustainable by building trust in
+					society"<br />
 					<span class="comment">← No pressure to save the world or anything 🌍✨</span>
 				</div>
 			</div>
@@ -64,14 +69,12 @@
 			<div class="career-section">
 				<h3>💼 The Corporate Adventure Begins...</h3>
 				<p>
-					Welcome to the world of enterprise solutions, endless meetings, and the eternal 
-					quest for work-life balance! You're going to crush it at Fujitsu and probably 
+					Welcome to the world of enterprise solutions, endless meetings, and the eternal
+					quest for work-life balance! You're going to crush it at Fujitsu and probably
 					become the coolest person in every stand-up meeting.
 				</p>
-				
-				<p>
-					We predict you'll:
-				</p>
+
+				<p>We predict you'll:</p>
 				<ul class="predictions">
 					<li>Revolutionize at least 3 legacy systems ⚡</li>
 					<li>Become the go-to person for "impossible" problems 🧩</li>
@@ -104,12 +107,10 @@
 
 			<div class="footer-message">
 				<p class="signature">
-					Congratulations and best of luck!<br>
+					Congratulations and best of luck!<br />
 					<strong>From your coding family 🍀</strong>
 				</p>
-				<p class="ps">
-					P.S. - Don't forget us when you become CTO! 🚀😉
-				</p>
+				<p class="ps">P.S. - Don't forget us when you become CTO! 🚀😉</p>
 			</div>
 		</div>
 	</div>
@@ -145,9 +146,10 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3), transparent 50%),
-					radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.3), transparent 50%),
-					radial-gradient(circle at 40% 40%, rgba(30, 58, 138, 0.2), transparent 50%);
+		background:
+			radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3), transparent 50%),
+			radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.3), transparent 50%),
+			radial-gradient(circle at 40% 40%, rgba(30, 58, 138, 0.2), transparent 50%);
 		pointer-events: none;
 		z-index: 0;
 	}
@@ -169,23 +171,34 @@
 		margin: 0;
 		font-weight: 800;
 		letter-spacing: -0.02em;
-		text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+		text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 		animation: float 3s ease-in-out infinite;
 		background: linear-gradient(45deg, #ffffff, #f1f5f9, #ffffff);
 		background-size: 200% 200%;
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
-		animation: float 3s ease-in-out infinite, shimmer 2s ease-in-out infinite alternate;
+		animation:
+			float 3s ease-in-out infinite,
+			shimmer 2s ease-in-out infinite alternate;
 	}
 
 	@keyframes float {
-		0%, 100% { transform: translateY(0px); }
-		50% { transform: translateY(-8px); }
+		0%,
+		100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
 	}
 
 	@keyframes shimmer {
-		0% { background-position: 0% 50%; }
-		100% { background-position: 100% 50%; }
+		0% {
+			background-position: 0% 50%;
+		}
+		100% {
+			background-position: 100% 50%;
+		}
 	}
 
 	@keyframes fadeInUp {
@@ -217,24 +230,30 @@
 		opacity: 0.95;
 		font-weight: 300;
 		letter-spacing: 0.5px;
-		text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 	}
 
 	.welcome-card {
 		background: rgba(255, 255, 255, 0.95);
 		border-radius: 24px;
-		box-shadow: 0 25px 50px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.1);
+		box-shadow:
+			0 25px 50px rgba(0, 0, 0, 0.15),
+			0 0 0 1px rgba(255, 255, 255, 0.1);
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 		overflow: hidden;
 		border: 1px solid rgba(255, 255, 255, 0.2);
 		animation: fadeInUp 0.8s ease-out;
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
 	}
 
 	.welcome-card:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 35px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1);
+		box-shadow:
+			0 35px 60px rgba(0, 0, 0, 0.2),
+			0 0 0 1px rgba(255, 255, 255, 0.1);
 	}
 
 	.main-message {
@@ -269,7 +288,9 @@
 		border-radius: 16px;
 		border: none;
 		margin: 2rem 0;
-		box-shadow: 0 8px 25px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6);
+		box-shadow:
+			0 8px 25px rgba(0, 0, 0, 0.08),
+			inset 0 1px 0 rgba(255, 255, 255, 0.6);
 		position: relative;
 		overflow: hidden;
 	}
@@ -306,7 +327,9 @@
 		border-radius: 20px;
 		margin: 3rem 0;
 		text-align: center;
-		box-shadow: 0 15px 35px rgba(59, 130, 246, 0.25), 0 5px 15px rgba(0,0,0,0.08);
+		box-shadow:
+			0 15px 35px rgba(59, 130, 246, 0.25),
+			0 5px 15px rgba(0, 0, 0, 0.08);
 		position: relative;
 		overflow: hidden;
 		border: 1px solid rgba(255, 255, 255, 0.3);
@@ -320,7 +343,7 @@
 		left: 0;
 		right: 0;
 		height: 2px;
-		background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+		background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
 	}
 
 	.highlight-box h3 {
@@ -328,7 +351,7 @@
 		color: #f8fafc;
 		font-size: clamp(1.3rem, 2.5vw, 1.6rem);
 		font-weight: 700;
-		text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 		margin-bottom: 1rem;
 	}
 
@@ -337,7 +360,9 @@
 		padding: 2rem;
 		border-radius: 18px;
 		margin: 3rem 0;
-		box-shadow: 0 10px 25px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+		box-shadow:
+			0 10px 25px rgba(0, 0, 0, 0.06),
+			inset 0 1px 0 rgba(255, 255, 255, 0.6);
 		border: 1px solid rgba(255, 255, 255, 0.4);
 	}
 
@@ -348,14 +373,16 @@
 		border-radius: 20px;
 		border: 1px solid rgba(203, 213, 225, 0.6);
 		position: relative;
-		box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-		transition: transform 0.2s ease, box-shadow 0.2s ease;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.2s ease;
 		backdrop-filter: blur(5px);
 	}
 
 	.fact-bubble:hover {
 		transform: translateY(-1px);
-		box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 	}
 
 	.fact-bubble::before {
@@ -372,7 +399,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
 
 	.comment {
@@ -392,7 +419,9 @@
 		padding: 2.5rem;
 		border-radius: 20px;
 		margin: 3rem 0;
-		box-shadow: 0 15px 35px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+		box-shadow:
+			0 15px 35px rgba(59, 130, 246, 0.1),
+			inset 0 1px 0 rgba(255, 255, 255, 0.6);
 		border: 1px solid rgba(255, 255, 255, 0.3);
 		backdrop-filter: blur(5px);
 	}
@@ -402,7 +431,7 @@
 		padding: 1.5rem;
 		border-radius: 12px;
 		border: none;
-		box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+		box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 		position: relative;
 		overflow: hidden;
 	}
@@ -474,8 +503,14 @@
 	}
 
 	@keyframes countUp {
-		from { opacity: 0; transform: scale(0.5); }
-		to { opacity: 1; transform: scale(1); }
+		from {
+			opacity: 0;
+			transform: scale(0.5);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	.stat-label {
@@ -538,75 +573,105 @@
 		animation-fill-mode: both;
 	}
 
-	.achievements li:nth-child(1) { animation-delay: 0.1s; }
-	.achievements li:nth-child(2) { animation-delay: 0.2s; }
-	.achievements li:nth-child(3) { animation-delay: 0.3s; }
-	.achievements li:nth-child(4) { animation-delay: 0.4s; }
-	.achievements li:nth-child(5) { animation-delay: 0.5s; }
+	.achievements li:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+	.achievements li:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.achievements li:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+	.achievements li:nth-child(4) {
+		animation-delay: 0.4s;
+	}
+	.achievements li:nth-child(5) {
+		animation-delay: 0.5s;
+	}
 
 	.fact-bubble {
 		animation: fadeInUp 0.8s ease-out;
 		animation-fill-mode: both;
 	}
 
-	.fact-bubble:nth-of-type(1) { animation-delay: 0.2s; }
-	.fact-bubble:nth-of-type(2) { animation-delay: 0.4s; }
+	.fact-bubble:nth-of-type(1) {
+		animation-delay: 0.2s;
+	}
+	.fact-bubble:nth-of-type(2) {
+		animation-delay: 0.4s;
+	}
 
 	.predictions li {
 		animation: fadeInUp 0.5s ease-out;
 		animation-fill-mode: both;
 	}
 
-	.predictions li:nth-child(1) { animation-delay: 0.1s; }
-	.predictions li:nth-child(2) { animation-delay: 0.2s; }
-	.predictions li:nth-child(3) { animation-delay: 0.3s; }
-	.predictions li:nth-child(4) { animation-delay: 0.4s; }
+	.predictions li:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+	.predictions li:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.predictions li:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+	.predictions li:nth-child(4) {
+		animation-delay: 0.4s;
+	}
 
 	html {
 		scroll-behavior: smooth;
 	}
 
 	@keyframes pulse {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0.5; }
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.5;
+		}
 	}
 
 	@media (max-width: 768px) {
 		.container {
 			padding: 1rem 0.75rem;
 		}
-		
+
 		.main-message {
 			padding: 1.5rem;
 		}
-		
+
 		header {
 			padding: 1.5rem 0;
 			margin-bottom: 2rem;
 		}
-		
-		.achievements, .fujitsu-facts, .career-section, .tech-stats {
+
+		.achievements,
+		.fujitsu-facts,
+		.career-section,
+		.tech-stats {
 			padding: 1.5rem;
 			margin: 2rem 0;
 		}
-		
+
 		.highlight-box {
 			padding: 2rem 1.5rem;
 			margin: 2rem 0;
 		}
-		
+
 		.fact-bubble {
 			padding: 1.25rem;
 			margin: 1.25rem 0;
 		}
-		
+
 		.fact-bubble::before {
 			left: -8px;
 			width: 30px;
 			height: 30px;
 			font-size: 1.2rem;
 		}
-		
+
 		.footer-message {
 			margin-top: 3rem;
 			padding-top: 2rem;
@@ -617,24 +682,27 @@
 			gap: 1rem;
 		}
 	}
-	
+
 	@media (max-width: 480px) {
 		.container {
 			padding: 0.75rem 0.5rem;
 		}
-		
+
 		.main-message {
 			padding: 1.25rem;
 		}
-		
-		.achievements, .fujitsu-facts, .career-section, .tech-stats {
+
+		.achievements,
+		.fujitsu-facts,
+		.career-section,
+		.tech-stats {
 			padding: 1.25rem;
 		}
-		
+
 		.highlight-box {
 			padding: 1.5rem 1.25rem;
 		}
-		
+
 		.fact-bubble::before {
 			display: none;
 		}
