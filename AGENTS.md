@@ -48,12 +48,12 @@ All `/api/*` routes (and `/landscape`) require HTTP Basic auth, see Configuratio
 
 ## Configuration
 
-Secrets are read via `$env/dynamic/private`. Sources: `.env` in `npm run dev`; `.env.prod` / `.env.dev` loaded by PM2 (`ecosystem.config.cjs`) in production. See `.env.example`. All `.env*` files except the example are gitignored.
+Secrets are read via `$env/dynamic/private`. Sources: `.env` in `npm run dev`; in production an env file rendered by sops on the NAS (see Deployment). See `.env.example`. All `.env*` files except the example are gitignored.
 
 - `GEMINI_API_KEY` — required for `/api/generate-image`.
 - `STABILITY_API_KEY` — optional, enables seam inpainting.
 - `ADMIN_PASSWORD` — Basic auth (any username) for `/landscape` and `/api/*`. If unset: allowed in dev, 503 in production (fail closed).
-- `DATABASE_PATH` — optional; defaults to `<cwd>/landscape.db` (repo root under PM2 and vite dev).
+- `DATABASE_PATH` — optional; defaults to `<cwd>/landscape.db` (repo root under vite dev).
 - `DEBUG_PIPELINE=true` — writes pipeline debug images to `<cwd>/debug/`.
 - `PORT`, `HOST`, `NODE_ENV`, `ORIGIN`, `ADDRESS_HEADER` — adapter-node settings. Set `ADDRESS_HEADER` (e.g. `X-Forwarded-For`) behind a reverse proxy so rate limiting and the access log see real client IPs.
 
@@ -61,9 +61,11 @@ Secrets are read via `$env/dynamic/private`. Sources: `.env` in `npm run dev`; `
 
 ## Deployment
 
-- **PM2**: `ecosystem.config.cjs` runs `build/index.js` directly as two apps — `kirill.es` (prod, `.env.prod`) and `dev.kirill.es` (dev, `.env.dev`). adapter-node handles PORT/HOST and graceful shutdown; there is no custom server wrapper.
-- **CI/CD** (`.github/workflows/ci-cd.yml`, Node 22): format check, lint, build; AI code review (`claude-sonnet-5`) on PRs to `master`; pushes to `dev`/`master` auto-deploy via SSH (scripts use `set -e`).
-- The production DB used to live in `build/landscape.db` (wiped on every build); the deploy step migrates it once to the repo root. Don't put persistent state under `build/`.
+- **NAS microVMs**: production runs on the owner's NixOS NAS, one microvm.nix guest per site — `kirill.es` tracks `master`, `dev.kirill.es` tracks `dev`. Each guest runs the Nix package (`nix/package.nix`, Node 22) via the hardened `services.kirill-es` module (`nix/module.nix`) plus `cloudflared`; traffic arrives only through a Cloudflare Tunnel, and the guest cannot reach the LAN. The host side (VMs, firewall, secrets) lives in the separate nixos-config repo.
+- **Deploying** is manual from the owner's PC: merge/push, then in nixos-config `nix flake update kirill-es` (or `kirill-es-dev`) and rebuild the NAS. Only the VM whose closure changed restarts.
+- **CI** (`.github/workflows/ci-cd.yml`): format check, lint, build, `nix flake check` (builds the Nix package); AI code review (`claude-sonnet-5`) on PRs to `master`. CI does not deploy.
+- In the guest: cwd and DB live in `/var/lib/kirill-es` (`DATABASE_PATH`), `ADDRESS_HEADER=CF-Connecting-IP`, secrets come from an env file rendered by sops on the host. Don't put persistent state under `build/`.
+- Legacy: `ecosystem.config.cjs` (PM2) is the old Hetzner setup, kept until that server is decommissioned.
 
 ## Code Style
 
@@ -82,4 +84,3 @@ Secrets are read via `$env/dynamic/private`. Sources: `.env` in `npm run dev`; `
 ## Local Setup Notes
 
 - `logs/` must exist locally (gitignored) for the access log.
-- PM2 requires `.env.prod` and `.env.dev` (copy `.env.example`).
