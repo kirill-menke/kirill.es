@@ -12,6 +12,8 @@
 	];
 
 	let currentPath = $derived($page.url.pathname);
+	// flags.kirill.es serves /flags at its root (Cloudflare rewrite); its links lead back to kirill.es.
+	let siteOrigin = $derived($page.url.hostname.startsWith('flags.') ? 'https://kirill.es' : '');
 
 	let visible = $state(false);
 	let hoveredIndex = $state(null);
@@ -76,9 +78,9 @@
 				{#each navItems as item, index}
 					<li class="nav-item" onmouseenter={() => handleMouseEnter(index)}>
 						<a
-							href={item.href}
+							href={siteOrigin + item.href}
 							class="nav-link"
-							class:active={currentPath === item.href}
+							class:active={!siteOrigin && currentPath === item.href}
 							data-svelte-preload-data
 						>
 							{item.label}
