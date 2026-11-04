@@ -83,7 +83,8 @@ body {
 }
 
 .page-heading {
-	font-size: 5.5rem;
+	/* Shrinks on narrow phones so a one-word heading ("projects.") never overflows */
+	font-size: clamp(3rem, 21vw, 5.5rem);
 	font-weight: 400;
 	margin: 1rem 0;
 	color: var(--color-font-dark);

@@ -63,7 +63,8 @@
 <p class="page-subtitle">
 	All {flags.length} UN member states in one circle, each flag beside the ones with the most similar
 	colours.<br />
-	Hover the ring to look closer, click a flag to pin it.
+	<span class="hint-pointer">Hover the ring to look closer, click a flag to pin it.</span>
+	<span class="hint-touch">Tap the ring or search for a country to pin its flag.</span>
 </p>
 
 {#snippet details(variant)}
@@ -110,6 +111,21 @@
 <FlagStats onselect={selectAndShow} delay={250} />
 
 <style>
+	/* Touch screens cannot hover, so they get their own hint */
+	.hint-touch {
+		display: none;
+	}
+
+	@media (hover: none) {
+		.hint-pointer {
+			display: none;
+		}
+
+		.hint-touch {
+			display: inline;
+		}
+	}
+
 	.circle-tile {
 		padding: 1.5rem 1rem;
 	}

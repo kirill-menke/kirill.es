@@ -1,5 +1,6 @@
 <script>
 	import { page } from '$app/state';
+	import { personalLinks } from '#lib/personal-links.js';
 
 	const navItems = [
 		{ label: 'Kirill', href: '/' },
@@ -86,10 +87,9 @@
 	</div>
 
 	<div class="personal-links enter" class:faded={isFaded}>
-		<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
-			>GitHub</a
-		>
-		<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer">CV</a>
+		{#each personalLinks as link (link.label)}
+			<a href={link.href} target="_blank" rel="noopener noreferrer">{link.label}</a>
+		{/each}
 	</div>
 </nav>
 

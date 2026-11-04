@@ -33,8 +33,8 @@
 		if (button && Object.values(buttons).includes(document.activeElement)) button.focus();
 	});
 
-	function onpointermove(event) {
-		if (event.pointerType !== 'mouse') return;
+	// Fractional place in the circle at the event's point, or null outside the band of flags.
+	function placeAt(event) {
 		const box = event.currentTarget.getBoundingClientRect();
 		const dx = event.clientX - box.left - box.width / 2;
 		const dy = event.clientY - box.top - box.height / 2;
@@ -42,13 +42,28 @@
 		// The search results hang out of the centre into the ring band: pointing at them is not
 		// pointing at a flag. Only the popup, as the details' corners reach the band too.
 		const overPopup = event.target.closest('[role="listbox"]');
-		if (overPopup || distance < RADIUS - 8 || distance > RADIUS + 5) {
+		if (overPopup || distance < RADIUS - 8 || distance > RADIUS + 5) return null;
+		const turn = ((Math.atan2(dy, dx) * 180) / Math.PI + 450) % 360; // 0 at 12 o'clock
+		return (turn / 360) * count;
+	}
+
+	function onpointermove(event) {
+		if (event.pointerType !== 'mouse') return;
+		const place = placeAt(event);
+		if (place === null) {
 			leave();
 			return;
 		}
-		const turn = ((Math.atan2(dy, dx) * 180) / Math.PI + 450) % 360; // 0 at 12 o'clock
-		pointer = (turn / 360) * count;
+		pointer = place;
 		onhover(flags[Math.round(pointer) % count].code);
+	}
+
+	// On a phone each flag is a few pixels wide, too small to hit: a tap anywhere in the band pins
+	// the nearest one. Taps on a flag's own button, or on a control in the centre, are theirs.
+	function onclick(event) {
+		if (event.target.closest('button, input, a')) return;
+		const place = placeAt(event);
+		if (place !== null) onselect(flags[Math.round(place) % count].code);
 	}
 
 	function leave() {
@@ -83,6 +98,7 @@
 	role="presentation"
 	{onpointermove}
 	onpointerleave={leave}
+	{onclick}
 >
 	<svg class="chords" viewBox="0 0 100 100" aria-hidden="true">
 		{#if selected}
@@ -125,7 +141,8 @@
 	.ring {
 		position: relative;
 		width: min(100%, calc(100svh - 6rem));
-		min-width: 18rem;
+		/* Stays readable on a short landscape screen, but never wider than its tile */
+		min-width: min(100%, 18rem);
 		aspect-ratio: 1;
 		margin: 0 auto;
 	}

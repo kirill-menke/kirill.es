@@ -63,6 +63,26 @@
 		flex-direction: column;
 		justify-content: flex-end;
 		flex: 1;
+		min-width: 0;
+		overflow-wrap: break-word;
+	}
+
+	/* Phones show one tile per row: a square would be mostly empty, so the tile only grows as
+	   tall as its content and the smaller cover leaves the title room to breathe */
+	@media (width < 640px) {
+		.tile {
+			aspect-ratio: auto;
+		}
+
+		.book-tile-content {
+			gap: 1.25rem;
+			padding: 1rem 1.25rem 1.5rem;
+		}
+
+		.book-cover {
+			width: 110px;
+			height: 165px;
+		}
 	}
 
 	.tile-pill {

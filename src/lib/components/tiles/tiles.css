@@ -3,12 +3,9 @@
 
 .grid-container {
 	display: grid;
-	grid-template-columns: 1fr;
+	/* minmax(0, ...): a tile's content can never push the single phone column past the screen */
+	grid-template-columns: minmax(0, 1fr);
 	gap: 0.5rem;
-}
-
-.grid-item.aspect-square {
-	aspect-ratio: 1;
 }
 
 .grid-item.aspect-wide {
@@ -19,6 +16,7 @@
 	grid-row: span 2;
 }
 
+/* In the single phone column each tile keeps its own shape (book tiles are not square there) */
 @media (min-width: 640px) {
 	.grid-container {
 		grid-template-columns: repeat(2, 1fr);
@@ -26,6 +24,9 @@
 	}
 	.grid-item.span-2-cols {
 		grid-column: span 2;
+	}
+	.grid-item.aspect-square {
+		aspect-ratio: 1;
 	}
 }
 
@@ -107,10 +108,18 @@
 	text-decoration: underline;
 }
 
-.tile-header-text a:hover .tooltip,
+/* Tooltips show on hover only where a real pointer hovers: on touch screens a :hover that
+   reveals content can make iOS Safari swallow the first tap on the link. */
 .tile-header-text a:focus-visible .tooltip {
 	opacity: 1;
 	visibility: visible;
+}
+
+@media (hover: hover) {
+	.tile-header-text a:hover .tooltip {
+		opacity: 1;
+		visibility: visible;
+	}
 }
 
 .tile-anchor {
@@ -126,11 +135,18 @@
 	position: relative;
 }
 
-.tile-anchor:hover .tooltip,
 .tile-anchor:focus-visible .tooltip {
 	opacity: 1;
 	visibility: visible;
 	transform: translateX(0%) translateY(-50%);
+}
+
+@media (hover: hover) {
+	.tile-anchor:hover .tooltip {
+		opacity: 1;
+		visibility: visible;
+		transform: translateX(0%) translateY(-50%);
+	}
 }
 
 .tile:hover .tile-anchor,

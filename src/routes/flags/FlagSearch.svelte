@@ -110,6 +110,7 @@
 
 	.field {
 		flex: 1;
+		min-width: 0;
 		gap: 0.45rem;
 		padding: 0 0.7rem;
 	}

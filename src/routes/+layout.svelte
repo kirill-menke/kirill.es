@@ -23,12 +23,13 @@
 	.page {
 		max-width: 600px;
 		margin: 0 auto;
-		padding: 0 2rem;
+		padding: 0 1.25rem;
 	}
 
 	@media (min-width: 640px) {
 		.page {
 			max-width: 700px;
+			padding: 0 2rem;
 		}
 	}
 
