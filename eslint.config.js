@@ -1,27 +1,29 @@
+import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
-import globals from 'globals';
+import { defineConfig, includeIgnoreFile } from 'eslint/config';
 import svelte from 'eslint-plugin-svelte';
+import globals from 'globals';
 
-export default [
+export default defineConfig(
+	includeIgnoreFile(fileURLToPath(new URL('.gitignore', import.meta.url))),
 	js.configs.recommended,
-	...svelte.configs['flat/recommended'],
+	svelte.configs.recommended,
 	{
-		ignores: ['build/**', '.svelte-kit/**', 'node_modules/**']
+		files: ['src/**'],
+		languageOptions: { globals: globals.browser }
 	},
 	{
-		languageOptions: {
-			globals: {
-				...globals.browser,
-				...globals.node
-			}
-		}
+		files: ['*.js'],
+		languageOptions: { globals: globals.node }
 	},
 	{
 		rules: {
+			// No paths.base to resolve against, and NavBar builds absolute URLs on flags.kirill.es.
 			'svelte/no-navigation-without-resolve': 'off',
+			// Off until every {#each} block is keyed.
 			'svelte/require-each-key': 'off',
-			'no-unused-vars': 'error',
-			'no-undef': 'error'
+			// Browser globals at the top level break prerendering, which runs in Node.
+			'svelte/no-top-level-browser-globals': 'error'
 		}
 	}
-];
+);

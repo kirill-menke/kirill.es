@@ -2,7 +2,7 @@
   # Exposes what the NAS needs and nothing about the NAS itself:
   #   packages.x86_64-linux.default   the built site (nix/package.nix)
   #   nixosModules.default            services.kirill-es, a hardened systemd unit (nix/module.nix)
-  #   checks.x86_64-linux.package     so `nix flake check` (CI) builds it
+  #   checks.x86_64-linux.package     so `nix flake check` builds it
   #
   # Same shape as vibe-reel/backend and kirifin: the NixOS module builds the
   # package with the *consumer's* nixpkgs, so importing it does not drag a

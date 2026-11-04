@@ -42,23 +42,29 @@ in
       description = "Listen port (adapter-node PORT).";
     };
 
+    # Kept so configs that still set it evaluate; drop it once nothing does.
     origin = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
+      default = null;
       example = "https://kirill.es";
-      description = "Public origin (adapter-node ORIGIN). SvelteKit's CSRF check compares POST Origin headers against it.";
+      description = "Ignored. adapter-node 6 no longer reads ORIGIN; the server derives the origin from each request's Host header.";
     };
 
     extraEnvironment = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
       default = { };
       example = {
-        BODY_SIZE_LIMIT = "2M";
+        SHUTDOWN_TIMEOUT = "10";
       };
-      description = "Extra non-secret environment variables (e.g. adapter-node's BODY_SIZE_LIMIT).";
+      description = "Extra non-secret environment variables (e.g. adapter-node's SHUTDOWN_TIMEOUT).";
     };
   };
 
   config = lib.mkIf cfg.enable {
+    warnings = lib.optional (cfg.origin != null) (
+      "services.kirill-es.origin is ignored: adapter-node 6 no longer reads ORIGIN. Remove it."
+    );
+
     systemd.services.kirill-es = {
       description = "kirill.es website (SvelteKit / adapter-node)";
       wantedBy = [ "multi-user.target" ];
@@ -68,7 +74,6 @@ in
         NODE_ENV = "production";
         HOST = cfg.host;
         PORT = toString cfg.port;
-        ORIGIN = cfg.origin;
       }
       // cfg.extraEnvironment;
 

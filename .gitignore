@@ -6,32 +6,13 @@ build/
 .svelte-kit/
 
 # Environment files
-.env
-.env.local
-.env.production
+.env*
 
 # Logs
 *.log
 
-# SSL certificates (sensitive)
-ssl/
-
 # IDE files
 .vscode/
-
-# Temporary files
-tmp/
-temp/
-
-# Dotenv Files
-.env.dev
-.env.prod
-
-# Notes
-NOTES.md
-
-# Debug output
-debug/
 
 # Local Claude Code settings
 .claude/settings.local.json

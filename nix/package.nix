@@ -1,11 +1,12 @@
-# kirill.es as a Nix package: `vite build` (adapter-node + prerender) plus the
-# production node_modules the bundle still imports at runtime.
+# kirill.es as a Nix package: `vite build` (adapter-node + prerender). The
+# server bundle inlines every import except node: builtins, so no node_modules
+# ship with it. That holds only while package.json has no "dependencies":
+# adapter-node may leave those external, and the install check below would fail.
 #
 # Layout of $out:
 #
 #   bin/kirill-es                 node wrapper around lib/kirill-es/build/index.js
 #   lib/kirill-es/build/          adapter-node output (index.js, handler.js, client/, server/, prerendered/)
-#   lib/kirill-es/node_modules/   runtime deps only
 #   lib/kirill-es/package.json    adapter-node's ESM entry needs "type": "module" next to build/
 #
 # Deps come from package-lock.json via importNpmLock, the same as kirifin's
@@ -49,15 +50,15 @@ buildNpmPackage {
   # `npm run build` = `vite build`, which also prerenders every page.
   npmBuildScript = "build";
 
+  # Kit's version.name (vite.config.js) defaults to Date.now(), which would
+  # make every build differ.
+  env.KIRILL_ES_VERSION = version;
+
   installPhase = ''
     runHook preInstall
 
-    # Drop devDependencies (vite, svelte, eslint, ...); the adapter-node bundle
-    # keeps package.json "dependencies" external, so those must stay.
-    npm prune --omit=dev --no-save --offline
-
     mkdir -p $out/lib/kirill-es $out/bin
-    cp -r build node_modules package.json $out/lib/kirill-es/
+    cp -r build package.json $out/lib/kirill-es/
 
     makeWrapper ${lib.getExe nodejs} $out/bin/kirill-es \
       --add-flags $out/lib/kirill-es/build/index.js
@@ -66,12 +67,17 @@ buildNpmPackage {
   '';
 
   # Fail the build, not the deploy, if the server bundle or the prerendered
-  # home page is missing.
+  # home page is missing, or if the bundle cannot load without node_modules.
+  # handler.js initialises the server without listening; the route entries
+  # are imported too because the server only loads them on a request.
   doInstallCheck = true;
   installCheckPhase = ''
     runHook preInstallCheck
     test -f $out/lib/kirill-es/build/index.js
     test -f $out/lib/kirill-es/build/prerendered/index.html
+    ${lib.getExe nodejs} --input-type=module \
+      -e 'for (const file of process.argv.slice(1)) await import(file)' \
+      $out/lib/kirill-es/build/handler.js $(find $out/lib/kirill-es/build/server/entries -name '*.js')
     runHook postInstallCheck
   '';
 
