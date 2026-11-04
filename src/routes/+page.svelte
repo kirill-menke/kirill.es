@@ -7,6 +7,7 @@
 	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
 	import BookTile from '$lib/components/BookTile.svelte';
 	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
+	import ProjectShowcaseTile from '$lib/components/ProjectShowcaseTile.svelte';
 	import { projects, hobbies, books } from '$lib/tile-data.js';
 
 	// To prevent server-side rendering and play animation
@@ -40,13 +41,9 @@
 			This space is a random <span class="dark-font">collection</span> of my ideas,
 			<span class="dark-font">projects</span>, and whatever's caught my attention lately.
 		</p>
-		<div
-			class="grid-item aspect-square"
-			class:span-2-cols={projects.tile_by_tile.layout === 'wide'}
-			class:aspect-wide={projects.tile_by_tile.layout === 'wide'}
-		>
-			<WIPTileImages
-				project={projects.tile_by_tile}
+		<div class="grid-item span-2-cols aspect-wide">
+			<ProjectShowcaseTile
+				project={projects.vibe_reel}
 				duration={500}
 				delay={200}
 				useHyperLink

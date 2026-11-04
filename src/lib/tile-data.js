@@ -1,4 +1,19 @@
 export const projects = {
+	vibe_reel: {
+		name: 'VibeReel',
+		title: 'Jellyfin client for TV, iPhone & web',
+		link: '/projects/vibe-reel',
+		screens: {
+			tv: [
+				'/project-previews/vibe-reel/tv-home.webp',
+				'/project-previews/vibe-reel/tv-detail.webp',
+				'/project-previews/vibe-reel/tv-player.webp'
+			],
+			phone: '/project-previews/vibe-reel/iphone-home.webp'
+		},
+		tileType: 'showcase',
+		layout: 'wide'
+	},
 	tile_by_tile: {
 		name: 'Tile by Tile',
 		link: '/projects',
