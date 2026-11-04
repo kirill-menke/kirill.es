@@ -27,18 +27,6 @@ export const projects = {
 		).split(' '),
 		tileType: 'flags',
 		layout: 'square'
-	},
-	tile_by_tile: {
-		name: 'Tile by Tile',
-		link: '/projects',
-		preview: 'project-previews/website.png',
-		layout: 'wide'
-	},
-	word_by_word: {
-		name: 'BookBridge',
-		link: '/projects',
-		preview: 'project-previews/translate.png',
-		layout: 'square'
 	}
 };
 
