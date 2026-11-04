@@ -6,8 +6,8 @@
 	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
 	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
 	import BookTile from '$lib/components/BookTile.svelte';
-	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
 	import ProjectShowcaseTile from '$lib/components/ProjectShowcaseTile.svelte';
+	import FlagsTile from '$lib/components/flags/FlagsTile.svelte';
 	import { projects, hobbies, books } from '$lib/tile-data.js';
 
 	// To prevent server-side rendering and play animation
@@ -50,17 +50,8 @@
 			/>
 		</div>
 
-		<div
-			class="grid-item"
-			class:span-2-cols={projects.word_by_word.layout === 'wide'}
-			class:aspect-wide={projects.word_by_word.layout === 'wide'}
-		>
-			<WIPTileImages
-				project={projects.word_by_word}
-				duration={500}
-				delay={400}
-				useHyperLink
-			/>
+		<div class="grid-item aspect-square">
+			<FlagsTile project={projects.flags} duration={500} delay={400} useHyperLink />
 		</div>
 		<div class="grid-item aspect-square">
 			<HobbyTileSlide

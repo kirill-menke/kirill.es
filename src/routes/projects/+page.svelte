@@ -3,6 +3,7 @@
 	import { navigating } from '$app/stores';
 	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
 	import ProjectShowcaseTile from '$lib/components/ProjectShowcaseTile.svelte';
+	import FlagsTile from '$lib/components/flags/FlagsTile.svelte';
 	import { projects } from '$lib/tile-data.js';
 
 	let visible = false;
@@ -34,6 +35,12 @@
 			<div class="grid-item" class:span-2-cols={!square} class:aspect-wide={!square}>
 				{#if project.tileType === 'showcase'}
 					<ProjectShowcaseTile
+						{project}
+						duration={fromHomePage ? 600 : 300}
+						delay={fromHomePage ? index * 125 : 0}
+					/>
+				{:else if project.tileType === 'flags'}
+					<FlagsTile
 						{project}
 						duration={fromHomePage ? 600 : 300}
 						delay={fromHomePage ? index * 125 : 0}

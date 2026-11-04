@@ -14,6 +14,20 @@ export const projects = {
 		tileType: 'showcase',
 		layout: 'wide'
 	},
+	flags: {
+		name: 'Flags',
+		title: 'flags, one circle',
+		link: '/flags',
+		count: 193,
+		// Every sixth flag of the /flags circle, in ring order, so the colour gradient survives.
+		// Listed here so the home page does not pull in all of flags.json.
+		ring: (
+			'kz bb ga ng sd iq hu in it tm qa mc ca vn cy de ' +
+			'sn gw kn et td am bz py lu ws gb th er uy ni bw'
+		).split(' '),
+		tileType: 'flags',
+		layout: 'square'
+	},
 	tile_by_tile: {
 		name: 'Tile by Tile',
 		link: '/projects',
