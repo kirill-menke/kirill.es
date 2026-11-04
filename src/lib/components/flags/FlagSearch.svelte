@@ -1,6 +1,6 @@
 <script>
 	import { Search, Shuffle } from '@lucide/svelte';
-	import { flags, imageUrl, searchFlags } from '$lib/flags/index.js';
+	import { flags, imageUrl, searchFlags } from '#lib/flags/index.js';
 
 	let { onselect = () => {} } = $props();
 

@@ -2,11 +2,10 @@ name: CI/CD Pipeline
 on:
     push:
         branches:
-            - dev
-            - master
+            - main
     pull_request:
         branches:
-            - master
+            - main
 
 jobs:
     quality-check:
@@ -37,8 +36,8 @@ jobs:
         needs: quality-check
         runs-on: ubuntu-latest
 
-        # Only run on PRs to master
-        if: github.event_name == 'pull_request' && github.base_ref == 'master'
+        # Only run on PRs to main
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         permissions:
             pull-requests: write
             contents: read

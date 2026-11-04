@@ -1,21 +1,14 @@
 <script>
-	import { onMount } from 'svelte';
-	import { navigating } from '$app/stores';
-	import BookTile from '$lib/components/BookTile.svelte';
-	import { books } from '$lib/tile-data.js';
+	import { afterNavigate } from '$app/navigation';
+	import BookTile from '#lib/components/BookTile.svelte';
+	import { books } from '#lib/tile-data.js';
 
 	let visible = false;
 	let fromHomePage = false;
-	let previousRoute = null;
 
-	navigating.subscribe((nav) => {
-		if (nav && nav.from) {
-			previousRoute = nav.from.url.pathname;
-		}
-	});
-
-	onMount(() => {
-		fromHomePage = previousRoute === '/' || previousRoute === null;
+	// Runs once the page is shown; `from` is null on a direct visit.
+	afterNavigate(({ from }) => {
+		fromHomePage = !from || from.url.pathname === '/';
 		visible = true;
 	});
 </script>

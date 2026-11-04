@@ -2,12 +2,13 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
-	// import ProjectTile from '$lib/components/ProjectTile.svelte';
-	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
-	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
-	import BookTile from '$lib/components/BookTile.svelte';
-	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
-	import { projects, hobbies, books } from '$lib/tile-data.js';
+	// import ProjectTile from '#lib/components/ProjectTile.svelte';
+	import HobbyTileSlide from '#lib/components/HobbyTileSlide.svelte';
+	import HobbyTileFade from '#lib/components/HobbyTileFade.svelte';
+	import BookTile from '#lib/components/BookTile.svelte';
+	import ProjectShowcaseTile from '#lib/components/ProjectShowcaseTile.svelte';
+	import FlagsTile from '#lib/components/flags/FlagsTile.svelte';
+	import { projects, hobbies, books } from '#lib/tile-data.js';
 
 	// To prevent server-side rendering and play animation
 	let visible = $state(false);
@@ -40,30 +41,17 @@
 			This space is a random <span class="dark-font">collection</span> of my ideas,
 			<span class="dark-font">projects</span>, and whatever's caught my attention lately.
 		</p>
-		<div
-			class="grid-item aspect-square"
-			class:span-2-cols={projects.tile_by_tile.layout === 'wide'}
-			class:aspect-wide={projects.tile_by_tile.layout === 'wide'}
-		>
-			<WIPTileImages
-				project={projects.tile_by_tile}
+		<div class="grid-item span-2-cols aspect-wide">
+			<ProjectShowcaseTile
+				project={projects.vibe_reel}
 				duration={500}
 				delay={200}
 				useHyperLink
 			/>
 		</div>
 
-		<div
-			class="grid-item"
-			class:span-2-cols={projects.word_by_word.layout === 'wide'}
-			class:aspect-wide={projects.word_by_word.layout === 'wide'}
-		>
-			<WIPTileImages
-				project={projects.word_by_word}
-				duration={500}
-				delay={400}
-				useHyperLink
-			/>
+		<div class="grid-item aspect-square">
+			<FlagsTile project={projects.flags} duration={500} delay={400} useHyperLink />
 		</div>
 		<div class="grid-item aspect-square">
 			<HobbyTileSlide

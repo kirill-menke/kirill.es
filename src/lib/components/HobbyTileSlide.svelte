@@ -19,7 +19,9 @@
 	style="aspect-ratio: {aspect}"
 	in:fly={{ y: -20, opacity: 0, duration, delay, easing: backInOut }}
 >
-	<div class="hobby-tile-bg" style="background-image: url('{hobby.preview}')"></div>
+	<div class="image-container">
+		<div class="hobby-tile-bg" style="background-image: url('{hobby.preview}')"></div>
+	</div>
 	<div class="hobby-tile-content">
 		<span class="tile-header-text">
 			{#if useHyperLink}
@@ -54,6 +56,14 @@
 		justify-content: space-between;
 	}
 
+	/* Clips the background where the tile ends once it slides down */
+	.image-container {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		border-radius: inherit;
+	}
+
 	.hobby-tile-bg {
 		border-radius: 0.5rem;
 		position: absolute;
@@ -61,15 +71,15 @@
 		background-size: cover;
 		transition:
 			z-index 0s linear 0s,
-			margin-top 0.1s linear;
+			transform 0.1s linear;
 		z-index: 1;
 	}
 
 	.tile:hover .hobby-tile-bg {
-		margin-top: 3rem;
+		transform: translateY(3rem);
 		z-index: 0;
 		transition:
-			margin-top 0.1s linear,
+			transform 0.1s linear,
 			z-index 0s linear 0.1s;
 	}
 

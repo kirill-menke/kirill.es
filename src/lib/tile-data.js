@@ -1,14 +1,31 @@
 export const projects = {
-	tile_by_tile: {
-		name: 'Tile by Tile',
-		link: '/projects',
-		preview: 'project-previews/website.png',
+	vibe_reel: {
+		name: 'VibeReel',
+		title: 'Jellyfin client for TV, iPhone & web',
+		link: '/projects/vibe-reel',
+		screens: {
+			tv: [
+				'/project-previews/vibe-reel/tv-home.webp',
+				'/project-previews/vibe-reel/tv-detail.webp',
+				'/project-previews/vibe-reel/tv-player.webp'
+			],
+			phone: '/project-previews/vibe-reel/iphone-home.webp'
+		},
+		tileType: 'showcase',
 		layout: 'wide'
 	},
-	word_by_word: {
-		name: 'BookBridge',
-		link: '/projects',
-		preview: 'project-previews/translate.png',
+	flags: {
+		name: 'Flags',
+		title: 'flags, one circle',
+		link: '/flags',
+		count: 193,
+		// Every sixth flag of the /flags circle, in ring order, so the colour gradient survives.
+		// Listed here so the home page does not pull in all of flags.json.
+		ring: (
+			'kz bb ga ng sd iq hu in it tm qa mc ca vn cy de ' +
+			'sn gw kn et td am bz py lu ws gb th er uy ni bw'
+		).split(' '),
+		tileType: 'flags',
 		layout: 'square'
 	}
 };
