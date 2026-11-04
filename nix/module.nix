@@ -4,9 +4,8 @@
 # as a hardened systemd service. Whatever proxies to it (cloudflared in the
 # NAS guest) is the consumer's business.
 #
-# The app needs no secrets and opens no outbound connections. Its only state
-# is <cwd>/logs/access.log, which lands in StateDirectory kirill-es/logs
-# (cwd = state dir).
+# The app needs no secrets, opens no outbound connections and keeps no state:
+# it only serves prerendered pages and static assets.
 self:
 {
   config,
@@ -16,7 +15,6 @@ self:
 }:
 let
   cfg = config.services.kirill-es;
-  stateDir = "/var/lib/kirill-es";
 in
 {
   options.services.kirill-es = {
@@ -50,20 +48,6 @@ in
       description = "Public origin (adapter-node ORIGIN). SvelteKit's CSRF check compares POST Origin headers against it.";
     };
 
-    addressHeader = lib.mkOption {
-      type = lib.types.nullOr lib.types.str;
-      default = null;
-      example = "CF-Connecting-IP";
-      description = ''
-        Header with the real client IP (adapter-node ADDRESS_HEADER), used by
-        the access log. Only set this
-        when every request passes through a proxy that overwrites the header.
-        Otherwise clients can spoof it.
-      '';
-    };
-
-
-
     extraEnvironment = lib.mkOption {
       type = lib.types.attrsOf lib.types.str;
       default = { };
@@ -86,20 +70,12 @@ in
         PORT = toString cfg.port;
         ORIGIN = cfg.origin;
       }
-      // lib.optionalAttrs (cfg.addressHeader != null) { ADDRESS_HEADER = cfg.addressHeader; }
       // cfg.extraEnvironment;
 
       serviceConfig = {
         ExecStart = lib.getExe cfg.package;
-        WorkingDirectory = stateDir;
 
         DynamicUser = true;
-        # /var/lib/private/kirill-es (+ the /var/lib/kirill-es symlink): logs/.
-        StateDirectory = [
-          "kirill-es"
-          "kirill-es/logs"
-        ];
-        StateDirectoryMode = "0700";
         UMask = "0077";
 
         Restart = "on-failure";
@@ -107,7 +83,7 @@ in
         # adapter-node drains in-flight requests on SIGTERM.
         TimeoutStopSec = 30;
 
-        # Writes nothing but its StateDirectory and private /tmp.
+        # Writes nothing but its private /tmp.
         ProtectSystem = "strict";
         ProtectHome = true;
         PrivateTmp = true;

@@ -26,7 +26,7 @@
 
       checks.${system}.package = self.packages.${system}.default;
 
-      # `nix run` = production server on :3000 with a throwaway DB in ./,
+      # `nix run` = production server on :3000,
       # handy for checking a Nix-built bundle before deploying.
       apps.${system}.default = {
         type = "app";

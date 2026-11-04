@@ -11,7 +11,6 @@ build/
 .env.production
 
 # Logs
-logs/
 *.log
 
 # SSL certificates (sensitive)
@@ -30,12 +29,6 @@ temp/
 
 # Notes
 NOTES.md
-
-# Local SQLite database
-landscape.db
-*.db-journal
-*.db-wal
-*.db-shm
 
 # Debug output
 debug/
