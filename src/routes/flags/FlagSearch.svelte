@@ -4,8 +4,13 @@
 
 	let { onselect = () => {} } = $props();
 
+	const id = $props.id();
+	const listbox = `${id}-results`;
 	let query = $state('');
+	let open = $state(false);
+	let active = $state(-1); // option chosen with the arrow keys; Enter falls back to the first
 	let results = $derived(searchFlags(query));
+	let expanded = $derived(open && results.length > 0);
 
 	function choose(code) {
 		onselect(code);
@@ -13,21 +18,39 @@
 	}
 
 	function onkeydown(event) {
-		if (event.key === 'Enter' && results.length) choose(results[0].code);
-		if (event.key === 'Escape') query = '';
+		const last = results.length - 1;
+		if (event.key === 'ArrowDown' && expanded) active = active < last ? active + 1 : 0;
+		else if (event.key === 'ArrowUp' && expanded) active = active > 0 ? active - 1 : last;
+		else if (event.key === 'Enter' && results.length)
+			choose((results[active] ?? results[0]).code);
+		else if (event.key === 'Escape') query = '';
+		else return;
+		event.preventDefault();
+	}
+
+	// Close the results once focus leaves the search, e.g. in the compact layout where it stays.
+	function onfocusout(event) {
+		if (!event.currentTarget.contains(event.relatedTarget)) open = false;
 	}
 </script>
 
-<div class="search">
+<div class="search" {onfocusout}>
 	<div class="row">
 		<label class="field">
 			<Search size="14" />
 			<input
 				type="search"
+				role="combobox"
 				placeholder="Find a country"
 				aria-label="Find a country"
+				aria-autocomplete="list"
+				aria-expanded={expanded}
+				aria-controls={expanded ? listbox : undefined}
+				aria-activedescendant={expanded && active >= 0 ? `${listbox}-${active}` : undefined}
 				autocomplete="off"
 				bind:value={query}
+				onfocus={() => (open = true)}
+				oninput={() => (active = -1)}
 				{onkeydown}
 			/>
 		</label>
@@ -40,13 +63,21 @@
 			<Shuffle size="14" />
 		</button>
 	</div>
-	{#if results.length}
-		<ul class="results">
-			{#each results as flag (flag.code)}
-				<li>
-					<button onclick={() => choose(flag.code)}>
-						<img src={imageUrl(flag.code)} alt="" />{flag.name}
-					</button>
+	{#if expanded}
+		<!-- Options are not focusable: focus and the keyboard stay in the input (aria-activedescendant),
+		     and mousedown must not move focus, which would close the list before the click lands. -->
+		<ul class="results" id={listbox} role="listbox" aria-label="Countries">
+			{#each results as flag, i (flag.code)}
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<li
+					id="{listbox}-{i}"
+					role="option"
+					aria-selected={i === active}
+					class:active={i === active}
+					onmousedown={(event) => event.preventDefault()}
+					onclick={() => choose(flag.code)}
+				>
+					<img src={imageUrl(flag.code)} alt="" />{flag.name}
 				</li>
 			{/each}
 		</ul>
@@ -124,28 +155,25 @@
 		border-radius: 0.5rem;
 		background: rgba(255, 255, 255, 0.92);
 		backdrop-filter: blur(30px);
-		box-shadow:
-			0 1px 2px rgba(0, 0, 0, 0.1),
-			0 3px 6px rgba(0, 0, 0, 0.1);
+		box-shadow: var(--shadow-float);
 	}
 
-	.results button {
+	[role='option'] {
 		display: flex;
 		align-items: center;
 		gap: 0.6rem;
+		box-sizing: border-box;
 		width: 100%;
 		padding: 0.4rem 0.5rem;
-		border: 0;
 		border-radius: 0.25rem;
-		background: none;
-		font: inherit;
 		font-size: 0.9rem;
 		text-align: left;
 		color: var(--color-font-dark);
 		cursor: pointer;
 	}
 
-	.results button:hover {
+	[role='option']:hover,
+	.active {
 		background: var(--color-background-dark);
 	}
 
@@ -153,6 +181,6 @@
 		width: 1.6rem;
 		height: 1.1rem;
 		object-fit: contain;
-		filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+		filter: var(--flag-outline);
 	}
 </style>

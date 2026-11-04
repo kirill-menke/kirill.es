@@ -1,19 +1,15 @@
 <script>
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
-	import { ArrowUpRight } from '@lucide/svelte';
+	import { imageUrl, placeOnRing } from '#lib/flags/ring.js';
+	import TileHeader from './TileHeader.svelte';
 
-	let { project, duration, delay, useHyperLink = false } = $props();
+	let { item: project, linkSection = false } = $props();
 
 	// Same layout as the /flags circle (top edge facing outward, first flag at 12 o'clock), fewer flags.
 	const RADIUS = 37; // % of the ring box, ring centre line
-	let width = $derived(((2 * Math.PI * RADIUS) / project.ring.length) * 0.9);
-	let placed = $derived(
+	const width = $derived(((2 * Math.PI * RADIUS) / project.ring.length) * 0.9);
+	const placed = $derived(
 		project.ring.map((code, i) => {
-			const angle = -90 + (i * 360) / project.ring.length;
-			const rad = (angle * Math.PI) / 180;
-			const x = 50 + RADIUS * Math.cos(rad);
-			const y = 50 + RADIUS * Math.sin(rad);
+			const { angle, x, y } = placeOnRing(i, project.ring.length, RADIUS);
 			const style = `left: ${x}%; top: ${y}%; width: ${width}%; --angle: ${angle + 90}deg; --i: ${i}`;
 			return { code, style };
 		})
@@ -21,44 +17,33 @@
 </script>
 
 <!-- Square tile: a slowly turning ring of flags with the flag count in the middle -->
-<div
-	role="presentation"
-	class="tile"
-	in:fly={{ y: -15, opacity: 0, duration, delay, easing: backInOut }}
->
+<div role="presentation" class="tile">
 	<a class="tile-link" href={project.link} aria-label="Open the {project.name} project page"></a>
 
-	<div class="project-tile-content">
-		<span class="tile-header-text">
-			{#if useHyperLink}
-				<a href="/projects">
-					Projects
-					<span class="tooltip">Browse projects</span>
-				</a>
-			{:else}
-				Projects
-			{/if}
-			· {project.name}
-		</span>
-		<a href={project.link} class="tile-anchor" aria-label="View project">
-			<span class="tooltip">View Project</span>
-			<ArrowUpRight strokeWidth="2" size="16" />
-		</a>
+	<div class="tile-header">
+		<TileHeader
+			section="Projects"
+			name={project.name}
+			{linkSection}
+			href={project.link}
+			label="View project"
+			duplicate
+		/>
 	</div>
 
-	<div class="stage" aria-hidden="true" style="--pop-delay: {delay}ms">
+	<div class="stage" aria-hidden="true">
 		<div class="ring">
 			{#each placed as { code, style } (code)}
 				<div class="flag" {style}>
-					<img src="/flag-images/{code}.svg" alt="" decoding="async" draggable="false" />
+					<img src={imageUrl(code)} alt="" decoding="async" draggable="false" />
 				</div>
 			{/each}
 		</div>
-		<div class="centre">
-			<span class="count">{project.count}</span>
-			<span class="caption">{project.title}</span>
-		</div>
 	</div>
+	<h2 class="centre">
+		<span class="count">{project.count}</span>
+		<span class="caption">{project.title}</span>
+	</h2>
 </div>
 
 <style>
@@ -66,27 +51,6 @@
 		aspect-ratio: 1;
 		overflow: hidden;
 		container-type: size;
-	}
-
-	.tile-link {
-		position: absolute;
-		inset: 0;
-		z-index: 3;
-		border-radius: inherit;
-	}
-
-	.project-tile-content {
-		position: relative;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.5rem 0.5rem 0 1.25rem;
-		z-index: 4;
-		pointer-events: none;
-	}
-
-	.project-tile-content a {
-		pointer-events: auto;
 	}
 
 	.stage {
@@ -111,7 +75,8 @@
 		transition: transform 0.25s ease-out;
 		transition-delay: calc(var(--i) * 8ms);
 		animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-		animation-delay: calc(var(--pop-delay) + 200ms + var(--i) * 20ms);
+		/* Pops in after the tile's own entrance delay, which TileGrid sets on the grid item */
+		animation-delay: calc(var(--enter-delay, 0ms) + 200ms + var(--i) * 20ms);
 	}
 
 	.flag img {
@@ -119,7 +84,7 @@
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
-		filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+		filter: var(--flag-outline);
 	}
 
 	.tile:hover .flag {
@@ -131,6 +96,8 @@
 		left: 50%;
 		top: 54%;
 		transform: translate(-50%, -50%);
+		margin: 0;
+		font-weight: 400;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

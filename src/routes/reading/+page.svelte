@@ -1,32 +1,19 @@
 <script>
-	import { afterNavigate } from '$app/navigation';
-	import BookTile from '#lib/components/BookTile.svelte';
+	import TileGrid from '#lib/components/tiles/TileGrid.svelte';
 	import { books } from '#lib/tile-data.js';
 
-	let visible = false;
-	let fromHomePage = false;
-
-	// Runs once the page is shown; `from` is null on a direct visit.
-	afterNavigate(({ from }) => {
-		fromHomePage = !from || from.url.pathname === '/';
-		visible = true;
-	});
+	const subtitle = [
+		"The books I'm reading, what I've read, and what I hope to read next.",
+		'Recommendations are always welcome!'
+	];
 </script>
 
-<h1 class="page-heading">reading.</h1>
-<p class="page-subtitle">
-	The books I'm reading, what I've read, and what I hope to read next.<br />
-	Recommendations are always welcome!
-</p>
+<svelte:head>
+	<title>reading. · Kirill's Garden</title>
+	<meta name="description" content={subtitle.join(' ')} />
+</svelte:head>
 
-<div class="grid-container">
-	{#each Object.values(books) as book, index}
-		{#if visible}
-			<BookTile
-				{book}
-				duration={fromHomePage ? 600 : 300}
-				delay={fromHomePage ? index * 125 : 0}
-			/>
-		{/if}
-	{/each}
-</div>
+<h1 class="page-heading">reading.</h1>
+<p class="page-subtitle">{subtitle[0]}<br />{subtitle[1]}</p>
+
+<TileGrid items={Object.values(books)} />

@@ -1,17 +1,10 @@
 <script>
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
 	import { byCode, flags, imageUrl, meta, stats } from '#lib/flags/index.js';
 
 	let { onselect = () => {}, delay = 0 } = $props();
 
-	const enter = (k) => ({
-		y: -15,
-		opacity: 0,
-		duration: 500,
-		delay: delay + k * 125,
-		easing: backInOut
-	});
+	// For the global .enter animation: the tiles come in one after another.
+	const stagger = (k) => `--enter-delay: ${delay + k * 125}ms`;
 	const count = flags.length;
 	const top = stats.census[0];
 	const loner = byCode[stats.loners[0][0]];
@@ -40,7 +33,7 @@
 {/snippet}
 
 <div class="grid-container stats">
-	<section class="tile grid-item span-2-cols" in:fly={enter(0)}>
+	<section class="tile grid-item span-2-cols enter" style={stagger(0)}>
 		<header><span class="tile-header-text">Flags · Colour census</span></header>
 		<div class="body">
 			<h3>
@@ -64,7 +57,7 @@
 		</div>
 	</section>
 
-	<section class="tile" in:fly={enter(1)}>
+	<section class="tile enter" style={stagger(1)}>
 		<header><span class="tile-header-text">Flags · Colour twins</span></header>
 		<div class="body">
 			<h3>Same colours, different flags.</h3>
@@ -82,7 +75,7 @@
 		</div>
 	</section>
 
-	<section class="tile" in:fly={enter(2)}>
+	<section class="tile enter" style={stagger(2)}>
 		<header><span class="tile-header-text">Flags · Lone wolves</span></header>
 		<div class="body">
 			<h3>{loner.name} has no close match.</h3>
@@ -100,7 +93,7 @@
 		</div>
 	</section>
 
-	<section class="tile" in:fly={enter(3)}>
+	<section class="tile enter" style={stagger(3)}>
 		<header><span class="tile-header-text">Flags · Odd shapes</span></header>
 		<div class="body">
 			<h3>Only one flag isn't a rectangle.</h3>
@@ -129,7 +122,7 @@
 		</div>
 	</section>
 
-	<section class="tile" in:fly={enter(4)}>
+	<section class="tile enter" style={stagger(4)}>
 		<header><span class="tile-header-text">Flags · Palettes</span></header>
 		<div class="body">
 			<h3>
@@ -146,7 +139,7 @@
 		</div>
 	</section>
 
-	<section class="tile grid-item span-2-cols" in:fly={enter(5)}>
+	<section class="tile grid-item span-2-cols enter" style={stagger(5)}>
 		<header><span class="tile-header-text">Flags · How the circle was made</span></header>
 		<ol class="steps body">
 			<li>
@@ -196,7 +189,7 @@
 		</p>
 	</section>
 
-	<section class="tile grid-item full" in:fly={enter(6)}>
+	<section class="tile grid-item full enter" style={stagger(6)}>
 		<header><span class="tile-header-text">Flags · The circle, unrolled</span></header>
 		<div class="strip body">
 			{#each flags as flag (flag.code)}{@render mini(flag.code)}{/each}
@@ -211,10 +204,6 @@
 
 	.tile {
 		padding-bottom: 1.25rem;
-	}
-
-	.tile:hover .mini img {
-		filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
 	}
 
 	.full {
@@ -341,7 +330,7 @@
 		width: 2.1rem;
 		height: 1.4rem;
 		object-fit: contain;
-		filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+		filter: var(--flag-outline);
 	}
 
 	.mini.large img {

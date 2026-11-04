@@ -150,11 +150,6 @@
 		padding: 0 0.35rem;
 	}
 
-	.details :global(.bar),
-	.details :global(.legend) {
-		width: 100%;
-	}
-
 	.matches {
 		display: flex;
 		flex-direction: column;
@@ -202,7 +197,7 @@
 		height: 1.4rem;
 		max-width: 2.4rem;
 		object-fit: contain;
-		filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+		filter: var(--flag-outline);
 	}
 
 	.lead {

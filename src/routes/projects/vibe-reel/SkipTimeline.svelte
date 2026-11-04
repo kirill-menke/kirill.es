@@ -29,7 +29,7 @@
 	];
 </script>
 
-<figure class="skip-fig">
+<figure class="vr-panel">
 	<div
 		class="strip"
 		role="img"
@@ -47,7 +47,7 @@
 
 	<ol class="sources">
 		{#each sources as src, i (src.name)}
-			<li>
+			<li class="vr-card">
 				<span class="rank">{i + 1}</span>
 				<div>
 					<strong>{src.name}</strong>
@@ -59,19 +59,6 @@
 </figure>
 
 <style>
-	.skip-fig {
-		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.skip-fig {
-			padding: 2rem;
-		}
-	}
-
 	.strip {
 		position: relative;
 		height: 2.25rem;
@@ -153,9 +140,6 @@
 	.sources li {
 		display: flex;
 		gap: 0.75rem;
-		background: var(--color-background);
-		border-radius: 0.5rem;
-		padding: 0.9rem 1rem;
 	}
 
 	.rank {

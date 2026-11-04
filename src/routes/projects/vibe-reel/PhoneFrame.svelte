@@ -9,8 +9,8 @@
 <style>
 	.phone {
 		aspect-ratio: 1179 / 2556;
-		background: #0b0b0d;
-		border: 0.45rem solid #18181b;
+		background: var(--color-device-screen);
+		border: 0.45rem solid var(--color-device-bezel);
 		border-radius: 2.2rem;
 		overflow: hidden;
 		box-shadow: 0 1rem 2rem -1rem rgb(0 0 0 / 0.4);

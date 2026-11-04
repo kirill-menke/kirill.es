@@ -1,59 +1,30 @@
 <script>
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
+	import TileHeader from './TileHeader.svelte';
 
-	export let hobby;
-	export let duration;
-	export let delay;
+	let { item: hobby, linkSection = false } = $props();
 
-	export let useHyperLink = false;
-
-	const aspect = hobby.layout === 'square' ? 1 : 2;
+	const aspect = $derived(hobby.layout === 'square' ? 1 : 2);
 </script>
 
-<div
-	role="presentation"
-	class="tile"
-	style="aspect-ratio: {aspect}"
-	in:fly={{ y: -20, opacity: 0, duration, delay, easing: backInOut }}
->
-	<div class="image-container">
-		<img class="hobby-tile-bg" src={hobby.preview} alt={hobby.name} />
+<div role="presentation" class="tile" style="aspect-ratio: {aspect}">
+	<div class="tile-image-container">
+		<img class="hobby-tile-bg" src={hobby.preview} alt="" loading="lazy" decoding="async" />
 	</div>
 	<div class="hobby-tile-content">
-		<span class="tile-header-text">
-			{#if useHyperLink}
-				<a href="/hobbies">
-					Hobbies
-					<span class="tooltip">Browse hobbies</span>
-				</a>
-			{:else}
-				Hobbies
-			{/if}
-			· {hobby.name}
-		</span>
+		<TileHeader section="Hobbies" name={hobby.name} {linkSection} />
 	</div>
 
 	<div class="tile-footer">
 		<div class="tags">
-			{#each hobby.tags as tag}
-				<div class="tag" {tag}>
-					<span>{tag}</span>
-				</div>
+			{#each hobby.tags ?? [] as tag (tag)}
+				<div class="tile-pill" data-tag={tag}>{tag}</div>
 			{/each}
 		</div>
-		<h3 class="tile-title">{hobby.title}</h3>
+		<h2 class="tile-title">{hobby.title}</h2>
 	</div>
 </div>
 
 <style>
-	.image-container {
-		position: absolute;
-		inset: 0;
-		overflow: hidden;
-		border-radius: inherit;
-	}
-
 	.hobby-tile-bg {
 		position: absolute;
 		width: 100%;
@@ -87,48 +58,37 @@
 		opacity: 0.3;
 	}
 
-	/* Tag styles */
 	.tags {
 		display: flex;
 		gap: 0.5rem;
 	}
 
-	.tag {
-		font-size: 0.7rem;
-		font-weight: 600;
-		border-radius: 5px;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		padding: 0.3rem 0.4rem;
-		display: inline-block;
-		text-align: center;
-		width: fit-content;
-		border: 1px solid currentColor;
+	.tile-pill {
 		box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 		opacity: 0.85;
 	}
 
-	.tag[tag='Horror'] {
+	.tile-pill[data-tag='Horror'] {
 		background-color: oklch(0.7 0.1 18);
 		color: oklch(0.45 0.1 18);
 	}
 
-	.tag[tag='Comedy'] {
+	.tile-pill[data-tag='Comedy'] {
 		background-color: oklch(0.8 0.1 85);
 		color: oklch(0.5 0.1 85);
 	}
 
-	.tag[tag='Shōnen'] {
+	.tile-pill[data-tag='Shōnen'] {
 		background-color: oklch(0.7 0.1 25);
 		color: oklch(0.45 0.1 25);
 	}
 
-	.tag[tag='Iyashikei'] {
+	.tile-pill[data-tag='Iyashikei'] {
 		background-color: oklch(0.85 0.04 310);
 		color: oklch(0.5 0.04 310);
 	}
 
-	.tag[tag='Action'] {
+	.tile-pill[data-tag='Action'] {
 		background-color: oklch(0.8 0.1 54);
 		color: oklch(0.55 0.1 54);
 	}

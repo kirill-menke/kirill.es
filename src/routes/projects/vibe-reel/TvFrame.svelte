@@ -1,10 +1,15 @@
 <script>
-	/** A 16:9 TV bezel; several sources cross-fade in a loop */
+	/** A 16:9 TV bezel showing one source, or cross-fading three in a loop */
 	let { srcs, alt, eager = false } = $props();
+
+	// The cycle keyframes give each screen a third of the loop, so only three sources cycle;
+	// with any other count only the first is shown.
+	const cycling = $derived(srcs.length === 3);
+	const shown = $derived(cycling ? srcs : srcs.slice(0, 1));
 </script>
 
-<div class="tv" class:cycling={srcs.length > 1}>
-	{#each srcs as src, i (src)}
+<div class="tv" class:cycling>
+	{#each shown as src, i (src)}
 		<img
 			{src}
 			alt={i === 0 ? alt : ''}
@@ -12,7 +17,7 @@
 			height="720"
 			loading={eager ? 'eager' : 'lazy'}
 			decoding="async"
-			style="--i: {i}; --n: {srcs.length}"
+			style="--i: {i}"
 		/>
 	{/each}
 </div>
@@ -21,8 +26,8 @@
 	.tv {
 		position: relative;
 		aspect-ratio: 16 / 9;
-		background: #0b0b0d;
-		border: 0.4rem solid #18181b;
+		background: var(--color-device-screen);
+		border: 0.4rem solid var(--color-device-bezel);
 		border-radius: 0.6rem;
 		overflow: hidden;
 		box-shadow: 0 1rem 2rem -1rem rgb(0 0 0 / 0.35);
@@ -37,11 +42,12 @@
 		display: block;
 	}
 
-	/* Each screen holds for 4s; negative delays start the loop mid-cycle */
+	/* Each of the three screens holds for 4s of a 12s loop. The negative delays start the loop
+	   mid-cycle; -8s per screen equals +4s modulo 12s, so each screen follows the one before. */
 	.cycling img {
 		opacity: 0;
-		animation: cycle calc(var(--n) * 4s) infinite;
-		animation-delay: calc(-1s - var(--i) * (var(--n) - 1) * 4s);
+		animation: cycle 12s infinite;
+		animation-delay: calc(-1s - var(--i) * 8s);
 	}
 
 	@keyframes cycle {

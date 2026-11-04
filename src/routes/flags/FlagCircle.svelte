@@ -1,5 +1,5 @@
 <script>
-	import { flags, byCode, imageUrl } from '#lib/flags/index.js';
+	import { flags, byCode, imageUrl, placeOnRing } from '#lib/flags/index.js';
 
 	// selected: code of the pinned flag (its closest matches get curves), or null.
 	let {
@@ -17,15 +17,21 @@
 	const LENS_SPREAD = 2.6; // flags either side that grow with it
 
 	// Flags stand on the ring with their top edge facing outward, first one at 12 o'clock.
-	const placed = flags.map((flag) => {
-		const angle = -90 + (flag.index * 360) / count;
-		const rad = (angle * Math.PI) / 180;
-		return { flag, angle, x: 50 + RADIUS * Math.cos(rad), y: 50 + RADIUS * Math.sin(rad) };
-	});
+	const placed = flags.map((flag) => ({ flag, ...placeOnRing(flag.index, count, RADIUS) }));
 	const position = Object.fromEntries(placed.map((p) => [p.flag.code, p]));
+	const buttons = {}; // code -> ring button
+
+	// Roving tabindex: the ring is one tab stop, on the pinned flag or else the first.
+	let tabStop = $derived(selected ?? flags[0].code);
 
 	let pointer = $state(null); // fractional place in the circle under the mouse
 	let matches = $derived(new Set(selected ? byCode[selected].matches.map(([code]) => code) : []));
+
+	// The arrow keys move the selection (see the page); keyboard focus follows it around the ring.
+	$effect(() => {
+		const button = selected && buttons[selected];
+		if (button && Object.values(buttons).includes(document.activeElement)) button.focus();
+	});
 
 	function onpointermove(event) {
 		if (event.pointerType !== 'mouse') return;
@@ -33,7 +39,10 @@
 		const dx = event.clientX - box.left - box.width / 2;
 		const dy = event.clientY - box.top - box.height / 2;
 		const distance = (Math.hypot(dx, dy) / box.width) * 100;
-		if (distance < RADIUS - 8 || distance > RADIUS + 5) {
+		// The search results hang out of the centre into the ring band: pointing at them is not
+		// pointing at a flag. Only the popup, as the details' corners reach the band too.
+		const overPopup = event.target.closest('[role="listbox"]');
+		if (overPopup || distance < RADIUS - 8 || distance > RADIUS + 5) {
 			leave();
 			return;
 		}
@@ -99,6 +108,8 @@
 				--angle: {angle + 90}deg; --scale: {scale}; --i: {flag.index}"
 			aria-label={flag.name}
 			aria-pressed={flag.code === selected}
+			tabindex={flag.code === tabStop ? 0 : -1}
+			bind:this={buttons[flag.code]}
 			onclick={() => onselect(flag.code)}
 			onfocus={() => onhover(flag.code)}
 			onblur={() => onhover(null)}
@@ -159,7 +170,7 @@
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
-		filter: drop-shadow(0 0 0.5px rgba(0, 0, 0, 0.5));
+		filter: var(--flag-outline);
 		pointer-events: none;
 	}
 

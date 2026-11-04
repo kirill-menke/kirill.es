@@ -3,7 +3,7 @@
 	let { stages } = $props();
 </script>
 
-<ol class="pipeline">
+<ol class="pipeline vr-panel">
 	{#each stages as stage, i (stage.title)}
 		<li>
 			<strong>{stage.title}</strong>
@@ -18,20 +18,10 @@
 <style>
 	.pipeline {
 		list-style: none;
-		margin: 0;
-		padding: 1.25rem;
 		display: flex;
 		flex-wrap: wrap;
 		align-items: stretch;
 		gap: 0.5rem;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-	}
-
-	@media (min-width: 640px) {
-		.pipeline {
-			padding: 2rem;
-		}
 	}
 
 	li:not(.arrow) {

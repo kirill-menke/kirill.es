@@ -6,9 +6,10 @@
 	const pieces = Array.from({ length: PIECES }, (_, i) =>
 		i < FRONTIER || i === PIECES - 1 ? 'done' : i === FRONTIER ? 'loading' : 'missing'
 	);
+	const summary = `Torrent pieces: 1–${FRONTIER} done, ${FRONTIER + 1} loading, ${FRONTIER + 2}–${PIECES - 1} missing, ${PIECES} (the last) done; playing piece ${PLAYHEAD + 1}`;
 </script>
 
-<figure class="dl">
+<figure class="vr-panel">
 	<div class="bar-wrap">
 		<div class="playhead" style="left: {((PLAYHEAD + 0.5) / PIECES) * 100}%">
 			<span>playing</span>
@@ -16,11 +17,11 @@
 		<div class="frontier" style="left: {((FRONTIER + 0.5) / PIECES) * 100}%">
 			<span>download frontier</span>
 		</div>
-		<ol class="pieces" aria-label="Torrent pieces">
+		<div class="pieces" role="img" aria-label={summary} style="--n: {PIECES}">
 			{#each pieces as state, i (i)}
-				<li class={state} title="Piece {i + 1}: {state}"></li>
+				<span class={state} title="Piece {i + 1}: {state}"></span>
 			{/each}
-		</ol>
+		</div>
 		<div class="ends">
 			<span>first piece</span>
 			<span>last piece, fetched early so the container index is readable</span>
@@ -28,16 +29,16 @@
 	</div>
 
 	<div class="lanes">
-		<div class="lane">
-			<span class="lane-name">TV</span>
+		<div class="vr-card">
+			<span class="vr-eyebrow">TV</span>
 			<p>
 				<code>&lt;video&gt;</code> sends Range requests to reel-api. Finished pieces are
 				served at once; a request past the frontier <strong>waits for the piece</strong> instead
 				of failing, for up to 120 s without progress.
 			</p>
 		</div>
-		<div class="lane">
-			<span class="lane-name">iPhone &amp; web</span>
+		<div class="vr-card">
+			<span class="vr-eyebrow">iPhone &amp; web</span>
 			<p>
 				The same frontier-aware reader feeds ffmpeg, which writes a growing HLS playlist of
 				6 s fMP4 segments. The client appends them to a MediaSource itself, because Safari
@@ -48,44 +49,28 @@
 </figure>
 
 <style>
-	.dl {
-		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.dl {
-			padding: 2rem;
-		}
-	}
-
 	.bar-wrap {
 		position: relative;
 		padding-top: 2.4rem;
 	}
 
 	.pieces {
-		list-style: none;
-		margin: 0;
-		padding: 0;
 		display: grid;
-		grid-template-columns: repeat(40, 1fr);
+		grid-template-columns: repeat(var(--n), 1fr);
 		gap: 2px;
 		height: 2.25rem;
 	}
 
-	.pieces li {
+	.pieces span {
 		border-radius: 3px;
 		background: oklch(0.92 0 0);
 	}
 
-	.pieces li.done {
+	.pieces .done {
 		background: var(--vr-gold-fill);
 	}
 
-	.pieces li.loading {
+	.pieces .loading {
 		background: var(--vr-gold-fill);
 		animation: pulse 1.6s ease-in-out infinite;
 	}
@@ -97,7 +82,7 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.pieces li.loading {
+		.pieces .loading {
 			animation: none;
 			opacity: 0.6;
 		}
@@ -158,24 +143,5 @@
 		.lanes {
 			grid-template-columns: 1fr 1fr;
 		}
-	}
-
-	.lane {
-		background: var(--color-background);
-		border-radius: 0.5rem;
-		padding: 0.9rem 1rem;
-	}
-
-	.lane-name {
-		font-size: 0.75rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--vr-gold-ink);
-		font-weight: 600;
-	}
-
-	.lane p {
-		margin: 0.4rem 0 0;
-		font-size: 0.9rem;
 	}
 </style>

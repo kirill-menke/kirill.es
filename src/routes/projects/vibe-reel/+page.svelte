@@ -1,20 +1,17 @@
 <script>
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
-	import { onMount } from 'svelte';
 	import { ArrowUpRight } from '@lucide/svelte';
-	import Section from '#lib/components/vibe-reel/Section.svelte';
-	import TvFrame from '#lib/components/vibe-reel/TvFrame.svelte';
-	import PhoneFrame from '#lib/components/vibe-reel/PhoneFrame.svelte';
-	import PlaybackFlow from '#lib/components/vibe-reel/PlaybackFlow.svelte';
-	import AudioScore from '#lib/components/vibe-reel/AudioScore.svelte';
-	import ArchDiagram from '#lib/components/vibe-reel/ArchDiagram.svelte';
-	import DownloadBar from '#lib/components/vibe-reel/DownloadBar.svelte';
-	import PictureSequence from '#lib/components/vibe-reel/PictureSequence.svelte';
-	import SkipTimeline from '#lib/components/vibe-reel/SkipTimeline.svelte';
-	import Pipeline from '#lib/components/vibe-reel/Pipeline.svelte';
-	import BeforeAfter from '#lib/components/vibe-reel/BeforeAfter.svelte';
-	import ThreeBuilds from '#lib/components/vibe-reel/ThreeBuilds.svelte';
+	import Section from './Section.svelte';
+	import TvFrame from './TvFrame.svelte';
+	import PhoneFrame from './PhoneFrame.svelte';
+	import PlaybackFlow from './PlaybackFlow.svelte';
+	import AudioScore from './AudioScore.svelte';
+	import ArchDiagram from './ArchDiagram.svelte';
+	import DownloadBar from './DownloadBar.svelte';
+	import PictureSequence from './PictureSequence.svelte';
+	import SkipTimeline from './SkipTimeline.svelte';
+	import Pipeline from './Pipeline.svelte';
+	import BeforeAfter from './BeforeAfter.svelte';
+	import ThreeBuilds from './ThreeBuilds.svelte';
 
 	const REPO = 'https://github.com/kirill-menke/vibe-reel';
 	const img = (name) => `/project-previews/vibe-reel/${name}.webp`;
@@ -87,11 +84,6 @@
 		{ value: '89–99%', label: 'mutation scores on the player engine' },
 		{ value: '71.6%', label: 'top-1 search accuracy, up from 38%' }
 	];
-
-	let visible = $state(false);
-	onMount(() => {
-		visible = true;
-	});
 </script>
 
 <svelte:head>
@@ -111,27 +103,16 @@
 		</p>
 
 		<div class="stage">
-			{#if visible}
-				<div
-					class="stage-tv"
-					in:fly={{ y: -15, opacity: 0, duration: 600, easing: backInOut }}
-				>
-					<TvFrame
-						srcs={[img('tv-home'), img('tv-detail'), img('tv-player')]}
-						alt="VibeReel on the TV: home screen with Continue Watching"
-						eager
-					/>
-				</div>
-				<div
-					class="stage-phone"
-					in:fly={{ y: 20, opacity: 0, duration: 600, easing: backInOut }}
-				>
-					<PhoneFrame
-						src={img('iphone-home')}
-						alt="VibeReel on the iPhone: home screen"
-					/>
-				</div>
-			{/if}
+			<div class="stage-tv enter">
+				<TvFrame
+					srcs={[img('tv-home'), img('tv-detail'), img('tv-player')]}
+					alt="VibeReel on the TV: home screen with Continue Watching"
+					eager
+				/>
+			</div>
+			<div class="stage-phone enter">
+				<PhoneFrame src={img('iphone-home')} alt="VibeReel on the iPhone: home screen" />
+			</div>
 		</div>
 
 		<ul class="specs">
@@ -534,6 +515,52 @@
 		--vr-line: oklch(0.88 0 0);
 	}
 
+	/* Building blocks shared by the page's widgets. :where() keeps them at one class of
+	   specificity, so each widget's scoped styles still override them. */
+	:where(.vr) :global(.vr-panel) {
+		margin: 0;
+		background: var(--color-background-tile);
+		border-radius: 0.5rem;
+		padding: 1.25rem;
+	}
+
+	@media (min-width: 640px) {
+		:where(.vr) :global(.vr-panel) {
+			padding: 2rem;
+		}
+	}
+
+	:where(.vr) :global(.vr-card) {
+		background: var(--color-background);
+		border-radius: 0.5rem;
+		padding: 0.9rem 1rem;
+	}
+
+	:where(.vr) :global(.vr-card > p) {
+		margin: 0.4rem 0 0;
+		font-size: 0.9rem;
+	}
+
+	:where(.vr) :global(.vr-eyebrow) {
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--vr-gold-ink);
+		font-weight: 600;
+	}
+
+	/* Diagrams with a min-width scroll inside their panel; each widget shows the hint with a
+	   container query at its own min-width */
+	:where(.vr) :global(.vr-hint) {
+		display: none;
+		margin: 0 0 0.5rem;
+		font-size: 0.8rem;
+	}
+
+	:where(.vr) :global(.vr-scroll) {
+		overflow-x: auto;
+	}
+
 	@media (max-width: 480px) {
 		.hero .page-heading {
 			font-size: 4rem;
@@ -552,6 +579,11 @@
 		margin: 2rem 0 1.5rem;
 	}
 
+	.stage-tv,
+	.stage-phone {
+		--enter-duration: 600ms;
+	}
+
 	.stage-tv {
 		position: absolute;
 		left: 0;
@@ -564,6 +596,7 @@
 		right: 1cqw;
 		top: 8cqw;
 		width: 21cqw;
+		--enter-y: 20px;
 	}
 
 	.specs {

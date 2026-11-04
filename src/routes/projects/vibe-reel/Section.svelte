@@ -59,7 +59,7 @@
 
 	.body :global(code),
 	.code-notes :global(code) {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: var(--font-mono);
 		font-size: 0.85em;
 		background: var(--vr-cream);
 		color: var(--vr-gold-ink);

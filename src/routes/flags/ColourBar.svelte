@@ -10,7 +10,7 @@
 	role="img"
 	aria-label={listed.map((c) => `${c.name} ${percent(c.share)}%`).join(', ')}
 >
-	{#each colors as c}
+	{#each colors as c (c.hex)}
 		<span
 			class="segment"
 			style="flex-grow: {c.share}; background: {c.hex}"
@@ -19,13 +19,18 @@
 	{/each}
 </div>
 <p class="legend">
-	{#each listed as c, i}
+	{#each listed as c, i (c.hex)}
 		{#if i}<span class="dot">·</span>{/if}
 		<span class="entry"><i style="background: {c.hex}"></i>{c.name} {percent(c.share)}%</span>
 	{/each}
 </p>
 
 <style>
+	.bar,
+	.legend {
+		width: 100%;
+	}
+
 	.bar {
 		display: flex;
 		height: 0.75rem;

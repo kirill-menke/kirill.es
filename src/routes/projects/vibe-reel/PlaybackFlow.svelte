@@ -1,4 +1,6 @@
 <script>
+	import Switcher from './Switcher.svelte';
+
 	/** The path from "OK pressed" to frames, per client. Steps marked `ask` are decisions. */
 	const modes = {
 		tv: {
@@ -101,23 +103,14 @@
 		}
 	};
 
+	const options = Object.entries(modes).map(([value, m]) => ({ value, label: m.label }));
+
 	let mode = $state('tv');
 	const current = $derived(modes[mode]);
 </script>
 
-<div class="flow">
-	<div class="tabs" role="tablist" aria-label="Client">
-		{#each Object.entries(modes) as [key, m] (key)}
-			<button
-				role="tab"
-				aria-selected={mode === key}
-				class:active={mode === key}
-				onclick={() => (mode = key)}
-			>
-				{m.label}
-			</button>
-		{/each}
-	</div>
+<div class="vr-panel">
+	<Switcher {options} bind:value={mode} label="Client" />
 
 	<ol class="steps">
 		{#each current.steps as step, i (mode + i)}
@@ -133,8 +126,8 @@
 
 	<div class="lanes">
 		{#each current.lanes as lane (mode + lane.name)}
-			<div class="lane">
-				<span class="lane-name">{lane.name}</span>
+			<div class="vr-card lane">
+				<span class="vr-eyebrow">{lane.name}</span>
 				<p>{lane.text}</p>
 			</div>
 		{/each}
@@ -142,49 +135,6 @@
 </div>
 
 <style>
-	.flow {
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.flow {
-			padding: 2rem;
-		}
-	}
-
-	.tabs {
-		display: inline-flex;
-		gap: 0.25rem;
-		padding: 0.25rem;
-		background: var(--color-background);
-		border: 0.5px solid lightgrey;
-		border-radius: 0.6rem;
-		margin-bottom: 1.75rem;
-	}
-
-	button {
-		font: inherit;
-		font-size: 0.9rem;
-		border: 0;
-		background: transparent;
-		color: var(--color-font-light);
-		padding: 0.4rem 1rem;
-		border-radius: 0.4rem;
-		cursor: pointer;
-		transition: all 0.1s linear;
-	}
-
-	button:hover {
-		color: var(--color-font-dark);
-	}
-
-	button.active {
-		background: var(--vr-ink);
-		color: white;
-	}
-
 	.steps {
 		list-style: none;
 		padding: 0;
@@ -257,23 +207,11 @@
 	}
 
 	.lane {
-		background: var(--color-background);
-		border-radius: 0.5rem;
-		padding: 0.9rem 1rem;
 		border-top: 3px solid var(--vr-gold-fill);
 	}
 
-	.lane-name {
-		font-size: 0.75rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--vr-gold-ink);
-		font-weight: 600;
-	}
-
+	/* Same specificity as Section's `.body p`, and later in the bundle, so it wins */
 	.lane p {
-		margin: 0.4rem 0 0;
-		font-size: 0.9rem;
 		line-height: 1.5;
 	}
 </style>

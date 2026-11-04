@@ -20,8 +20,6 @@ export default defineConfig(
 		rules: {
 			// No paths.base to resolve against, and NavBar builds absolute URLs on flags.kirill.es.
 			'svelte/no-navigation-without-resolve': 'off',
-			// Off until every {#each} block is keyed.
-			'svelte/require-each-key': 'off',
 			// Browser globals at the top level break prerendering, which runs in Node.
 			'svelte/no-top-level-browser-globals': 'error'
 		}

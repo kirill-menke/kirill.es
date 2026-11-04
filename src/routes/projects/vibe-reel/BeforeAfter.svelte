@@ -3,32 +3,35 @@
 	const rows = [
 		{
 			metric: 'Dropped frames while moving focus in Search',
-			before: 21.5,
-			after: 0.6,
-			fmt: (v) => (v === 21.5 ? '19–24%' : '0.5–0.7%'),
+			before: { value: 21.5, label: '19–24%' },
+			after: { value: 0.6, label: '0.5–0.7%' },
 			fix: 'Focus rings as permanent compositor layers'
 		},
 		{
 			metric: 'Worst key press to frame',
-			before: 231,
-			after: 35,
-			fmt: (v) => (v === 231 ? '222–241 ms' : '33–37 ms'),
+			before: { value: 231, label: '222–241 ms' },
+			after: { value: 35, label: '33–37 ms' },
 			fix: 'Same change'
 		},
 		{
 			metric: 'Cold-start module evaluation',
-			before: 64,
-			after: 48,
-			fmt: (v) => `~${v} ms`,
+			before: { value: 64, label: '~64 ms' },
+			after: { value: 48, label: '~48 ms' },
 			fix: 'libpgs turned into a lazy factory at build time'
 		}
 	];
+
+	const bars = [
+		['before', 'Before'],
+		['after', 'After']
+	];
 </script>
 
-<figure class="ba">
+<figure class="vr-panel">
 	<div class="legend">
-		<span><i class="sw before"></i>Before</span>
-		<span><i class="sw after"></i>After</span>
+		{#each bars as [kind, name] (kind)}
+			<span><i class="sw {kind}"></i>{name}</span>
+		{/each}
 	</div>
 	{#each rows as r (r.metric)}
 		<div class="row">
@@ -37,14 +40,14 @@
 				<span>{r.fix}</span>
 			</div>
 			<div class="bars">
-				{#each [['before', r.before], ['after', r.after]] as [kind, v] (kind)}
+				{#each bars as [kind, name] (kind)}
 					<div class="bar-line">
 						<div
 							class="bar {kind}"
-							style="width: {Math.max((v / r.before) * 100, 1.5)}%"
-							title="{kind === 'before' ? 'Before' : 'After'}: {r.fmt(v)}"
+							style="width: {Math.max((r[kind].value / r.before.value) * 100, 1.5)}%"
+							title="{name}: {r[kind].label}"
 						></div>
-						<span class="value">{r.fmt(v)}</span>
+						<span class="value">{r[kind].label}</span>
 					</div>
 				{/each}
 			</div>
@@ -54,19 +57,6 @@
 </figure>
 
 <style>
-	.ba {
-		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.ba {
-			padding: 2rem;
-		}
-	}
-
 	.legend {
 		display: flex;
 		gap: 1.25rem;
@@ -91,7 +81,7 @@
 		display: grid;
 		gap: 0.6rem;
 		padding: 0.9rem 0;
-		border-top: 1px solid oklch(0.93 0 0);
+		border-top: 1px solid var(--color-background-dark);
 	}
 
 	@media (min-width: 640px) {
@@ -130,13 +120,11 @@
 		border-radius: 0 4px 4px 0;
 	}
 
-	.before,
-	.sw.before {
+	.before {
 		background: oklch(0.8 0 0);
 	}
 
-	.after,
-	.sw.after {
+	.after {
 		background: var(--vr-gold);
 	}
 

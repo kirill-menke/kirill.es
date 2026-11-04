@@ -1,104 +1,96 @@
 <script>
-	import { onMount } from 'svelte';
 	import { page } from '$app/state';
-	import { fly, fade } from 'svelte/transition';
 
 	const navItems = [
 		{ label: 'Kirill', href: '/' },
 		{ label: 'Projects', href: '/projects' },
-		// { label: 'Gallery', href: '/gallery' },
 		{ label: 'Reading', href: '/reading' },
 		{ label: 'Hobbies', href: '/hobbies' }
 	];
 
 	let currentPath = $derived(page.url.pathname);
 	// flags.kirill.es serves /flags at its root (Cloudflare rewrite); its links lead back to kirill.es.
+	// Prerendering sees no such host, so the HTML has relative links and hydration fixes them up.
 	let siteOrigin = $derived(page.url.hostname.startsWith('flags.') ? 'https://kirill.es' : '');
 
-	let visible = $state(false);
-	let hoveredIndex = $state(null);
-	let highlightStyle = $state('');
-	let navMenuElement = $state(null);
 	let scrollY = $state(0);
 	let isFaded = $derived(scrollY >= 35);
 
-	onMount(() => {
-		visible = true;
-	});
+	/** @type {{ left: number, width: number, instant: boolean } | null} */
+	let highlight = $state(null);
+	let highlightStyle = $derived(
+		highlight
+			? `transform: translateX(${highlight.left}px) translateY(-10%); width: ${highlight.width}px; opacity: 1;${highlight.instant ? 'transition: none' : ''}`
+			: 'opacity: 0;'
+	);
 
-	function handleMouseEnter(index) {
-		const fromOutside = !hoveredIndex;
-		hoveredIndex = index;
-		updateHighlight(fromOutside);
+	function current(href) {
+		if (siteOrigin) return undefined;
+		if (currentPath === href) return 'page';
+		// Sub-pages (/projects/vibe-reel) mark their section; '/' would match everything
+		if (href !== '/' && currentPath.startsWith(href + '/')) return 'true';
 	}
 
-	function handleMouseLeave() {
-		hoveredIndex = null;
-		updateHighlight();
+	function showHighlight(item) {
+		const rect = item.getBoundingClientRect();
+		const menuRect = item.parentElement.getBoundingClientRect();
+		// Coming from outside the menu it appears in place instead of sliding in from the left
+		highlight = { left: rect.left - menuRect.left, width: rect.width, instant: !highlight };
 	}
 
-	function updateHighlight(fromOutside) {
-		if (hoveredIndex === null || !navMenuElement) {
-			highlightStyle = 'opacity: 0;';
-			return;
-		}
+	function hideHighlight() {
+		highlight = null;
+	}
 
-		const items = navMenuElement.querySelectorAll('.nav-item');
-		const hoveredItem = items[hoveredIndex];
+	// Keyboard focus moves the highlight like hover does. Mouse clicks also focus links (and
+	// navigating blurs them), so only :focus-visible counts and a hovered menu keeps its highlight.
+	function handleFocusIn(event) {
+		if (event.target.matches(':focus-visible')) showHighlight(event.currentTarget);
+	}
 
-		const rect = hoveredItem.getBoundingClientRect();
-		const menuRect = navMenuElement.getBoundingClientRect();
-		const left = rect.left - menuRect.left;
-		const width = rect.width;
-
-		highlightStyle = `transform: translateX(${left}px) translateY(-10%); width: ${width}px; opacity: 1;`;
-		if (fromOutside) {
-			highlightStyle += 'transition: none';
-		}
+	function handleFocusOut(event) {
+		const menu = event.currentTarget;
+		if (!menu.contains(event.relatedTarget) && !menu.matches(':hover')) hideHighlight();
 	}
 </script>
 
 <svelte:window bind:scrollY />
 
 <nav class="navbar">
-	{#if visible}
-		<div
-			class="nav-container"
-			role="presentation"
-			onmouseleave={handleMouseLeave}
-			in:fly={{
-				y: -50,
-				opacity: 0,
-				duration: 500,
-				delay: 300
-			}}
-		>
-			<ul class="nav-menu" bind:this={navMenuElement}>
-				<div class="hover-highlight" style={highlightStyle}></div>
-				{#each navItems as item, index}
-					<li class="nav-item" onmouseenter={() => handleMouseEnter(index)}>
-						<a
-							href={siteOrigin + item.href}
-							class="nav-link"
-							class:active={!siteOrigin && currentPath === item.href}
-							data-svelte-preload-data
-						>
-							{item.label}
-						</a>
-					</li>
-				{/each}
-			</ul>
-		</div>
+	<div
+		class="nav-container enter"
+		role="presentation"
+		onmouseleave={hideHighlight}
+		onfocusout={handleFocusOut}
+	>
+		<ul class="nav-menu">
+			<li class="hover-highlight" aria-hidden="true" style={highlightStyle}></li>
+			{#each navItems as item (item.href)}
+				{@const ariaCurrent = current(item.href)}
+				<li
+					class="nav-item"
+					onmouseenter={(event) => showHighlight(event.currentTarget)}
+					onfocusin={handleFocusIn}
+				>
+					<a
+						href={siteOrigin + item.href}
+						class="nav-link"
+						class:active={ariaCurrent}
+						aria-current={ariaCurrent}
+					>
+						{item.label}
+					</a>
+				</li>
+			{/each}
+		</ul>
+	</div>
 
-		<div class="personal-links" class:faded={isFaded} in:fade={{ duration: 200, delay: 600 }}>
-			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
-				>GitHub</a
-			>
-			<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
-				>CV</a
-			>
-		</div>
-	{/if}
+	<div class="personal-links enter" class:faded={isFaded}>
+		<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer"
+			>GitHub</a
+		>
+		<a href="https://github.com/kirill-menke" target="_blank" rel="noopener noreferrer">CV</a>
+	</div>
 </nav>
 
 <style>
@@ -116,6 +108,10 @@
 	}
 
 	.nav-container {
+		--enter-y: -50px;
+		--enter-delay: 300ms;
+		--enter-ease: var(--ease-cubic-out);
+
 		display: inline-flex;
 		align-items: center;
 		height: 35px;
@@ -123,9 +119,7 @@
 		border-radius: 0.5rem;
 		padding: 0 5px;
 		margin: 0 auto;
-		box-shadow:
-			0 1px 2px rgba(0, 0, 0, 0.1),
-			0 3px 6px rgba(0, 0, 0, 0.1);
+		box-shadow: var(--shadow-float);
 		background: rgba(255, 255, 255, 0.75);
 		backdrop-filter: blur(30px);
 	}
@@ -153,11 +147,9 @@
 		z-index: 1;
 	}
 
-	.nav-link:hover {
-		color: var(--color-font-dark);
-	}
-
-	a.active {
+	.nav-link:hover,
+	.nav-link:focus-visible,
+	.nav-link.active {
 		color: var(--color-font-dark);
 	}
 
@@ -174,13 +166,20 @@
 	}
 
 	.personal-links {
+		--enter-duration: 200ms;
+		--enter-delay: 600ms;
+		--enter-y: 0;
+		--enter-ease: linear;
+
 		display: none;
 		font-size: 0.9rem;
 		transition: opacity 0.1s linear;
 	}
 
-	.personal-links.faded {
+	/* Hidden once the page scrolls, but still reachable by keyboard */
+	.personal-links.faded:not(:focus-within) {
 		opacity: 0;
+		pointer-events: none;
 	}
 
 	@media (min-width: 640px) {
@@ -199,7 +198,8 @@
 		transition: color 0.05s linear;
 	}
 
-	.personal-links a:hover {
+	.personal-links a:hover,
+	.personal-links a:focus-visible {
 		color: var(--color-font-dark);
 	}
 </style>

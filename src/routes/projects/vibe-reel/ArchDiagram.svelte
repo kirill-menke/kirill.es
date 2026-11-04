@@ -10,19 +10,29 @@
 	let active = $state(null);
 	let pinned = $state(null);
 	const shown = $derived(active ?? pinned);
+
+	// A hover or keyboard focus previews a flow; a click pins it. Touch fires no hover, and a click
+	// clears the preview, so a tap or Enter always shows the new pinned state.
+	const preview = (key) => (e) => {
+		if (e.pointerType === 'mouse' || e.currentTarget.matches(':focus-visible')) active = key;
+	};
+	const unpreview = () => (active = null);
 </script>
 
-<figure class="arch">
+<figure class="arch vr-panel">
 	<div class="legend" role="group" aria-label="Highlight a flow">
 		{#each flows as f (f.key)}
 			<button
 				class="chip chip-{f.key}"
 				aria-pressed={pinned === f.key}
-				onmouseenter={() => (active = f.key)}
-				onmouseleave={() => (active = null)}
-				onfocus={() => (active = f.key)}
-				onblur={() => (active = null)}
-				onclick={() => (pinned = pinned === f.key ? null : f.key)}
+				onpointerenter={preview(f.key)}
+				onpointerleave={unpreview}
+				onfocus={preview(f.key)}
+				onblur={unpreview}
+				onclick={() => {
+					pinned = pinned === f.key ? null : f.key;
+					active = null;
+				}}
 			>
 				<span class="swatch" aria-hidden="true"></span>{f.label}
 			</button>
@@ -30,8 +40,8 @@
 		<span class="key"><span class="dash" aria-hidden="true"></span>dashed = optional</span>
 	</div>
 
-	<p class="hint" aria-hidden="true">Scroll sideways →</p>
-	<div class="scroll">
+	<p class="vr-hint" aria-hidden="true">Scroll sideways →</p>
+	<div class="vr-scroll">
 		<svg
 			viewBox="0 0 1000 530"
 			role="img"
@@ -229,29 +239,14 @@
 </figure>
 
 <style>
-	.hint {
-		display: none;
-		margin: 0 0 0.5rem;
-		font-size: 0.8rem;
-		color: var(--color-font-light);
-	}
-
-	@media (max-width: 760px) {
-		.hint {
-			display: block;
-		}
-	}
-
 	.arch {
-		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
+		container-type: inline-size;
 	}
 
-	@media (min-width: 640px) {
-		.arch {
-			padding: 2rem;
+	/* The svg's min-width below */
+	@container (width < 760px) {
+		.vr-hint {
+			display: block;
 		}
 	}
 
@@ -269,7 +264,7 @@
 		gap: 0.45rem;
 		font: inherit;
 		font-size: 0.85rem;
-		border: 0.5px solid lightgrey;
+		border: 0.5px solid var(--color-border);
 		background: var(--color-background);
 		color: var(--color-font-dark);
 		padding: 0.35rem 0.8rem;
@@ -306,10 +301,6 @@
 	.dash {
 		width: 1.2rem;
 		border-top: 2px dashed var(--vr-gold);
-	}
-
-	.scroll {
-		overflow-x: auto;
 	}
 
 	svg {
@@ -415,7 +406,7 @@
 	}
 
 	.mono {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: var(--font-mono);
 		fill: var(--vr-gold-ink);
 	}
 

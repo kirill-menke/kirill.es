@@ -1,5 +1,5 @@
 export const projects = {
-	vibe_reel: {
+	vibeReel: {
 		name: 'VibeReel',
 		title: 'Jellyfin client for TV, iPhone & web',
 		link: '/projects/vibe-reel',
@@ -31,84 +31,70 @@ export const projects = {
 };
 
 export const hobbies = {
-	anime_dandadan: {
+	animeDandadan: {
 		name: 'Anime',
 		title: 'Dandadan',
-		link: '/hobbies',
-		preview: 'hobby-previews/dandadan.webp',
+		preview: '/hobby-previews/dandadan.webp',
 		tags: ['Comedy', 'Shōnen'],
 		tileType: 'fade',
 		layout: 'square'
 	},
-	skiing_oppdal: {
+	skiingOppdal: {
 		name: 'Skiing',
 		title: '2023-09-23 @ Oppdal',
-		link: '/hobbies',
-		preview: 'hobby-previews/skiing-oppdal.webp',
-		tags: [],
+		preview: '/hobby-previews/skiing-oppdal.webp',
 		tileType: 'slide',
 		layout: 'wide'
 	},
-	anime_frieren: {
+	animeFrieren: {
 		name: 'Anime',
 		title: 'Frieren',
-		link: '/hobbies',
-		preview: 'hobby-previews/frieren.webp',
+		preview: '/hobby-previews/frieren.webp',
 		tags: ['Iyashikei'],
 		tileType: 'fade',
 		layout: 'square'
 	},
-	bouldering_regensburg: {
+	boulderingRegensburg: {
 		name: 'Bouldering',
 		title: '2025-08-30 @ Boulderwelt Regensburg',
-		link: '/hobbies',
-		preview: 'hobby-previews/bouldering.webp',
-		tags: [],
+		preview: '/hobby-previews/bouldering.webp',
 		tileType: 'slide',
 		layout: 'square'
 	},
-	anime_aot: {
+	animeAot: {
 		name: 'Anime',
 		title: 'Attack on Titan',
-		link: '/hobbies',
-		preview: 'hobby-previews/aot-scarf.webp',
+		preview: '/hobby-previews/aot-scarf.webp',
 		tags: ['Action', 'Horror'],
 		tileType: 'fade',
 		layout: 'square'
 	},
-	anime_hxh: {
+	animeHxh: {
 		name: 'Anime',
 		title: 'Hunter x Hunter',
-		link: '/hobbies',
-		preview: 'hobby-previews/hxh-fishing.webp',
+		preview: '/hobby-previews/hxh-fishing.webp',
 		tags: ['Shōnen'],
 		tileType: 'fade',
 		layout: 'square'
 	},
-	vietnam_children: {
+	vietnamChildren: {
 		name: 'Traveling',
 		title: '2024-11-25 @ Hà Giang',
-		link: '/hobbies',
-		preview: 'hobby-previews/vietnam-children.webp',
-		tags: [],
+		preview: '/hobby-previews/vietnam-children.webp',
 		tileType: 'slide',
 		layout: 'square'
 	},
-	vietnam_ninh_binh: {
+	vietnamNinhBinh: {
 		name: 'Traveling',
 		title: '2024-11-27 @ Ninh Bình',
-		link: '/hobbies',
-		preview: 'hobby-previews/vietnam-ninh-binh.webp',
-		tags: [],
+		preview: '/hobby-previews/vietnam-ninh-binh.webp',
 		tileType: 'slide',
 		layout: 'square'
 	},
-	vietnam_sa_phin: {
+	vietnamSaPhin: {
 		name: 'Traveling',
 		title: '2024-11-25 @ Sà Phìn',
-		link: '/hobbies',
-		preview: 'hobby-previews/vietnam-sa-phin.webp',
-		tags: [],
+		preview: '/hobby-previews/vietnam-sa-phin.webp',
 		tileType: 'slide',
 		layout: 'square'
 	}
@@ -118,116 +104,132 @@ export const hobbies = {
 };
 
 export const books = {
-	thinking_in_systems: {
-		status: 'TO-READ',
+	thinkingInSystems: {
+		status: 'to-read',
 		title: 'Thinking in Systems',
 		author: 'Donella H. Meadows',
-		coverUrl: 'book-covers/thinking-in-systems.jpg',
-		link: 'https://www.goodreads.com/book/show/3828902-thinking-in-systems'
+		coverUrl: '/book-covers/thinking-in-systems.jpg',
+		link: 'https://www.goodreads.com/book/show/3828902-thinking-in-systems',
+		tileType: 'book'
 	},
-	why_greatness_cannot_be_planned: {
-		status: 'TO-READ',
+	whyGreatnessCannotBePlanned: {
+		status: 'to-read',
 		title: 'Why Greatness Cannot Be Planned',
 		author: 'Kenneth O. Stanley, Joel Lehman',
-		coverUrl: 'book-covers/why-greatness-cannot-be-planned.jpg',
-		link: 'https://www.goodreads.com/book/show/25670869-why-greatness-cannot-be-planned'
+		coverUrl: '/book-covers/why-greatness-cannot-be-planned.jpg',
+		link: 'https://www.goodreads.com/book/show/25670869-why-greatness-cannot-be-planned',
+		tileType: 'book'
 	},
-	algorithms_to_live_by: {
-		status: 'READING',
+	algorithmsToLiveBy: {
+		status: 'reading',
 		title: 'Algorithms to Live by',
 		author: 'Brian Christian, Tom Griffiths',
-		coverUrl: 'book-covers/algorithms-to-live-by.jpg',
-		link: 'https://www.goodreads.com/book/show/25666050-algorithms-to-live-by'
+		coverUrl: '/book-covers/algorithms-to-live-by.jpg',
+		link: 'https://www.goodreads.com/book/show/25666050-algorithms-to-live-by',
+		tileType: 'book'
 	},
-	a_little_princess: {
-		status: 'READING',
+	aLittlePrincess: {
+		status: 'reading',
 		title: 'A Little Princess',
 		author: 'Frances Hodgson Burnett',
-		coverUrl: 'book-covers/a-little-princess.jpg',
-		link: 'https://www.goodreads.com/book/show/3008.A_Little_Princess'
+		coverUrl: '/book-covers/a-little-princess.jpg',
+		link: 'https://www.goodreads.com/book/show/3008.A_Little_Princess',
+		tileType: 'book'
 	},
-	thinking_fast_and_slow: {
-		status: 'READ',
+	thinkingFastAndSlow: {
+		status: 'read',
 		title: 'Thinking, Fast and Slow',
 		author: 'Daniel Kahneman',
-		coverUrl: 'book-covers/thinking-fast-and-slow.jpg',
-		link: 'https://www.goodreads.com/book/show/11468377-thinking-fast-and-slow'
+		coverUrl: '/book-covers/thinking-fast-and-slow.jpg',
+		link: 'https://www.goodreads.com/book/show/11468377-thinking-fast-and-slow',
+		tileType: 'book'
 	},
-	how_to_win_friends: {
-		status: 'READ',
+	howToWinFriends: {
+		status: 'read',
 		title: 'How to Win Friends & Influence People',
 		author: 'Dale Carnegie',
-		coverUrl: 'book-covers/how-to-win-friends.jpg',
-		link: 'https://www.goodreads.com/book/show/4865.How_to_Win_Friends_and_Influence_People'
+		coverUrl: '/book-covers/how-to-win-friends.jpg',
+		link: 'https://www.goodreads.com/book/show/4865.How_to_Win_Friends_and_Influence_People',
+		tileType: 'book'
 	},
-	norwegian_wood: {
-		status: 'READ',
+	norwegianWood: {
+		status: 'read',
 		title: 'Norwegian Wood',
 		author: 'Haruki Murakami',
-		coverUrl: 'book-covers/norwegian-wood.jpg',
-		link: 'https://www.goodreads.com/book/show/11297.Norwegian_Wood'
+		coverUrl: '/book-covers/norwegian-wood.jpg',
+		link: 'https://www.goodreads.com/book/show/11297.Norwegian_Wood',
+		tileType: 'book'
 	},
-	hard_boiled_wonderland: {
-		status: 'READ',
+	hardBoiledWonderland: {
+		status: 'read',
 		title: 'Hard-Boiled Wonderland and the End of the World',
 		author: 'Haruki Murakami',
-		coverUrl: 'book-covers/hard-boiled-wonderland.jpg',
-		link: 'https://www.goodreads.com/book/show/10374.Hard_Boiled_Wonderland_and_the_End_of_the_World'
+		coverUrl: '/book-covers/hard-boiled-wonderland.jpg',
+		link: 'https://www.goodreads.com/book/show/10374.Hard_Boiled_Wonderland_and_the_End_of_the_World',
+		tileType: 'book'
 	},
-	im_glad_my_mom_died: {
-		status: 'READ',
+	imGladMyMomDied: {
+		status: 'read',
 		title: "I'm Glad My Mom Died",
 		author: 'Jennette McCurdy',
-		coverUrl: 'book-covers/im-glad-my-mom-died.jpg',
-		link: 'https://www.goodreads.com/book/show/59366244-i-m-glad-my-mom-died'
+		coverUrl: '/book-covers/im-glad-my-mom-died.jpg',
+		link: 'https://www.goodreads.com/book/show/59366244-i-m-glad-my-mom-died',
+		tileType: 'book'
 	},
-	zen_and_the_art: {
-		status: 'READ',
+	zenAndTheArt: {
+		status: 'read',
 		title: 'Zen and the Art of Motorcycle Maintenance',
 		author: 'Robert Pirsig',
-		coverUrl: 'book-covers/zen.jpg',
-		link: 'https://www.goodreads.com/book/show/629.Zen_and_the_Art_of_Motorcycle_Maintenance'
+		coverUrl: '/book-covers/zen.jpg',
+		link: 'https://www.goodreads.com/book/show/629.Zen_and_the_Art_of_Motorcycle_Maintenance',
+		tileType: 'book'
 	},
-	what_you_are_looking_for: {
-		status: 'READ',
+	whatYouAreLookingFor: {
+		status: 'read',
 		title: 'What You Are Looking For Is in the Library',
 		author: 'Michiko Aoyama',
-		coverUrl: 'book-covers/what-you-are-looking-for.jpg',
-		link: 'https://www.goodreads.com/book/show/91274427-what-you-are-looking-for-is-in-the-library'
+		coverUrl: '/book-covers/what-you-are-looking-for.jpg',
+		link: 'https://www.goodreads.com/book/show/91274427-what-you-are-looking-for-is-in-the-library',
+		tileType: 'book'
 	},
 	ikigai: {
-		status: 'READ',
+		status: 'read',
 		title: 'Ikigai',
 		author: 'Ken Mogi',
-		coverUrl: 'book-covers/ikigai.jpg',
-		link: 'https://www.goodreads.com/book/show/36073585-ikigai'
+		coverUrl: '/book-covers/ikigai.jpg',
+		link: 'https://www.goodreads.com/book/show/36073585-ikigai',
+		tileType: 'book'
 	},
-	atomic_habits: {
-		status: 'READ',
+	atomicHabits: {
+		status: 'read',
 		title: 'Atomic Habits',
 		author: 'James Clear',
-		coverUrl: 'book-covers/atomic-habits.jpg',
-		link: 'https://www.goodreads.com/book/show/40121378-atomic-habits'
+		coverUrl: '/book-covers/atomic-habits.jpg',
+		link: 'https://www.goodreads.com/book/show/40121378-atomic-habits',
+		tileType: 'book'
 	},
-	cant_hurt_me: {
-		status: 'READ',
+	cantHurtMe: {
+		status: 'read',
 		title: "Can't Hurt Me",
 		author: 'David Goggins',
-		coverUrl: 'book-covers/cant-hurt-me.jpg',
-		link: 'https://www.goodreads.com/book/show/41721428-can-t-hurt-me'
+		coverUrl: '/book-covers/cant-hurt-me.jpg',
+		link: 'https://www.goodreads.com/book/show/41721428-can-t-hurt-me',
+		tileType: 'book'
 	},
-	the_things_we_leave_unfinished: {
-		status: 'READ',
-		title: 'The Things We Leave Unfinished ',
+	theThingsWeLeaveUnfinished: {
+		status: 'read',
+		title: 'The Things We Leave Unfinished',
 		author: 'Rebecca Yarros',
-		coverUrl: 'book-covers/the-things-we-leave-unfinished.jpg',
-		link: 'https://www.goodreads.com/book/show/53137938-the-things-we-leave-unfinished'
+		coverUrl: '/book-covers/the-things-we-leave-unfinished.jpg',
+		link: 'https://www.goodreads.com/book/show/53137938-the-things-we-leave-unfinished',
+		tileType: 'book'
 	},
-	a_brief_history_of_time: {
-		status: 'READ',
+	aBriefHistoryOfTime: {
+		status: 'read',
 		title: 'A Brief History of Time',
 		author: 'Stephen Hawking',
-		coverUrl: 'book-covers/a-brief-history-of-time.jpg',
-		link: 'https://www.goodreads.com/book/show/3869.A_Brief_History_of_Time'
+		coverUrl: '/book-covers/a-brief-history-of-time.jpg',
+		link: 'https://www.goodreads.com/book/show/3869.A_Brief_History_of_Time',
+		tileType: 'book'
 	}
 };

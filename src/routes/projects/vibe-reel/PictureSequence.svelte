@@ -1,7 +1,38 @@
-<!-- Sequence diagram: how the jailed app gets a picture mode changed -->
-<figure class="seq">
-	<p class="hint" aria-hidden="true">Scroll sideways →</p>
-	<div class="scroll">
+<script>
+	/* Sequence diagram: how the jailed app gets a picture mode changed */
+	const lifelines = [
+		{ x: 90, title: 'TV app', sub: 'jailed web app' },
+		{ x: 300, title: 'Companion', sub: 'root, outside the jail' },
+		{ x: 510, title: 'Luna hub', sub: 'checks permissions' },
+		{ x: 710, title: 'settingsservice', sub: 'owns pictureMode' }
+	];
+
+	/* Each label sits just above its arrow, starting at the arrow's tail */
+	const messages = [
+		{ y: 150, from: 90, to: 296, label: 'GET /picture?mode=filmMaker', mono: true },
+		{
+			y: 190,
+			from: 300,
+			to: 706,
+			label: 'getSystemSettings',
+			mono: true,
+			note: { x: 610, text: 'passes the hub ✓' }
+		},
+		{ y: 225, from: 710, to: 304, label: 'the live dimension (signal type)', reply: true },
+		{
+			y: 262,
+			from: 300,
+			to: 706,
+			label: 'setSystemSettings { pictureMode, dimension }',
+			mono: true
+		},
+		{ y: 300, from: 300, to: 94, label: 'current mode', reply: true }
+	];
+</script>
+
+<figure class="seq vr-panel">
+	<p class="vr-hint" aria-hidden="true">Scroll sideways →</p>
+	<div class="vr-scroll">
 		<svg viewBox="0 0 800 330" role="img" aria-labelledby="seq-title seq-desc">
 			<title id="seq-title">Picture-mode switch sequence</title>
 			<desc id="seq-desc">
@@ -25,10 +56,10 @@
 				</marker>
 			</defs>
 
-			{#each [{ x: 90, t: 'TV app', s: 'jailed web app' }, { x: 300, t: 'Companion', s: 'root, outside the jail' }, { x: 510, t: 'Luna hub', s: 'checks permissions' }, { x: 710, t: 'settingsservice', s: 'owns pictureMode' }] as l (l.t)}
+			{#each lifelines as l (l.title)}
 				<rect class="head" x={l.x - 80} y="10" width="160" height="50" rx="10" />
-				<text class="head-title" x={l.x} y="32" text-anchor="middle">{l.t}</text>
-				<text class="head-sub" x={l.x} y="50" text-anchor="middle">{l.s}</text>
+				<text class="head-title" x={l.x} y="32" text-anchor="middle">{l.title}</text>
+				<text class="head-sub" x={l.x} y="50" text-anchor="middle">{l.sub}</text>
 				<line class="life" x1={l.x} y1="60" x2={l.x} y2="320" />
 			{/each}
 
@@ -38,72 +69,44 @@
 				>multiviewsettings-reel</text
 			>
 
-			<line class="msg" x1="90" y1="150" x2="296" y2="150" marker-end="url(#seq-arrow)" />
-			<text class="msg-text mono" x="100" y="142">GET /picture?mode=filmMaker</text>
-
-			<line class="msg" x1="300" y1="190" x2="706" y2="190" marker-end="url(#seq-arrow)" />
-			<text class="msg-text mono" x="310" y="182">getSystemSettings</text>
-			<text class="msg-text" x="610" y="182" text-anchor="end">passes the hub ✓</text>
-
-			<line
-				class="msg reply"
-				x1="710"
-				y1="225"
-				x2="304"
-				y2="225"
-				marker-end="url(#seq-arrow)"
-			/>
-			<text class="msg-text" x="700" y="217" text-anchor="end"
-				>the live dimension (signal type)</text
-			>
-
-			<line class="msg" x1="300" y1="262" x2="706" y2="262" marker-end="url(#seq-arrow)" />
-			<text class="msg-text mono" x="310" y="254"
-				>setSystemSettings &#123; pictureMode, dimension &#125;</text
-			>
-
-			<line
-				class="msg reply"
-				x1="300"
-				y1="300"
-				x2="94"
-				y2="300"
-				marker-end="url(#seq-arrow)"
-			/>
-			<text class="msg-text" x="290" y="292" text-anchor="end">current mode</text>
+			{#each messages as m (m.y)}
+				{@const rightwards = m.to > m.from}
+				<line
+					class="msg"
+					class:reply={m.reply}
+					x1={m.from}
+					y1={m.y}
+					x2={m.to}
+					y2={m.y}
+					marker-end="url(#seq-arrow)"
+				/>
+				<text
+					class="msg-text"
+					class:mono={m.mono}
+					x={rightwards ? m.from + 10 : m.from - 10}
+					y={m.y - 8}
+					text-anchor={rightwards ? 'start' : 'end'}>{m.label}</text
+				>
+				{#if m.note}
+					<text class="msg-text" x={m.note.x} y={m.y - 8} text-anchor="end"
+						>{m.note.text}</text
+					>
+				{/if}
+			{/each}
 		</svg>
 	</div>
 </figure>
 
 <style>
-	.hint {
-		display: none;
-		margin: 0 0 0.5rem;
-		font-size: 0.8rem;
-		color: var(--color-font-light);
+	.seq {
+		container-type: inline-size;
 	}
 
-	@media (max-width: 760px) {
-		.hint {
+	/* The svg's min-width below */
+	@container (width < 640px) {
+		.vr-hint {
 			display: block;
 		}
-	}
-
-	.seq {
-		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.seq {
-			padding: 2rem;
-		}
-	}
-
-	.scroll {
-		overflow-x: auto;
 	}
 
 	svg {
@@ -169,7 +172,7 @@
 	}
 
 	.mono {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: var(--font-mono);
 		fill: var(--vr-gold-ink);
 	}
 </style>

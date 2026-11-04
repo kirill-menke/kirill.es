@@ -1,51 +1,19 @@
 <script>
-	import { afterNavigate } from '$app/navigation';
-	import WIPTileImages from '#lib/components/WIPTileImages.svelte';
-	import ProjectShowcaseTile from '#lib/components/ProjectShowcaseTile.svelte';
-	import FlagsTile from '#lib/components/flags/FlagsTile.svelte';
+	import TileGrid from '#lib/components/tiles/TileGrid.svelte';
 	import { projects } from '#lib/tile-data.js';
 
-	let visible = false;
-	let fromHomePage = false;
-
-	// Runs once the page is shown; `from` is null on a direct visit.
-	afterNavigate(({ from }) => {
-		fromHomePage = !from || from.url.pathname === '/';
-		visible = true;
-	});
+	const subtitle = [
+		'I build things — Sometimes to solve problems, mostly because I enjoy the process.',
+		'Here you can find a mix of experiments and explorations.'
+	];
 </script>
 
-<h1 class="page-heading">projects.</h1>
-<p class="page-subtitle">
-	I build things — Sometimes to solve problems, mostly because I enjoy the process.<br />
-	Here you can find a mix of experiments and explorations.
-</p>
+<svelte:head>
+	<title>projects. · Kirill's Garden</title>
+	<meta name="description" content={subtitle.join(' ')} />
+</svelte:head>
 
-<div class="grid-container">
-	{#each Object.values(projects) as project, index}
-		{#if visible}
-			{@const square = project.layout === 'square'}
-			<div class="grid-item" class:span-2-cols={!square} class:aspect-wide={!square}>
-				{#if project.tileType === 'showcase'}
-					<ProjectShowcaseTile
-						{project}
-						duration={fromHomePage ? 600 : 300}
-						delay={fromHomePage ? index * 125 : 0}
-					/>
-				{:else if project.tileType === 'flags'}
-					<FlagsTile
-						{project}
-						duration={fromHomePage ? 600 : 300}
-						delay={fromHomePage ? index * 125 : 0}
-					/>
-				{:else}
-					<WIPTileImages
-						{project}
-						duration={fromHomePage ? 600 : 300}
-						delay={fromHomePage ? index * 125 : 0}
-					/>
-				{/if}
-			</div>
-		{/if}
-	{/each}
-</div>
+<h1 class="page-heading">projects.</h1>
+<p class="page-subtitle">{subtitle[0]}<br />{subtitle[1]}</p>
+
+<TileGrid items={Object.values(projects)} />

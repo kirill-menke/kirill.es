@@ -21,15 +21,15 @@
 	];
 </script>
 
-<figure class="builds">
+<figure class="vr-panel">
 	<div class="shared">
 		<strong>src/lib</strong>
 		<span>playback engine · track scoring · Jellyfin and reel-api clients · activity feed</span>
 	</div>
 	<div class="cols">
 		{#each builds as b (b.name)}
-			<div class="col">
-				<span class="name">{b.name}</span>
+			<div class="col vr-card">
+				<span class="vr-eyebrow">{b.name}</span>
 				<ul>
 					{#each b.swaps as s (s)}<li><code>{s}</code></li>{/each}
 				</ul>
@@ -41,19 +41,6 @@
 </figure>
 
 <style>
-	.builds {
-		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.builds {
-			padding: 2rem;
-		}
-	}
-
 	.shared {
 		background: var(--vr-cream);
 		border: 1.5px solid var(--vr-gold);
@@ -65,7 +52,7 @@
 	}
 
 	.shared strong {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: var(--font-mono);
 		color: var(--vr-gold-ink);
 	}
 
@@ -89,9 +76,6 @@
 
 	.col {
 		position: relative;
-		background: var(--color-background);
-		border-radius: 0.5rem;
-		padding: 0.9rem 1rem;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
@@ -107,14 +91,6 @@
 		border-left: 1.5px solid var(--vr-edge);
 	}
 
-	.name {
-		font-size: 0.75rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--vr-gold-ink);
-		font-weight: 600;
-	}
-
 	ul {
 		list-style: none;
 		margin: 0;
@@ -122,15 +98,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.3rem;
-	}
-
-	code {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
-		font-size: 0.75rem;
-		background: var(--vr-cream);
-		color: var(--vr-gold-ink);
-		padding: 0.1rem 0.4rem;
-		border-radius: 0.3rem;
 	}
 
 	.out {

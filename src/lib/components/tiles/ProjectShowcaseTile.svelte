@@ -1,35 +1,22 @@
 <script>
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
-	import { ArrowUpRight } from '@lucide/svelte';
+	import TileHeader from './TileHeader.svelte';
 
-	let { project, duration, delay, useHyperLink = false } = $props();
+	let { item: project, linkSection = false } = $props();
 </script>
 
 <!-- Wide 2:1 tile: a TV cycling through screenshots with a phone beside it -->
-<div
-	role="presentation"
-	class="tile"
-	in:fly={{ y: -15, opacity: 0, duration, delay, easing: backInOut }}
->
+<div role="presentation" class="tile">
 	<a class="tile-link" href={project.link} aria-label="Open the {project.name} project page"></a>
 
-	<div class="project-tile-content">
-		<span class="tile-header-text">
-			{#if useHyperLink}
-				<a href="/projects">
-					Projects
-					<span class="tooltip">Browse projects</span>
-				</a>
-			{:else}
-				Projects
-			{/if}
-			· {project.name}
-		</span>
-		<a href={project.link} class="tile-anchor" aria-label="View project">
-			<span class="tooltip">View Project</span>
-			<ArrowUpRight strokeWidth="2" size="16" />
-		</a>
+	<div class="tile-header">
+		<TileHeader
+			section="Projects"
+			name={project.name}
+			{linkSection}
+			href={project.link}
+			label="View project"
+			duplicate
+		/>
 	</div>
 
 	<div class="stage" aria-hidden="true">
@@ -42,8 +29,8 @@
 		<div class="phone">
 			<img src={project.screens.phone} alt="" loading="lazy" />
 		</div>
-		<div class="tile-title">{project.title}</div>
 	</div>
+	<h2 class="tile-title">{project.title}</h2>
 </div>
 
 <style>
@@ -51,27 +38,6 @@
 		aspect-ratio: 2;
 		overflow: hidden;
 		container-type: size;
-	}
-
-	.tile-link {
-		position: absolute;
-		inset: 0;
-		z-index: 3;
-		border-radius: inherit;
-	}
-
-	.project-tile-content {
-		position: relative;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 0.5rem 0.5rem 0 1.25rem;
-		z-index: 4;
-		pointer-events: none;
-	}
-
-	.project-tile-content a {
-		pointer-events: auto;
 	}
 
 	.stage {
@@ -102,8 +68,8 @@
 		top: max(9cqw, 2.4rem);
 		width: 56cqw;
 		aspect-ratio: 16 / 9;
-		background: #0b0b0d;
-		border: 0.5cqw solid #18181b;
+		background: var(--color-device-screen);
+		border: 0.5cqw solid var(--color-device-bezel);
 		border-radius: 1cqw;
 		overflow: hidden;
 		box-shadow: 0 1.5cqw 3cqw -1cqw rgb(0 0 0 / 0.35);
@@ -143,10 +109,10 @@
 		top: max(12cqw, 3rem);
 		width: 20cqw;
 		aspect-ratio: 1179 / 2556;
-		border: 0.7cqw solid #18181b;
+		border: 0.7cqw solid var(--color-device-bezel);
 		border-radius: 3cqw;
 		overflow: hidden;
-		background: #0b0b0d;
+		background: var(--color-device-screen);
 		box-shadow: 0 1.5cqw 3cqw -1cqw rgb(0 0 0 / 0.4);
 		transition: transform 0.2s ease;
 	}
@@ -176,6 +142,7 @@
 		font-family: var(--font-primary);
 		color: white;
 		font-size: 0.9rem;
+		font-weight: 400;
 		border-radius: 0.5rem;
 		background-color: var(--color-font-dark);
 		opacity: 0.9;

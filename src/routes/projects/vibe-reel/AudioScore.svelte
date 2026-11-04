@@ -1,4 +1,6 @@
 <script>
+	import Switcher from './Switcher.svelte';
+
 	/** A live copy of VibeReel's score() from src/lib/tracks.js, run on example files */
 	function score(track, want) {
 		const parts = [];
@@ -57,25 +59,16 @@
 		}
 	];
 
+	const options = files.map((f, i) => ({ value: i, label: f.name }));
+
 	let selected = $state(0);
 	const file = $derived(files[selected]);
 	const scored = $derived(file.tracks.map((t) => ({ ...t, ...score(t, file.want) })));
 	const best = $derived(Math.max(...scored.map((t) => t.total)));
 </script>
 
-<div class="scorer">
-	<div class="files" role="radiogroup" aria-label="Example file">
-		{#each files as f, i (f.name)}
-			<button
-				role="radio"
-				aria-checked={selected === i}
-				class:active={selected === i}
-				onclick={() => (selected = i)}
-			>
-				{f.name}
-			</button>
-		{/each}
-	</div>
+<div class="vr-panel">
+	<Switcher {options} bind:value={selected} label="Example file" variant="pills" />
 
 	<ul class="tracks">
 		{#each scored as t (t.label)}
@@ -106,47 +99,6 @@
 </div>
 
 <style>
-	.scorer {
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-	}
-
-	@media (min-width: 640px) {
-		.scorer {
-			padding: 2rem;
-		}
-	}
-
-	.files {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-		margin-bottom: 1.25rem;
-	}
-
-	button {
-		font: inherit;
-		font-size: 0.85rem;
-		border: 0.5px solid lightgrey;
-		background: var(--color-background);
-		color: var(--color-font-light);
-		padding: 0.4rem 0.9rem;
-		border-radius: 2rem;
-		cursor: pointer;
-		transition: all 0.1s linear;
-	}
-
-	button:hover {
-		color: var(--color-font-dark);
-	}
-
-	button.active {
-		background: var(--vr-ink);
-		border-color: var(--vr-ink);
-		color: white;
-	}
-
 	.tracks {
 		list-style: none;
 		padding: 0;
@@ -191,7 +143,7 @@
 		margin-left: 0.4rem;
 		font-size: 0.7rem;
 		color: var(--color-font-light);
-		border: 0.5px solid lightgrey;
+		border: 0.5px solid var(--color-border);
 		border-radius: 0.3rem;
 		padding: 0 0.3rem;
 	}
@@ -204,7 +156,7 @@
 	}
 
 	.part {
-		font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		padding: 0.15rem 0.45rem;
 		border-radius: 0.3rem;

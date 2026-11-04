@@ -1,20 +1,22 @@
 <script>
-	import { onMount } from 'svelte';
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
-	// import ProjectTile from '#lib/components/ProjectTile.svelte';
-	import HobbyTileSlide from '#lib/components/HobbyTileSlide.svelte';
-	import HobbyTileFade from '#lib/components/HobbyTileFade.svelte';
-	import BookTile from '#lib/components/BookTile.svelte';
-	import ProjectShowcaseTile from '#lib/components/ProjectShowcaseTile.svelte';
-	import FlagsTile from '#lib/components/flags/FlagsTile.svelte';
+	import TileGrid from '#lib/components/tiles/TileGrid.svelte';
 	import { projects, hobbies, books } from '#lib/tile-data.js';
 
-	// To prevent server-side rendering and play animation
-	let visible = $state(false);
-	onMount(() => {
-		visible = true;
-	});
+	const homeTiles = [
+		projects.vibeReel,
+		projects.flags,
+		hobbies.boulderingRegensburg,
+		books.algorithmsToLiveBy,
+		hobbies.skiingOppdal,
+		books.aLittlePrincess,
+		hobbies.animeFrieren,
+		hobbies.vietnamNinhBinh,
+		hobbies.animeDandadan,
+		hobbies.vietnamSaPhin
+	];
+
+	// The intro drops in first, then the tiles one after another
+	const homeEntrance = (index) => ({ duration: 500, delay: 200 * (index + 1) });
 </script>
 
 <svelte:head>
@@ -22,12 +24,11 @@
 	<meta name="description" content="Kirill's personal website" />
 </svelte:head>
 
-{#if visible}
-	<div class="grid-container">
-		<p
-			class="grid-item span-2-rows span-2-cols"
-			in:fly={{ y: -20, opacity: 0, duration: 500, easing: backInOut }}
-		>
+<h1 class="visually-hidden">Kirill's Garden</h1>
+
+<TileGrid items={homeTiles} timing={homeEntrance} linkSections squareCells>
+	{#snippet lead()}
+		<p class="grid-item span-2-rows span-2-cols enter" style:--enter-y="-20px">
 			Hi there, I'm <span class="dark-font">Kirill</span> 👋 Welcome to my digital garden 🌱 I
 			like
 			<span class="dark-font">AI</span>
@@ -41,73 +42,8 @@
 			This space is a random <span class="dark-font">collection</span> of my ideas,
 			<span class="dark-font">projects</span>, and whatever's caught my attention lately.
 		</p>
-		<div class="grid-item span-2-cols aspect-wide">
-			<ProjectShowcaseTile
-				project={projects.vibe_reel}
-				duration={500}
-				delay={200}
-				useHyperLink
-			/>
-		</div>
-
-		<div class="grid-item aspect-square">
-			<FlagsTile project={projects.flags} duration={500} delay={400} useHyperLink />
-		</div>
-		<div class="grid-item aspect-square">
-			<HobbyTileSlide
-				hobby={hobbies.bouldering_regensburg}
-				duration={500}
-				delay={600}
-				useHyperLink
-			/>
-		</div>
-		<div class="grid-item aspect-square">
-			<BookTile book={books.algorithms_to_live_by} duration={500} delay={800} useHyperLink />
-		</div>
-		<div
-			class="grid-item"
-			class:span-2-cols={hobbies.skiing_oppdal.layout === 'wide'}
-			class:aspect-wide={hobbies.skiing_oppdal.layout === 'wide'}
-		>
-			<HobbyTileSlide
-				hobby={hobbies.skiing_oppdal}
-				duration={500}
-				delay={1000}
-				useHyperLink
-			/>
-		</div>
-		<div class="grid-item aspect-square">
-			<BookTile book={books.a_little_princess} duration={500} delay={1200} useHyperLink />
-		</div>
-		<div class="grid-item aspect-square">
-			<HobbyTileFade hobby={hobbies.anime_frieren} duration={500} delay={1400} useHyperLink />
-		</div>
-		<div class="grid-item aspect-square">
-			<HobbyTileSlide
-				hobby={hobbies.vietnam_ninh_binh}
-				duration={500}
-				delay={1600}
-				useHyperLink
-			/>
-		</div>
-		<div class="grid-item aspect-square">
-			<HobbyTileFade
-				hobby={hobbies.anime_dandadan}
-				duration={500}
-				delay={1800}
-				useHyperLink
-			/>
-		</div>
-		<div class="grid-item aspect-square">
-			<HobbyTileSlide
-				hobby={hobbies.vietnam_sa_phin}
-				duration={500}
-				delay={2000}
-				useHyperLink
-			/>
-		</div>
-	</div>
-{/if}
+	{/snippet}
+</TileGrid>
 
 <style>
 	/* Styles for introduction text */

@@ -1,32 +1,30 @@
 <script>
 	import { onMount } from 'svelte';
-	import { fly } from 'svelte/transition';
-	import { backInOut } from 'svelte/easing';
-	import { replaceState } from '$app/navigation';
-	import FlagCircle from '#lib/components/flags/FlagCircle.svelte';
-	import FlagDetails from '#lib/components/flags/FlagDetails.svelte';
-	import FlagSearch from '#lib/components/flags/FlagSearch.svelte';
-	import FlagStats from '#lib/components/flags/FlagStats.svelte';
+	import { goto } from '$app/navigation';
+	import { scrollBehavior } from '#lib/motion.js';
 	import { byCode, flags, meta } from '#lib/flags/index.js';
+	import FlagCircle from './FlagCircle.svelte';
+	import FlagDetails from './FlagDetails.svelte';
+	import FlagSearch from './FlagSearch.svelte';
+	import FlagStats from './FlagStats.svelte';
 
-	let visible = $state(false);
 	let selected = $state(null); // pinned flag
 	let hovered = $state(null); // flag under the mouse
 	let shown = $derived(hovered ?? selected);
-	let size = $state(0);
+	let size = $state(0); // ring width, 0 until measured (and while prerendering)
 	let compact = $derived(size > 0 && size < 620); // centre too small: details go below the ring
 	let circleTile = $state(null);
 
 	onMount(() => {
 		const code = location.hash.slice(1);
 		if (byCode[code]) selected = code;
-		visible = true;
 	});
 
 	function select(code) {
 		selected = code;
 		hovered = null;
-		replaceState(code ? `#${code}` : location.pathname, {});
+		// Shallow, so it stays on this page: on flags.kirill.es the page itself lives at `/`.
+		goto(code ? `#${code}` : location.pathname, { shallow: true, replace: true });
 	}
 
 	const toggle = (code) => select(selected === code ? null : code);
@@ -38,7 +36,7 @@
 
 	function selectAndShow(code) {
 		select(code);
-		circleTile?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		circleTile.scrollIntoView({ behavior: scrollBehavior(), block: 'center' });
 	}
 
 	function onkeydown(event) {
@@ -68,53 +66,48 @@
 	Hover the ring to look closer, click a flag to pin it.
 </p>
 
-{#if visible}
-	<section
-		class="tile circle-tile"
-		bind:this={circleTile}
-		in:fly={{ y: -15, opacity: 0, duration: 500, easing: backInOut }}
-	>
-		<FlagCircle {selected} onhover={(code) => (hovered = code)} onselect={toggle} bind:size>
-			{#if compact}
-				<p class="ring-label">{shown ? byCode[shown].name : `${flags.length} flags`}</p>
-			{:else if shown}
-				<FlagDetails
-					code={shown}
-					pinned={shown === selected}
-					onselect={select}
-					onstep={step}
-				/>
-			{:else}
-				<div class="intro">
-					<p class="count">{flags.length}</p>
-					<p class="tagline">flags, one circle</p>
-					<p class="hint">
-						Neighbours are {meta.mean_similarity}% alike on average. Use ← → to walk
-						around the ring.
-					</p>
-					<FlagSearch onselect={select} />
-				</div>
-			{/if}
-		</FlagCircle>
+{#snippet details(variant)}
+	<FlagDetails
+		code={shown}
+		pinned={shown === selected}
+		{variant}
+		onselect={select}
+		onstep={step}
+	/>
+{/snippet}
 
+<section class="tile circle-tile enter" bind:this={circleTile}>
+	<!-- The ring and the stats are prerendered; what goes in the centre depends on the measured
+	     size, so it waits for the client rather than show the wrong layout first. -->
+	<FlagCircle {selected} onhover={(code) => (hovered = code)} onselect={toggle} bind:size>
 		{#if compact}
-			<div class="below">
+			<p class="ring-label">{shown ? byCode[shown].name : `${flags.length} flags`}</p>
+		{:else if size && shown}
+			{@render details('centre')}
+		{:else if size}
+			<div class="intro">
+				<p class="count">{flags.length}</p>
+				<p class="tagline">flags, one circle</p>
+				<p class="hint">
+					Neighbours are {meta.mean_similarity}% alike on average. Use ← → to walk around
+					the ring.
+				</p>
 				<FlagSearch onselect={select} />
-				{#if shown}
-					<FlagDetails
-						code={shown}
-						pinned={shown === selected}
-						variant="panel"
-						onselect={select}
-						onstep={step}
-					/>
-				{/if}
 			</div>
 		{/if}
-	</section>
+	</FlagCircle>
 
-	<FlagStats onselect={selectAndShow} delay={250} />
-{/if}
+	{#if compact}
+		<div class="below">
+			<FlagSearch onselect={select} />
+			{#if shown}
+				{@render details('panel')}
+			{/if}
+		</div>
+	{/if}
+</section>
+
+<FlagStats onselect={selectAndShow} delay={250} />
 
 <style>
 	.circle-tile {
