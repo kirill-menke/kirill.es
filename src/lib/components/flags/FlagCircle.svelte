@@ -1,5 +1,5 @@
 <script>
-	import { flags, byCode, imageUrl } from '$lib/flags/index.js';
+	import { flags, byCode, imageUrl } from '#lib/flags/index.js';
 
 	// selected: code of the pinned flag (its closest matches get curves), or null.
 	let {

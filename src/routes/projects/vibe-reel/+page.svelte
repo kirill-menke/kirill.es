@@ -3,18 +3,18 @@
 	import { backInOut } from 'svelte/easing';
 	import { onMount } from 'svelte';
 	import { ArrowUpRight } from '@lucide/svelte';
-	import Section from '$lib/components/vibe-reel/Section.svelte';
-	import TvFrame from '$lib/components/vibe-reel/TvFrame.svelte';
-	import PhoneFrame from '$lib/components/vibe-reel/PhoneFrame.svelte';
-	import PlaybackFlow from '$lib/components/vibe-reel/PlaybackFlow.svelte';
-	import AudioScore from '$lib/components/vibe-reel/AudioScore.svelte';
-	import ArchDiagram from '$lib/components/vibe-reel/ArchDiagram.svelte';
-	import DownloadBar from '$lib/components/vibe-reel/DownloadBar.svelte';
-	import PictureSequence from '$lib/components/vibe-reel/PictureSequence.svelte';
-	import SkipTimeline from '$lib/components/vibe-reel/SkipTimeline.svelte';
-	import Pipeline from '$lib/components/vibe-reel/Pipeline.svelte';
-	import BeforeAfter from '$lib/components/vibe-reel/BeforeAfter.svelte';
-	import ThreeBuilds from '$lib/components/vibe-reel/ThreeBuilds.svelte';
+	import Section from '#lib/components/vibe-reel/Section.svelte';
+	import TvFrame from '#lib/components/vibe-reel/TvFrame.svelte';
+	import PhoneFrame from '#lib/components/vibe-reel/PhoneFrame.svelte';
+	import PlaybackFlow from '#lib/components/vibe-reel/PlaybackFlow.svelte';
+	import AudioScore from '#lib/components/vibe-reel/AudioScore.svelte';
+	import ArchDiagram from '#lib/components/vibe-reel/ArchDiagram.svelte';
+	import DownloadBar from '#lib/components/vibe-reel/DownloadBar.svelte';
+	import PictureSequence from '#lib/components/vibe-reel/PictureSequence.svelte';
+	import SkipTimeline from '#lib/components/vibe-reel/SkipTimeline.svelte';
+	import Pipeline from '#lib/components/vibe-reel/Pipeline.svelte';
+	import BeforeAfter from '#lib/components/vibe-reel/BeforeAfter.svelte';
+	import ThreeBuilds from '#lib/components/vibe-reel/ThreeBuilds.svelte';
 
 	const REPO = 'https://github.com/kirill-menke/vibe-reel';
 	const img = (name) => `/project-previews/vibe-reel/${name}.webp`;
@@ -180,8 +180,8 @@
 					season or a requested movie is ready.
 				</p>
 				<p>
-					<strong>The web client</strong> puts the phone's screens in a desktop layout for
-					Chrome and Firefox, with mouse and keyboard, and streams through Media Source Extensions.
+					<strong>The web client</strong> puts the phone's screens in a desktop layout for Chrome
+					and Firefox, with mouse and keyboard, and streams through Media Source Extensions.
 				</p>
 				<p>
 					Both reach Jellyfin and reel-api through <strong>one HTTPS origin</strong>: the
@@ -433,8 +433,8 @@
 			<ul>
 				<li>
 					Large backdrops are decoded before they are shown: an undecoded 1920 px image
-					blocked a frame for 60–220 ms, and <code>decoding="async"</code> does nothing on
-					this TV.
+					blocked a frame for 60–220 ms, and <code>decoding="async"</code> does nothing on this
+					TV.
 				</li>
 				<li>
 					The D-pad engine (<code>src/lib/focus.js</code>) scores candidates geometrically
@@ -457,8 +457,8 @@
 		<ThreeBuilds />
 		<p>
 			Builds are deterministic, so an <strong>md5 match of a scratch build</strong> proves that
-			a test- or docs-only change shipped nothing. Svelte doesn't fold constants in templates,
-			so a small custom Vite plugin does it before compilation.
+			a test- or docs-only change shipped nothing. Svelte doesn't fold constants in templates, so
+			a small custom Vite plugin does it before compilation.
 		</p>
 	</Section>
 

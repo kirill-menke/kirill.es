@@ -3,11 +3,11 @@
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
 	import { replaceState } from '$app/navigation';
-	import FlagCircle from '$lib/components/flags/FlagCircle.svelte';
-	import FlagDetails from '$lib/components/flags/FlagDetails.svelte';
-	import FlagSearch from '$lib/components/flags/FlagSearch.svelte';
-	import FlagStats from '$lib/components/flags/FlagStats.svelte';
-	import { byCode, flags, meta } from '$lib/flags/index.js';
+	import FlagCircle from '#lib/components/flags/FlagCircle.svelte';
+	import FlagDetails from '#lib/components/flags/FlagDetails.svelte';
+	import FlagSearch from '#lib/components/flags/FlagSearch.svelte';
+	import FlagStats from '#lib/components/flags/FlagStats.svelte';
+	import { byCode, flags, meta } from '#lib/flags/index.js';
 
 	let visible = $state(false);
 	let selected = $state(null); // pinned flag

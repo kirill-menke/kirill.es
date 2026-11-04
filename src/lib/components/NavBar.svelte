@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { fly, fade } from 'svelte/transition';
 
 	const navItems = [
@@ -11,9 +11,9 @@
 		{ label: 'Hobbies', href: '/hobbies' }
 	];
 
-	let currentPath = $derived($page.url.pathname);
+	let currentPath = $derived(page.url.pathname);
 	// flags.kirill.es serves /flags at its root (Cloudflare rewrite); its links lead back to kirill.es.
-	let siteOrigin = $derived($page.url.hostname.startsWith('flags.') ? 'https://kirill.es' : '');
+	let siteOrigin = $derived(page.url.hostname.startsWith('flags.') ? 'https://kirill.es' : '');
 
 	let visible = $state(false);
 	let hoveredIndex = $state(null);

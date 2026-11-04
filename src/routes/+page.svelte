@@ -2,13 +2,13 @@
 	import { onMount } from 'svelte';
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
-	// import ProjectTile from '$lib/components/ProjectTile.svelte';
-	import HobbyTileSlide from '$lib/components/HobbyTileSlide.svelte';
-	import HobbyTileFade from '$lib/components/HobbyTileFade.svelte';
-	import BookTile from '$lib/components/BookTile.svelte';
-	import ProjectShowcaseTile from '$lib/components/ProjectShowcaseTile.svelte';
-	import FlagsTile from '$lib/components/flags/FlagsTile.svelte';
-	import { projects, hobbies, books } from '$lib/tile-data.js';
+	// import ProjectTile from '#lib/components/ProjectTile.svelte';
+	import HobbyTileSlide from '#lib/components/HobbyTileSlide.svelte';
+	import HobbyTileFade from '#lib/components/HobbyTileFade.svelte';
+	import BookTile from '#lib/components/BookTile.svelte';
+	import ProjectShowcaseTile from '#lib/components/ProjectShowcaseTile.svelte';
+	import FlagsTile from '#lib/components/flags/FlagsTile.svelte';
+	import { projects, hobbies, books } from '#lib/tile-data.js';
 
 	// To prevent server-side rendering and play animation
 	let visible = $state(false);

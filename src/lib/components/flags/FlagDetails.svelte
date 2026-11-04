@@ -1,6 +1,6 @@
 <script>
 	import { ArrowUpRight, ChevronLeft, ChevronRight } from '@lucide/svelte';
-	import { byCode, imageUrl, flags } from '$lib/flags/index.js';
+	import { byCode, imageUrl, flags } from '#lib/flags/index.js';
 	import ColourBar from './ColourBar.svelte';
 
 	// variant 'centre' fits inside the ring (lead cut to three lines), 'panel' sits below it.

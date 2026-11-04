@@ -21,14 +21,13 @@
 let
   # An allowlist, not a denylist: nothing outside these paths can end up in the
   # world-readable /nix/store, whatever else lies in the working tree (.env
-  # files, logs/). A git flake already drops untracked files, but
+  # files). A git flake already drops untracked files, but
   # `nix build path:.` or a dirty tree would not.
   src = lib.fileset.toSource {
     root = ../.;
     fileset = lib.fileset.unions [
       ../package.json
       ../package-lock.json
-      ../svelte.config.js
       ../vite.config.js
       ../src
       ../static
@@ -46,11 +45,6 @@ buildNpmPackage {
   npmConfigHook = importNpmLock.npmConfigHook;
 
   nativeBuildInputs = [ makeWrapper ];
-
-  env = {
-    # "prepare": "husky" must not try to install git hooks in the sandbox.
-    HUSKY = "0";
-  };
 
   # `npm run build` = `vite build`, which also prerenders every page.
   npmBuildScript = "build";

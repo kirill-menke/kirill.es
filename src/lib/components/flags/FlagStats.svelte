@@ -1,7 +1,7 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { backInOut } from 'svelte/easing';
-	import { byCode, flags, imageUrl, meta, stats } from '$lib/flags/index.js';
+	import { byCode, flags, imageUrl, meta, stats } from '#lib/flags/index.js';
 
 	let { onselect = () => {}, delay = 0 } = $props();
 
@@ -151,8 +151,8 @@
 		<ol class="steps body">
 			<li>
 				<p>
-					<span class="strong">Download.</span> All {count} flags of the UN member states,
-					as SVG from flagcdn.com.
+					<span class="strong">Download.</span> All {count} flags of the UN member states, as
+					SVG from flagcdn.com.
 				</p>
 			</li>
 			<li>
@@ -172,9 +172,9 @@
 			<li>
 				<p>
 					<span class="strong">Arrange.</span> Find the circle with the smallest
-					difference between neighbours, plus a pull of {meta.pull} per place towards each
-					flag's {meta.matches} closest matches, so whole colour families end up together.
-					Neighbours are now {meta.mean_similarity}% alike on average.
+					difference between neighbours, plus a pull of {meta.pull} per place towards each flag's
+					{meta.matches} closest matches, so whole colour families end up together. Neighbours
+					are now {meta.mean_similarity}% alike on average.
 				</p>
 			</li>
 		</ol>

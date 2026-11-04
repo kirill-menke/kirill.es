@@ -1,23 +1,16 @@
 <script>
-	import { onMount } from 'svelte';
-	import { navigating } from '$app/stores';
-	import WIPTileImages from '$lib/components/WIPTileImages.svelte';
-	import ProjectShowcaseTile from '$lib/components/ProjectShowcaseTile.svelte';
-	import FlagsTile from '$lib/components/flags/FlagsTile.svelte';
-	import { projects } from '$lib/tile-data.js';
+	import { afterNavigate } from '$app/navigation';
+	import WIPTileImages from '#lib/components/WIPTileImages.svelte';
+	import ProjectShowcaseTile from '#lib/components/ProjectShowcaseTile.svelte';
+	import FlagsTile from '#lib/components/flags/FlagsTile.svelte';
+	import { projects } from '#lib/tile-data.js';
 
 	let visible = false;
 	let fromHomePage = false;
-	let previousRoute = null;
 
-	navigating.subscribe((nav) => {
-		if (nav && nav.from) {
-			previousRoute = nav.from.url.pathname;
-		}
-	});
-
-	onMount(() => {
-		fromHomePage = previousRoute === '/' || previousRoute === null;
+	// Runs once the page is shown; `from` is null on a direct visit.
+	afterNavigate(({ from }) => {
+		fromHomePage = !from || from.url.pathname === '/';
 		visible = true;
 	});
 </script>
