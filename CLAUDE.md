@@ -11,14 +11,14 @@ npm ci                 # install
 npm run dev            # dev server, http://localhost:5173
 npm run build          # vite build: adapter-node output + every page prerendered, into build/
 npm run preview        # serve the production build
-npm run lint           # ESLint with --max-warnings 0: any warning fails CI
-npm run format         # Prettier --write (format:check is what CI runs)
+npm run lint           # ESLint with --max-warnings 0: any warning counts as a failure
+npm run format         # Prettier --write (format:check only checks)
 nix build              # build the Nix package (nix/package.nix); `nix run` serves it on :3000
 ```
 
 There is no test runner. To verify a change, run `npm run dev` or `npm run build && npm run preview` and open the affected routes.
 
-There are no git hooks. Run `npm run lint && npm run format:check` before pushing. CI (`.github/workflows/ci-cd.yml`) runs format check, lint, build and `nix flake check`, plus an AI review on pull requests into `main`.
+There are no git hooks and no CI. Run `npm run lint && npm run format:check` before pushing, and `nix flake check` to build the Nix package when a change touches dependencies or the build.
 
 ## Architecture
 
@@ -33,5 +33,5 @@ There are no git hooks. Run `npm run lint && npm run format:check` before pushin
 
 - **Svelte syntax is mixed.** Newer components use runes (`$props`, `$state`, `$derived`). Older ones (`BookTile`, `HobbyTile*`, `ProjectTile`, `WIPTile*`, several pages, `+layout.svelte`) still use legacy `export let` and `<slot>`. Svelte 5 treats each file as either runes or legacy mode, so do not mix the two in one component. Use runes in new code.
 - **New build inputs need adding to the Nix allowlist.** `nix/package.nix` builds from an explicit fileset (`package.json`, `package-lock.json`, `vite.config.js`, `src`, `static`). Add any new top-level file the build needs there, or the Nix build fails. Runtime imports must be in `dependencies`: devDependencies are pruned from the package.
-- **Branches and releases.** Work directly on `main`; there is no `dev` branch. Use a short-lived branch and a PR into `main` only when you want the AI review. Pushing deploys nothing: production is deployed by hand from a separate config repo that pins a commit of `main`, so only commit finished work there. CI never deploys, and there is no staging.
+- **Branches and releases.** Work directly on `main`; there is no `dev` branch. Pushing deploys nothing: production is deployed by hand from a separate config repo that pins a commit of `main`, so only commit finished work there. There is no staging.
 - **Commits.** Use Conventional Commits, with `!` for breaking changes (`feat!:`, `build!:`).
