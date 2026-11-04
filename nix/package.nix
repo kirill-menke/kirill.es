@@ -14,7 +14,7 @@
   lib,
   buildNpmPackage,
   importNpmLock,
-  nodejs_22,
+  nodejs_26,
   makeWrapper,
   version ? "0-unstable",
 }:
@@ -34,8 +34,8 @@ let
     ];
   };
 
-  # Node 22, as in CI.
-  nodejs = nodejs_22;
+  # Node 26: the current LTS line (active until 2027-10, supported until 2029-04).
+  nodejs = nodejs_26;
 in
 buildNpmPackage {
   pname = "kirill-es";
