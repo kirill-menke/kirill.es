@@ -77,6 +77,24 @@
 	background-color: var(--color-background-tile-hover);
 }
 
+/* Dark tiles: add `tile-dark` next to `tile`. The section link and the focus ring turn light,
+   since their usual dark colour would vanish. */
+.tile.tile-dark {
+	background: var(--color-background-tile-dark);
+}
+
+.tile.tile-dark:hover {
+	background: var(--color-background-tile-dark-hover);
+}
+
+.tile-dark .tile-header-text a:hover {
+	color: var(--color-font-on-dark);
+}
+
+.tile-dark .tile-link:focus-visible {
+	outline-color: var(--color-font-on-dark);
+}
+
 /* Header row: "Section · Name" on the left, the arrow link on the right */
 .tile-header {
 	display: flex;
@@ -202,4 +220,38 @@
 	text-align: center;
 	width: fit-content;
 	border: 1px solid currentColor;
+}
+
+/* Three layers cross-fading in a 12 s loop, each up for 4 s: give each one `--i: 0 | 1 | 2`.
+   The negative delays start the loop mid-cycle; -8s per layer equals +4s modulo 12s, so each
+   layer follows the one before. Elements that share an index stay in step (a screen and its
+   glow, say). Under reduced motion only the first layer shows. */
+.tile-cycle {
+	opacity: 0;
+	animation: tile-cycle 12s infinite;
+	animation-delay: calc(-1s - var(--i) * 8s);
+}
+
+@keyframes tile-cycle {
+	0% {
+		opacity: 0;
+	}
+	5%,
+	33% {
+		opacity: 1;
+	}
+	38%,
+	100% {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tile-cycle {
+		animation: none;
+	}
+
+	.tile-cycle:first-child {
+		opacity: 1;
+	}
 }

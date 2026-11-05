@@ -25,6 +25,10 @@
 	--color-background-dark: oklch(0.93 0 0);
 	--color-background-tile: oklch(0.985 0 0);
 	--color-background-tile-hover: oklch(0.975 0 0);
+	/* Dark tiles (.tile-dark in tiles.css) and the text on them */
+	--color-background-tile-dark: oklch(0.16 0.005 80);
+	--color-background-tile-dark-hover: oklch(0.18 0.005 80);
+	--color-font-on-dark: oklch(0.95 0 0);
 
 	--color-border: lightgrey;
 
