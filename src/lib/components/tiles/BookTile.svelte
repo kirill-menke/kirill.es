@@ -31,6 +31,9 @@
 	.tile {
 		aspect-ratio: 1;
 		justify-content: space-between;
+		/* Its width comes from the grid column, never from the text inside: a long title can no
+		   longer widen its column past the page. The layout below follows that width instead. */
+		container-type: inline-size;
 	}
 
 	.book-tile-content {
@@ -65,6 +68,20 @@
 		flex: 1;
 		min-width: 0;
 		overflow-wrap: break-word;
+	}
+
+	/* Narrow columns (two to four per row, from tablets to 1440px laptops): below 340px the
+	   full-size cover and spacing leave the title under 100px, so both shrink */
+	@container (max-width: 340px) {
+		.book-tile-content {
+			gap: 1.25rem;
+			padding: 0 1.25rem 1.5rem;
+		}
+
+		.book-cover {
+			width: 110px;
+			height: 165px;
+		}
 	}
 
 	/* Phones show one tile per row: a square would be mostly empty, so the tile only grows as
