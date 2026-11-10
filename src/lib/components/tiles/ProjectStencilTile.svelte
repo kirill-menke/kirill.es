@@ -8,7 +8,7 @@
 	const size = $derived(Math.min(31, 70 / (value.length * 0.62)));
 </script>
 
-<!-- Wide 2:1 dark tile: the screens play inside the fact's giant cut-out digits, which glow onto
+<!-- Wide 2:1 dark tile: the screen shows through the fact's giant cut-out digits, which glow onto
      the wall; the unit and caption sit beside them -->
 <div role="presentation" class="tile tile-dark">
 	<a class="tile-link" href={project.link} aria-label="Open the {project.name} project page"></a>
@@ -27,18 +27,10 @@
 	<h2 class="fact" style:--size="{size}cqw">
 		<span class="number" aria-hidden="true">
 			<span class="layer glow">
-				{#each project.screens as src, i (src)}
-					<span class="digits tile-cycle" style="--i: {i}; background-image: url('{src}')"
-						>{value}</span
-					>
-				{/each}
+				<span class="digits" style:background-image="url('{project.screen}')">{value}</span>
 			</span>
 			<span class="layer">
-				{#each project.screens as src, i (src)}
-					<span class="digits tile-cycle" style="--i: {i}; background-image: url('{src}')"
-						>{value}</span
-					>
-				{/each}
+				<span class="digits" style:background-image="url('{project.screen}')">{value}</span>
 			</span>
 		</span>
 		<span class="visually-hidden">{value}</span>
@@ -80,7 +72,7 @@
 		grid-area: 1 / 1;
 	}
 
-	/* Heavy sans digits make wide windows; each copy shows one screen through its letters */
+	/* Heavy sans digits make wide windows onto the screen */
 	.digits {
 		font-family: var(--font-primary);
 		font-weight: 850;

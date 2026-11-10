@@ -1,6 +1,9 @@
 <script>
-	/** A page section: a claim heading, a one-line lede, the body and optional code notes */
-	let { id, heading, lede = '', children, code } = $props();
+	/**
+	 * A page section: a claim heading, a one-line lede in the italic serif of the page's
+	 * handwritten notes, and the body. Each block comes into focus as it scrolls in.
+	 */
+	let { id, heading, lede = '', children } = $props();
 </script>
 
 <section {id} class="vr-section">
@@ -11,26 +14,20 @@
 	<div class="body">
 		{@render children()}
 	</div>
-	{#if code}
-		<details>
-			<summary>In the code</summary>
-			<div class="code-notes">
-				{@render code()}
-			</div>
-		</details>
-	{/if}
 </section>
 
 <style>
 	.vr-section {
-		margin: 5rem 0;
+		margin: 8rem 0;
 		scroll-margin-top: 2rem;
 	}
 
+	/* Headings stay on one line: on a phone they shrink with the column (3.5rem of page
+	   padding), sized for the longest, about 14 em wide */
 	h2 {
 		font-family: var(--font-secondary);
 		font-weight: 400;
-		font-size: 2rem;
+		font-size: min(2rem, (100vw - 3.5rem) / 14);
 		line-height: 1.2;
 		color: var(--color-font-dark);
 		margin: 0 0 0.5rem;
@@ -44,10 +41,31 @@
 	}
 
 	.lede {
-		font-size: 1.1rem;
-		color: var(--color-font-light);
+		font-family: var(--font-secondary);
+		font-style: italic;
+		font-size: 1.3rem;
+		line-height: 1.4;
+		color: var(--vr-muted);
 		margin: 0 0 1.75rem;
 		max-width: 65ch;
+	}
+
+	/* A second part folded into the section: its claim as a smaller heading */
+	.body :global(h3) {
+		font-family: var(--font-secondary);
+		font-weight: 400;
+		font-size: min(1.5rem, (100vw - 3.5rem) / 13.5);
+		line-height: 1.25;
+		color: var(--color-font-dark);
+		margin: 3.5rem 0 0.75rem;
+		max-width: 34ch;
+		scroll-margin-top: 2rem;
+	}
+
+	@media (min-width: 640px) {
+		.body :global(h3) {
+			font-size: 1.75rem;
+		}
 	}
 
 	.body :global(p),
@@ -57,8 +75,7 @@
 		max-width: 70ch;
 	}
 
-	.body :global(code),
-	.code-notes :global(code) {
+	.body :global(code) {
 		font-family: var(--font-mono);
 		font-size: 0.85em;
 		background: var(--vr-cream);
@@ -72,39 +89,29 @@
 		font-weight: 500;
 	}
 
-	details {
-		margin-top: 1.5rem;
-		border-radius: 0.5rem;
-		background: var(--color-background-tile);
-		max-width: 80ch;
+	/* The entrance is scroll-driven, so nothing waits on script. Each block runs on its own
+	   view, from entering the viewport to a fixed distance later, so tall blocks finish as soon
+	   as short ones, and only the backwards fill holds, so no blur stays behind. The body's
+	   blocks belong to the widgets: :where() keeps their rule at no specificity, so any
+	   animation of their own wins. */
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			h2,
+			.lede,
+			:where(.body) > :global(*) {
+				animation: focus linear backwards;
+				animation-timeline: view();
+				animation-range: entry 0% entry 14rem;
+			}
+		}
 	}
 
-	summary {
-		cursor: pointer;
-		padding: 0.75rem 1.25rem;
-		font-size: 0.9rem;
-		color: var(--color-font-light);
-		transition: color 0.1s linear;
-	}
-
-	summary:hover,
-	details[open] summary {
-		color: var(--color-font-dark);
-	}
-
-	.code-notes {
-		padding: 0 1.25rem 1rem;
-		font-size: 0.9rem;
-	}
-
-	.code-notes :global(li),
-	.code-notes :global(p) {
-		color: var(--vr-muted);
-		line-height: 1.6;
-	}
-
-	.code-notes :global(ul) {
-		padding-left: 1.1rem;
-		margin: 0;
+	/* From soft to sharp, the picture breathing a little as the lens moves */
+	@keyframes focus {
+		from {
+			opacity: 0.35;
+			filter: blur(10px);
+			scale: 1.015;
+		}
 	}
 </style>

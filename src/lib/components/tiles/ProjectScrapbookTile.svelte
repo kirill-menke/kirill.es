@@ -6,7 +6,7 @@
 	const { value, unit, caption } = $derived(project.fact);
 </script>
 
-<!-- Wide 2:1 tile: a taped-in print of the screens, tilted, with the project's fact handwritten
+<!-- Wide 2:1 tile: a taped-in print of the screen, tilted, with the project's fact handwritten
      beside it and an arrow drawn on after the entrance -->
 <div role="presentation" class="tile">
 	<a class="tile-link" href={project.link} aria-label="Open the {project.name} project page"></a>
@@ -23,11 +23,7 @@
 	</div>
 
 	<div class="print" aria-hidden="true">
-		<div class="photo">
-			{#each project.screens as src, i (src)}
-				<img {src} alt="" class="tile-cycle" style="--i: {i}" loading="lazy" />
-			{/each}
-		</div>
+		<div class="photo"><img src={project.screen} alt="" loading="lazy" /></div>
 		<span class="tape left"></span>
 		<span class="tape right"></span>
 	</div>

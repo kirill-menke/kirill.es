@@ -1,50 +1,11 @@
 <script>
-	import { ArrowUpRight } from '@lucide/svelte';
 	import Section from './Section.svelte';
-	import TvFrame from './TvFrame.svelte';
-	import PhoneFrame from './PhoneFrame.svelte';
-	import PlaybackFlow from './PlaybackFlow.svelte';
-	import AudioScore from './AudioScore.svelte';
+	import Hero from './Hero.svelte';
+	import TvScreens from './TvScreens.svelte';
+	import Morph from './engine/Morph.svelte';
 	import ArchDiagram from './ArchDiagram.svelte';
 	import DownloadBar from './DownloadBar.svelte';
-	import PictureSequence from './PictureSequence.svelte';
-	import SkipTimeline from './SkipTimeline.svelte';
 	import Pipeline from './Pipeline.svelte';
-	import BeforeAfter from './BeforeAfter.svelte';
-	import ThreeBuilds from './ThreeBuilds.svelte';
-
-	const REPO = 'https://github.com/kirill-menke/vibe-reel';
-	const img = (name) => `/project-previews/vibe-reel/${name}.webp`;
-
-	const specs = [
-		'HEVC · AV1 Direct Play',
-		'HDR10 · Dolby Vision',
-		'DD+ Atmos passthrough',
-		'PGS subtitles'
-	];
-
-	const screens = [
-		{
-			src: img('tv-home'),
-			title: 'Home',
-			text: 'A hero for the title you are in the middle of, then Continue Watching, Next Up and what is trending on IMDb.'
-		},
-		{
-			src: img('tv-detail'),
-			title: 'Detail',
-			text: 'Resume, start over, mark watched, and a trailer that plays in the app’s own player. Badges show what is really in the file.'
-		},
-		{
-			src: img('tv-player'),
-			title: 'Player',
-			text: 'Chapter ticks on the scrubber, trickplay previews, Skip Intro, and audio, subtitle and picture-mode panels.'
-		},
-		{
-			src: img('tv-search'),
-			title: 'Search',
-			text: 'Its own on-screen keyboard. Titles you don’t have can be added, and a download in progress shows up right in the results.'
-		}
-	];
 
 	const trailerStages = [
 		{
@@ -64,26 +25,6 @@
 			text: '45 s buffered ahead, 15 s behind; gaps under 1 s are jumped'
 		}
 	];
-
-	const refreshStages = [
-		{ title: 'UI at 60 Hz', text: 'smooth focus movement' },
-		{ title: '24p film plays', text: 'the panel switches to 48 Hz to match' },
-		{
-			title: 'Back to the UI',
-			text: 'webOS leaves the panel at 48 Hz: 17–20% of frames “drop”'
-		},
-		{ title: '1 s 60p clip', text: 'played under the page, invisible to the user' },
-		{ title: '60 Hz again', text: 'also run at launch and on resume' }
-	];
-
-	const stats = [
-		{ value: '2,400', label: 'Vitest cases across TV, phone and web' },
-		{ value: '1,210', label: 'pytest tests, network blocked, random order' },
-		{ value: '202', label: 'end-to-end tests against fake servers' },
-		{ value: '0', label: 'type errors in strict JSDoc checking' },
-		{ value: '89–99%', label: 'mutation scores on the player engine' },
-		{ value: '71.6%', label: 'top-1 search accuracy, up from 38%' }
-	];
 </script>
 
 <svelte:head>
@@ -95,438 +36,124 @@
 </svelte:head>
 
 <article class="vr">
-	<header class="hero">
-		<h1 class="page-heading">VibeReel.</h1>
-		<p class="page-subtitle">
-			A Jellyfin client for the TV, the iPhone and the browser, with an optional backend for
-			Sonarr and Radarr. On LG webOS TVs it plays the original file, untouched.
-		</p>
-
-		<div class="stage">
-			<div class="stage-tv enter">
-				<TvFrame
-					srcs={[img('tv-home'), img('tv-detail'), img('tv-player')]}
-					alt="VibeReel on the TV: home screen with Continue Watching"
-					eager
-				/>
-			</div>
-			<div class="stage-phone enter">
-				<PhoneFrame src={img('iphone-home')} alt="VibeReel on the iPhone: home screen" />
-			</div>
-		</div>
-
-		<ul class="specs">
-			{#each specs as s (s)}<li>{s}</li>{/each}
-		</ul>
-		<div class="meta">
-			<span>Svelte 5 · webOS · FastAPI · Nix · 2026</span>
-			<a href={REPO} target="_blank" rel="noopener noreferrer">
-				Source on GitHub <ArrowUpRight size="14" strokeWidth="2" />
-			</a>
-		</div>
-	</header>
+	<Hero />
 
 	<Section
 		id="tv"
-		heading="It feels like a native TV app, built entirely on web tech"
-		lede="Svelte 5 in the TV's Chromium 120, driven by the remote's D-pad, packaged as a 147 KB webOS app."
+		heading="Feels native, runs on web tech"
+		lede="Made for the couch: quick, smooth, and driven entirely by the arrow keys on the TV remote."
 	>
-		<div class="screens">
-			{#each screens as s (s.title)}
-				<div class="screen">
-					<TvFrame srcs={[s.src]} alt="VibeReel TV {s.title} screen" />
-					<div class="screen-caption">
-						<strong>{s.title}</strong>
-						<span>{s.text}</span>
-					</div>
-				</div>
-			{/each}
-		</div>
+		<TvScreens />
 	</Section>
 
 	<Section
 		id="phone"
-		heading="The phone and the browser get the same engine"
-		lede="Playback, track choice and the download feed live in one shared src/lib folder."
+		heading="One engine, three screens"
+		lede="Playback, track choice and the download feed are shared by every app."
 	>
-		<div class="phone-row">
-			<div class="phones">
-				<PhoneFrame src={img('iphone-home')} alt="iPhone home screen" />
-				<PhoneFrame src={img('iphone-player')} alt="iPhone player" />
-			</div>
-			<div class="phone-text">
-				<p>
-					<strong>The iPhone app</strong> is a home-screen PWA with its own touch UI on top
-					of the TV's engine: offline downloads, AirPlay, and push notifications when a new
-					season or a requested movie is ready.
-				</p>
-				<p>
-					<strong>The web client</strong> puts the phone's screens in a desktop layout for Chrome
-					and Firefox, with mouse and keyboard, and streams through Media Source Extensions.
-				</p>
-				<p>
-					Both reach Jellyfin and reel-api through <strong>one HTTPS origin</strong>: the
-					app at
-					<code>/</code>, Jellyfin at <code>/jf</code>, reel-api at <code>/ml</code>. No
-					CORS, and one service-worker scope.
-				</p>
-			</div>
-		</div>
-	</Section>
-
-	<Section
-		id="playback"
-		heading="Nothing gets transcoded on the way to the TV's screen"
-		lede="Most clients let the server transcode when unsure, and lose HDR or Atmos on the way. VibeReel leaves Jellyfin no such option."
-	>
-		<PlaybackFlow />
-		{#snippet code()}
-			<ul>
-				<li>
-					<code>deviceProfile(burn)</code> in <code>src/lib/tracks.js</code> builds the
-					profile;
-					<code>TranscodingProfiles</code> is empty unless a DVD subtitle needs burning in.
-				</li>
-				<li>
-					An end-to-end “oracle mutant” adds a transcoding profile back on purpose, to
-					prove the tests catch it.
-				</li>
-				<li>
-					Audio switches in place through <code>video.audioTracks[i].enabled</code>,
-					without restarting the stream. Crossing into or out of burn-in restarts at the
-					same position and stops the old session, so the ffmpeg job on the NAS ends.
-				</li>
-			</ul>
-		{/snippet}
-	</Section>
-
-	<Section
-		id="audio"
-		heading="The best audio a TV app can send is DD+, not TrueHD"
-		lede="webOS passes lossless audio only from an HDMI input. Audio from an app leaves as PCM or Dolby Digital (Plus)."
-	>
-		<p>
-			So when a file has both TrueHD and a DD+ Atmos track, and most do, VibeReel picks DD+:
-			lossy Atmos, but the best the platform allows. Every audio track gets a score. Pick a
-			file to see how the rules play out:
-		</p>
-		<AudioScore />
-		{#snippet code()}
-			<ul>
-				<li>
-					<code>score()</code> and <code>describeTracks()</code> in
-					<code>src/lib/tracks.js</code>; this widget runs the same rules.
-				</li>
-				<li>
-					A pick you make is remembered per series by meaning (language, forced, SDH), not
-					by track index, so it carries over to episodes whose track order differs.
-				</li>
-				<li>
-					The detail page still describes the file honestly: “TrueHD Atmos”, plus “plays
-					as DD+ Atmos”.
-				</li>
-			</ul>
-		{/snippet}
+		<Morph />
 	</Section>
 
 	<Section
 		id="architecture"
-		heading="Two required parts, four optional ones, and one of them runs as root"
-		lede="The TV app and Jellyfin are all you need. Everything else adds features."
+		heading="Small core, optional extras"
+		lede="The TV app and Jellyfin are all you need. A rooted TV only adds features."
 	>
 		<ArchDiagram />
-	</Section>
 
-	<div class="divider">
-		<span>Under the hood</span>
-	</div>
-
-	<Section
-		id="downloads"
-		heading="You can start watching a download before it finishes"
-		lede="A title shows up in Sonarr or Radarr long before Jellyfin knows about it. reel-api makes it playable right away."
-	>
+		<h3 id="downloads">Watch while it downloads</h3>
 		<p>
-			Torrents normally fetch pieces in random order. reel-api makes qBittorrent download
-			every grab
-			<strong>in order, with the first and last pieces first</strong>, and serves the growing
-			file with HTTP Range. An ffprobe of the first few MiB becomes a
-			<strong>Jellyfin-shaped media source</strong> on the client, so the audio menu, track scoring
-			and OSD work unchanged.
+			Sonarr and Radarr grab a title long before Jellyfin knows about it. reel-api has
+			qBittorrent fetch it <strong>in order, first and last pieces first</strong>, and serves
+			the growing file, so it plays right away.
 		</p>
 		<DownloadBar />
-		{#snippet code()}
-			<ul>
-				<li>
-					<code>backend/…/streaming.py</code> maps byte ranges to piece indexes and waits
-					at the frontier; <code>sourceFromProbe()</code> in
-					<code>src/lib/pendingplay.js</code> builds the synthetic source.
-				</li>
-				<li>
-					Reads go through 1 MiB chunks in a thread: an aborted stream draining into a
-					dead socket once froze the event loop for about 30 s.
-				</li>
-				<li>
-					The open file survives qBittorrent's move from incomplete/ to complete/, because
-					the move is a rename on the same filesystem.
-				</li>
-				<li>
-					webOS keeps the old media socket open after Back, so a per-download generation
-					counter kills the superseded stream.
-				</li>
-			</ul>
-		{/snippet}
-	</Section>
 
-	<Section
-		id="picture"
-		heading="A borrowed identity unlocks the TV's picture settings"
-		lede="A webOS app may not change the picture mode. On rooted TVs, a 208-line companion service can."
-	>
+		<h3 id="trailers">YouTube trailers, own player</h3>
 		<p>
-			The service runs as root, outside the app jail, and registers on the system bus under a
-			name the hub matches to LG's own Multi-View Settings app. That grants it that app's
-			settings permission. Picture modes are stored per signal type (SDR, HDR10, Dolby
-			Vision), so every change first reads the live one and echoes it back. On stock firmware
-			nothing answers on the port, and the Picture button never appears.
+			Up to 4K and in the original language, straight from YouTube. The NAS repackages each
+			trailer and the TV feeds it to Media Source Extensions.
 		</p>
-		<PictureSequence />
-		{#snippet code()}
-			<ul>
-				<li>
-					<code>service/service.js</code>: loopback HTTP on <code>127.0.0.1:8791</code>
-					with
-					<code>/health</code>, <code>/modes</code> and <code>/picture?mode=</code>.
-				</li>
-				<li>
-					Every bus call has a 2.5 s deadline, under the app's 6 s timeout. Sets are
-					serialized, and a newer one replaces a waiting one, so the queue is never longer
-					than two.
-				</li>
-				<li>
-					You pick the mode from the player's OSD, filtered to the modes valid for the
-					current signal. It doesn't switch on its own.
-				</li>
-			</ul>
-		{/snippet}
-	</Section>
-
-	<Section
-		id="subtitles"
-		heading="Bitmap subtitles are drawn on a canvas, and DVD ones are burned in"
-		lede="Browsers render text cues. Blu-ray and DVD subtitles are pictures."
-	>
-		<div class="table-wrap">
-			<table>
-				<thead>
-					<tr><th>Format</th><th>Path</th><th>Rendered by</th><th>Timing offset</th></tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>SRT · ASS · VTT</td>
-						<td>fetched as VTT, wrapped in a same-origin Blob</td>
-						<td><code>&lt;track&gt;</code></td>
-						<td>±0.25 s steps, up to ±30 s</td>
-					</tr>
-					<tr>
-						<td>PGS (Blu-ray)</td>
-						<td>decoded in the client by libpgs</td>
-						<td><code>&lt;canvas&gt;</code> over the video</td>
-						<td>—</td>
-					</tr>
-					<tr>
-						<td>VobSub · DVB</td>
-						<td>burned into the picture by Jellyfin</td>
-						<td>the video itself</td>
-						<td>—</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		{#snippet code()}
-			<ul>
-				<li>
-					libpgs always runs in main-thread mode: its worker mode leaked one Worker per
-					subtitle attach on this Chromium.
-				</li>
-				<li>
-					A Vite plugin turns libpgs into a lazy factory at build time, cutting cold-start
-					module evaluation from about 64 to 48 ms. It stays inside <code>app.js</code>,
-					so the deploy's md5 check still covers it.
-				</li>
-				<li>
-					Each cue keeps its original times, so repeated offset nudges never accumulate
-					rounding error.
-				</li>
-			</ul>
-		{/snippet}
-	</Section>
-
-	<Section
-		id="skip"
-		heading="Skip Intro trusts three sources, and distrusts one of them"
-		lede="Jellyfin's recap detector marked cold opens, so recaps never come from it."
-	>
-		<SkipTimeline />
-		{#snippet code()}
-			<ul>
-				<li>
-					<code>findMarkers()</code> in <code>src/lib/segments.js</code>. Sanity bounds:
-					an intro is 5–300 s and starts in the first 20 minutes; credits are at least 10
-					s and in the second half.
-				</li>
-				<li>
-					After a skip the chip stays hidden, because the seek lands on a keyframe about 3
-					s short of the intro's end.
-				</li>
-				<li>
-					A server upgrade once silently disabled the plugin, so a health check on the NAS
-					now tests for it.
-				</li>
-			</ul>
-		{/snippet}
-	</Section>
-
-	<Section
-		id="trailers"
-		heading="Trailers come from YouTube but play in the app's own player"
-		lede="A YouTube embed fails inside a packaged webOS app, and the TV's HLS player treats a growing playlist as live."
-	>
 		<Pipeline stages={trailerStages} />
-		<p>
-			So the NAS repackages the trailer and the TV feeds Media Source Extensions itself. Cold,
-			the first frame appears after about 4–5 s; a cached trailer starts in under a second. If
-			anything fails, the app opens the YouTube app instead.
-		</p>
-	</Section>
-
-	<Section
-		id="performance"
-		heading="Smooth at 60 fps on a TV's browser, by measuring every frame"
-		lede="Three Cortex-A76 cores, Chromium 120 and a remote that auto-repeats."
-	>
-		<BeforeAfter />
-		<p>
-			<strong>The refresh-rate trap.</strong> Not every dropped frame was the app's fault:
-		</p>
-		<Pipeline stages={refreshStages} />
-		{#snippet code()}
-			<ul>
-				<li>
-					Large backdrops are decoded before they are shown: an undecoded 1920 px image
-					blocked a frame for 60–220 ms, and <code>decoding="async"</code> does nothing on this
-					TV.
-				</li>
-				<li>
-					The D-pad engine (<code>src/lib/focus.js</code>) scores candidates geometrically
-					with a 3× penalty off-axis, coalesces moves to one per frame, and glides
-					scrolling toward a moving target instead of restarting it.
-				</li>
-				<li>
-					Looping animations run three cycles and settle: one that never stopped cost
-					16–25% of a core.
-				</li>
-			</ul>
-		{/snippet}
-	</Section>
-
-	<Section
-		id="builds"
-		heading="One codebase ships three apps without touching each other's bytes"
-		lede="The phone and web builds redirect a few modules and flip compile-time flags. The TV bundle never changes."
-	>
-		<ThreeBuilds />
-		<p>
-			Builds are deterministic, so an <strong>md5 match of a scratch build</strong> proves that
-			a test- or docs-only change shipped nothing. Svelte doesn't fold constants in templates, so
-			a small custom Vite plugin does it before compilation.
-		</p>
-	</Section>
-
-	<Section
-		id="testing"
-		heading="About 3,800 tests, checked by mutation, run without the TV or the server"
-		lede="Every test runs against fakes that follow Jellyfin's and reel-api's real API specs."
-	>
-		<div class="stats">
-			{#each stats as s (s.label)}
-				<div class="stat">
-					<span class="stat-value">{s.value}</span>
-					<span class="stat-label">{s.label}</span>
-				</div>
-			{/each}
-		</div>
-		<ul class="practices">
-			<li>
-				<strong>End-to-end</strong>: headless Chrome over the DevTools protocol, a stateful
-				fake Jellyfin 12.1 and a fake reel-api. A test fails on any request outside the API
-				spec, any request without a token, or any console error.
-			</li>
-			<li>
-				<strong>Mutation testing</strong>: Stryker on the client, mutmut on the backend, and
-				eight known past bugs re-introduced on purpose to prove the end-to-end tests catch
-				each one.
-			</li>
-			<li>
-				<strong>Ratchets</strong>: coverage floors (98.8% statements in
-				<code>src/lib</code>) and strict type-check lists can only go up.
-			</li>
-			<li>
-				<strong>Deploys</strong>: atomic swaps with md5 checks on the device; Nix provides
-				the dev shell and a hardened NixOS module for reel-api.
-			</li>
-		</ul>
-	</Section>
-
-	<Section
-		id="limits"
-		heading="What it can't do"
-		lede="Built for one setup: an LG C4 on webOS 10.3.1, Jellyfin 12.1 on a NixOS NAS, and an iPhone."
-	>
-		<ul class="limits">
-			<li>
-				Lossless TrueHD can't reach a soundbar from any TV app. DD+ Atmos is the ceiling.
-			</li>
-			<li>
-				Picture-mode switching needs a rooted TV; everything else works on stock firmware.
-			</li>
-			<li>DVD and DVB subtitles are burned in, which is the one transcode on the TV.</li>
-			<li>
-				The phone and web clients remux every MKV and re-encode DTS and TrueHD audio; only
-				the TV plays files untouched.
-			</li>
-			<li>Other TVs, webOS versions and servers will probably need adjusting.</li>
-		</ul>
-		<a class="repo-link" href={REPO} target="_blank" rel="noopener noreferrer">
-			Read the code and the README on GitHub <ArrowUpRight size="16" strokeWidth="2" />
-		</a>
 	</Section>
 </article>
 
 <style>
+	/* The page in black, white and greys: its gold drained to silver, its ink near black. The
+	   panels (.vr-panel, below) are tinted sepia instead. */
 	.vr {
-		--vr-gold: #b08530;
-		--vr-gold-ink: #8a6420;
-		--vr-gold-fill: #e6b450;
-		--vr-cream: #f8f5ee;
-		--vr-ink: #16140f;
-		--vr-muted: #5f594d;
-		--vr-edge: #a8a29e;
+		--vr-gold: #6f6f6f;
+		--vr-gold-ink: #3f3f3f;
+		--vr-gold-fill: #b7b7b7;
+		--vr-cream: #f1f1f1;
+		--vr-ink: #101010;
+		--vr-muted: #565656;
+		--vr-edge: #a4a4a4;
 		--vr-line: oklch(0.88 0 0);
+		--color-font-dark: #161616;
+		/* The page behind the article, for halos and rings that keep a mark clear of a picture */
+		--vr-page: var(--color-background);
+		/* The sketchbook: the architecture diagram draws on this paper, with this grain, and
+		   washes its boxes with rgb(230 180 80 / 0.13). --vr-wash is that wash on the paper,
+		   solid, for a few highlights in the page's other drawings (sparingly; too pale for a
+		   line on white). The download bar and the trailer timeline sit on the same sheet. */
+		--vr-paper: #fbf8f0;
+		--vr-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.26 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23p)'/%3E%3C/svg%3E");
+		--vr-wash: #f8efdb;
 	}
 
 	/* Building blocks shared by the page's widgets. :where() keeps them at one class of
-	   specificity, so each widget's scoped styles still override them. */
+	   specificity, so each widget's scoped styles still override them.
+
+	   Panels are tickets in sepia browns on parchment: a stock of the background tinted with
+	   their gold (also the tile colour, --color-background-tile, for what they hold), scooped
+	   corners and a dashed perforation inside the edge. corner-shape keeps the shadow on the
+	   scoops; where it is missing, a mask cuts them instead and the shadow goes. */
 	:where(.vr) :global(.vr-panel) {
+		--vr-gold: #94704b;
+		--vr-gold-ink: #6c5034;
+		--vr-gold-fill: #cfa87c;
+		--vr-cream: #f1e6d3;
+		--vr-ink: #2f251b;
+		--vr-muted: #6d6051;
+		--vr-edge: #b0a08b;
+		--vr-line: #e3d7c4;
+		--color-font-dark: #3b2f24;
+		--color-font-light: #a49481;
+		--color-background: #fffbf4;
+		--color-border: #dccfba;
+		--stock: color-mix(in oklab, var(--color-background), var(--vr-gold-fill) 16%);
+		--color-background-tile: var(--stock);
 		margin: 0;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
 		padding: 1.25rem;
+		background: var(--stock);
+		border-radius: 1rem;
+		corner-shape: scoop;
+		box-shadow:
+			0 1px 2px rgb(70 50 20 / 0.12),
+			0 8px 20px -10px rgb(70 50 20 / 0.3);
+		outline: 1.5px dashed color-mix(in oklab, var(--vr-gold) 55%, transparent);
+		outline-offset: -0.55rem;
 	}
 
 	@media (min-width: 640px) {
 		:where(.vr) :global(.vr-panel) {
 			padding: 2rem;
+		}
+	}
+
+	@supports not (corner-shape: scoop) {
+		:where(.vr) :global(.vr-panel) {
+			border-radius: 0;
+			mask:
+				radial-gradient(circle at 0 0, transparent 1rem, #000 calc(1rem + 0.5px)) 0 0 / 51%
+					51% no-repeat,
+				radial-gradient(circle at 100% 0, transparent 1rem, #000 calc(1rem + 0.5px)) 100%
+					0 / 51% 51% no-repeat,
+				radial-gradient(circle at 0 100%, transparent 1rem, #000 calc(1rem + 0.5px)) 0
+					100% / 51% 51% no-repeat,
+				radial-gradient(circle at 100% 100%, transparent 1rem, #000 calc(1rem + 0.5px)) 100%
+					100% / 51% 51% no-repeat;
 		}
 	}
 
@@ -561,234 +188,45 @@
 		overflow-x: auto;
 	}
 
-	@media (max-width: 480px) {
-		.hero .page-heading {
-			font-size: 4rem;
-		}
-	}
-
-	.hero .page-subtitle {
-		max-width: 60ch;
-	}
-
-	/* TV with the phone overlapping its right edge, sized in container units */
-	.stage {
-		position: relative;
-		container-type: inline-size;
-		aspect-ratio: 100 / 56;
-		margin: 2rem 0 1.5rem;
-	}
-
-	.stage-tv,
-	.stage-phone {
-		--enter-duration: 600ms;
-	}
-
-	.stage-tv {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 80cqw;
-	}
-
-	.stage-phone {
-		position: absolute;
-		right: 1cqw;
-		top: 8cqw;
-		width: 21cqw;
-		--enter-y: 20px;
-	}
-
-	.specs {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.4rem;
-	}
-
-	.specs li {
-		font-size: 0.85rem;
-		padding: 0.35rem 0.8rem;
-		border-radius: 2rem;
-		background: var(--vr-cream);
-		color: var(--vr-gold-ink);
-		border: 1px solid oklch(0.88 0.04 85);
-	}
-
-	.meta {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		gap: 0.5rem 1rem;
-		margin-top: 1rem;
-		font-size: 0.9rem;
-		color: var(--color-font-light);
-	}
-
-	.meta a,
-	.repo-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.25rem;
-		color: var(--color-font-dark);
-		text-decoration: none;
-	}
-
-	.meta a:hover,
-	.repo-link:hover {
-		text-decoration: underline;
-	}
-
-	.screens {
-		display: grid;
-		gap: 1.5rem 1rem;
-	}
-
-	@media (min-width: 640px) {
-		.screens {
-			grid-template-columns: 1fr 1fr;
-		}
-	}
-
-	.screen-caption {
-		display: flex;
-		flex-direction: column;
-		gap: 0.2rem;
-		padding: 0.75rem 0.25rem 0;
-	}
-
-	.screen-caption strong {
-		font-weight: 500;
-		color: var(--color-font-dark);
-	}
-
-	.screen-caption span {
-		font-size: 0.9rem;
-		color: var(--vr-muted);
-		line-height: 1.5;
-	}
-
-	.phone-row {
-		display: grid;
-		gap: 2rem;
-		align-items: center;
-	}
-
-	@media (min-width: 1024px) {
-		.phone-row {
-			grid-template-columns: auto 1fr;
-			gap: 3rem;
-		}
-	}
-
-	.phones {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 15rem));
-		gap: 1rem;
-	}
-
-	.phone-text p:first-child {
-		margin-top: 0;
-	}
-
-	.divider {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin: 6rem 0 -1rem;
-		color: var(--color-font-light);
-		font-size: 0.8rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-	}
-
-	.divider::before,
-	.divider::after {
+	/* Film grain: a fixed layer of noise over the page, under the nav bar, that jumps a few
+	   times a second like the grain of a projected print, and holds still with reduced motion */
+	.vr::after {
 		content: '';
-		flex: 1;
-		border-top: 1px solid oklch(0.9 0 0);
+		position: fixed;
+		inset: -50%;
+		z-index: 50;
+		pointer-events: none;
+		background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.09 0 0 0 0 0.05 2.2 0 0 0 -0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E")
+			0 0 / 200px 200px;
+		opacity: 0.12;
+		animation: grain 0.5s steps(1) infinite;
 	}
 
-	.table-wrap {
-		overflow-x: auto;
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 0.5rem 1.25rem;
-	}
-
-	table {
-		width: 100%;
-		min-width: 560px;
-		border-collapse: collapse;
-		font-size: 0.9rem;
-	}
-
-	th {
-		text-align: left;
-		font-weight: 500;
-		font-size: 0.75rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--vr-gold-ink);
-		padding: 0.75rem 0.75rem 0.75rem 0;
-	}
-
-	td {
-		padding: 0.75rem 0.75rem 0.75rem 0;
-		border-top: 1px solid oklch(0.92 0 0);
-		color: var(--vr-muted);
-		vertical-align: top;
-	}
-
-	td:first-child {
-		color: var(--color-font-dark);
-		white-space: nowrap;
-	}
-
-	.stats {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 0.5rem;
-	}
-
-	@media (min-width: 1024px) {
-		.stats {
-			grid-template-columns: repeat(3, 1fr);
+	@media (prefers-reduced-motion: reduce) {
+		.vr::after {
+			animation: none;
 		}
 	}
 
-	.stat {
-		background: var(--color-background-tile);
-		border-radius: 0.5rem;
-		padding: 1.25rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.4rem;
-	}
+	@keyframes grain {
+		0% {
+			translate: 0 0;
+		}
 
-	.stat-value {
-		font-family: var(--font-secondary);
-		font-size: 2.4rem;
-		line-height: 1;
-		color: var(--color-font-dark);
-	}
+		20% {
+			translate: -7% 3%;
+		}
 
-	.stat-label {
-		font-size: 0.85rem;
-		color: var(--vr-muted);
-	}
+		40% {
+			translate: 4% -6%;
+		}
 
-	.practices,
-	.limits {
-		padding-left: 1.1rem;
-		margin: 1.5rem 0 0;
-		display: grid;
-		gap: 0.5rem;
-	}
+		60% {
+			translate: -3% -9%;
+		}
 
-	.repo-link {
-		margin-top: 1.5rem;
+		80% {
+			translate: 8% 4%;
+		}
 	}
 </style>

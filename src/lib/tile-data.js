@@ -2,17 +2,13 @@ export const projects = {
 	vibeReel: {
 		name: 'VibeReel',
 		link: '/projects/vibe-reel',
-		// Exactly three: the tile cross-fades them in a loop
-		screens: [
-			'/project-previews/vibe-reel/tv-home.webp',
-			'/project-previews/vibe-reel/tv-detail.webp',
-			'/project-previews/vibe-reel/tv-player.webp'
-		],
+		// The tile's one still: the TV player with its controls up
+		screen: '/project-previews/vibe-reel/tv-player.webp',
 		// The tile's headline, from the project page
 		fact: { value: '147', unit: 'KB', caption: 'a whole Jellyfin app for the TV' },
-		// Three looks read `screens` and `fact`; switch by changing this one word:
+		// Three looks read `screen` and `fact`; switch by changing this one word:
 		// 'glow'      the TV at the left, glowing onto the light tile, the fact on the right
-		// 'stencil'   the screens playing inside the fact's giant digits, on a dark wall
+		// 'stencil'   the screen showing through the fact's giant digits, on a dark wall
 		// 'scrapbook' a taped-in print with the fact handwritten beside it
 		tileType: 'glow',
 		layout: 'wide'

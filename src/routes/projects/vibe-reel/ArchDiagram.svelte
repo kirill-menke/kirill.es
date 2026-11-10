@@ -1,43 +1,60 @@
 <script>
-	/* Elements tag themselves with data-flow; picking a flow dims everything outside it */
-	const flows = [
-		{ key: 'playback', label: 'Media path' },
-		{ key: 'control', label: 'Library & downloads' },
-		{ key: 'picture', label: 'Picture mode' },
-		{ key: 'phone', label: 'Phone & web' }
-	];
+	/*
+	 * How VibeReel fits together, sketched in pencil on the page's sketchbook paper: the TV, the
+	 * NAS, the phone and browser and the internet, the boxes in each and the edges between them
+	 * (arch/data.js). Every part tags itself with the flows that run through it (data-flow); the
+	 * chips over the drawing pick one, which dims everything outside it, the frames round the
+	 * machines included, and circles the chip by hand (arch/ChipMark.svelte). Narrower than its
+	 * 760px, the drawing scrolls sideways under a hint.
+	 */
+	import { flows, edgeGroups } from './arch/data.js';
+	import ChipMark from './arch/ChipMark.svelte';
 
 	let active = $state(null);
 	let pinned = $state(null);
 	const shown = $derived(active ?? pinned);
 
 	// A hover or keyboard focus previews a flow; a click pins it. Touch fires no hover, and a click
-	// clears the preview, so a tap or Enter always shows the new pinned state.
+	// clears the preview, so a tap or Enter always shows the new pinned state. Leaving a chip
+	// clears only its own preview: clicking another chip blurs this one after the new one's
+	// hover has started, and clearing then would flash the old pinned flow.
 	const preview = (key) => (e) => {
 		if (e.pointerType === 'mouse' || e.currentTarget.matches(':focus-visible')) active = key;
 	};
-	const unpreview = () => (active = null);
+	const unpreview = (key) => () => {
+		if (active === key) active = null;
+	};
+
+	// A chip's part in that: pinned, previewed (on show over the pinned flow) or neither. The
+	// pinned chip keeps its mark while another is previewed.
+	const pick = (key) => (pinned === key ? 'pinned' : shown === key ? 'preview' : undefined);
 </script>
 
 <figure class="arch vr-panel">
-	<div class="legend" role="group" aria-label="Highlight a flow">
-		{#each flows as f (f.key)}
-			<button
-				class="chip chip-{f.key}"
-				aria-pressed={pinned === f.key}
-				onpointerenter={preview(f.key)}
-				onpointerleave={unpreview}
-				onfocus={preview(f.key)}
-				onblur={unpreview}
-				onclick={() => {
-					pinned = pinned === f.key ? null : f.key;
-					active = null;
-				}}
-			>
-				<span class="swatch" aria-hidden="true"></span>{f.label}
-			</button>
-		{/each}
-		<span class="key"><span class="dash" aria-hidden="true"></span>dashed = optional</span>
+	<div class="key">
+		<div class="legend" role="group" aria-label="Highlight a flow">
+			{#each flows as f, i (f.key)}
+				{@const picked = pick(f.key)}
+				<button
+					class="chip chip-{f.key}"
+					aria-pressed={pinned === f.key}
+					onpointerenter={preview(f.key)}
+					onpointerleave={unpreview(f.key)}
+					onfocus={preview(f.key)}
+					onblur={unpreview(f.key)}
+					onclick={() => {
+						pinned = pinned === f.key ? null : f.key;
+						active = null;
+					}}
+				>
+					<span class="swatch" aria-hidden="true"></span>{f.label}
+					{#if picked}
+						<ChipMark pinned={picked === 'pinned'} seed={i + 1} />
+					{/if}
+				</button>
+			{/each}
+		</div>
+		<span class="optional"><span class="dash" aria-hidden="true"></span>optional</span>
 	</div>
 
 	<p class="vr-hint" aria-hidden="true">Scroll sideways →</p>
@@ -52,112 +69,79 @@
 			<desc id="arch-desc">
 				The TV app Direct Plays files from Jellyfin on the NAS and sends audio to the
 				soundbar as a bitstream. An optional root companion service on the TV switches
-				picture modes. The optional reel-api on the NAS sits in front of Sonarr, Radarr and
-				qBittorrent. The iPhone PWA and web client reach Jellyfin and reel-api through one
-				HTTPS origin.
+				picture modes. The optional reel-api on the NAS sits in front of Sonarr and Radarr,
+				which search through Prowlarr, and of qBittorrent, which it has download in order.
+				The iPhone PWA and the web client reach Jellyfin and reel-api.
 			</desc>
 
+			<!-- Heads drawn like the lines: open chevrons that carry the line on to their tip
+			     (arch/data.js stops every line a head short of its target) -->
 			<defs>
 				<marker
-					id="arrow"
+					id="arch-chevron"
 					viewBox="0 0 10 10"
-					refX="9"
+					refX="0"
 					refY="5"
 					markerWidth="10"
 					markerHeight="10"
 					orient="auto-start-reverse"
 					markerUnits="userSpaceOnUse"
 				>
-					<path d="M0,0 L10,5 L0,10 z" class="arrowhead" />
+					<path d="M0,5 L9,5 M3.5,1.5 L9,5 L3.5,8.5" class="chevron" />
 				</marker>
 			</defs>
 
-			<!-- Groups -->
-			<rect class="group" x="20" y="40" width="300" height="290" rx="16" />
-			<text class="group-label" x="40" y="68">LIVING-ROOM TV · LG WEBOS</text>
+			<!-- Groups, each as part of the flows that run through it, so that a picked flow
+			     fades the frames it leaves out with the rest -->
+			<g data-flow="playback control picture">
+				<rect class="group" x="20" y="40" width="300" height="290" rx="16" />
+				<text class="group-label" x="40" y="68">LIVING-ROOM TV · LG WEBOS</text>
+			</g>
 
-			<rect class="group" x="380" y="40" width="340" height="470" rx="16" />
-			<text class="group-label" x="400" y="68">NAS · NIXOS</text>
+			<g data-flow="playback control phone">
+				<rect class="group" x="380" y="40" width="340" height="470" rx="16" />
+				<text class="group-label" x="400" y="68">NAS · NIXOS</text>
+			</g>
 
-			<rect class="group" x="780" y="40" width="200" height="232" rx="16" />
-			<text class="group-label" x="800" y="68">PHONE &amp; BROWSER</text>
-
-			<rect class="group faint" x="780" y="300" width="200" height="210" rx="16" />
-			<text class="group-label" x="800" y="328">INTERNET</text>
-
-			<!-- Edges -->
-			<g data-flow="playback">
-				<line
-					class="edge media"
-					x1="300"
-					y1="118"
-					x2="396"
-					y2="118"
-					marker-end="url(#arrow)"
-				/>
-				<text class="edge-label" x="348" y="106" text-anchor="middle">Direct Play</text>
-			</g>
-			<g data-flow="playback control">
-				<line class="edge" x1="300" y1="152" x2="396" y2="152" marker-end="url(#arrow)" />
-				<text class="edge-label" x="348" y="170" text-anchor="middle">REST API</text>
-			</g>
-			<g data-flow="playback">
-				<line
-					class="edge media"
-					x1="260"
-					y1="176"
-					x2="260"
-					y2="404"
-					marker-end="url(#arrow)"
-				/>
-				<text class="edge-label" x="250" y="362" text-anchor="end">DD+ · Atmos · DTS</text>
-				<text class="edge-label" x="250" y="378" text-anchor="end">bitstream over eARC</text
-				>
-			</g>
-			<g data-flow="picture">
-				<line class="edge" x1="100" y1="176" x2="100" y2="222" marker-end="url(#arrow)" />
-				<text class="edge-label" x="110" y="204">loopback HTTP</text>
-			</g>
-			<g data-flow="control">
-				<path
-					class="edge optional"
-					d="M300,166 C350,166 345,290 396,290"
-					marker-end="url(#arrow)"
-				/>
-				<text class="edge-label" x="356" y="232">/api · streams</text>
-			</g>
-			<g data-flow="control">
-				<line class="edge" x1="550" y1="246" x2="550" y2="180" marker-end="url(#arrow)" />
-				<text class="edge-label" x="560" y="218">checks the Jellyfin token</text>
-			</g>
-			<g data-flow="control">
-				<line class="edge" x1="434" y1="332" x2="434" y2="398" marker-end="url(#arrow)" />
-				<line class="edge" x1="508" y1="332" x2="508" y2="398" marker-end="url(#arrow)" />
-				<line class="edge" x1="663" y1="332" x2="663" y2="398" marker-end="url(#arrow)" />
-			</g>
-			<g data-flow="control">
-				<path
-					class="edge faint-edge"
-					d="M700,310 C745,310 740,400 776,400"
-					marker-end="url(#arrow)"
-				/>
-			</g>
 			<g data-flow="phone">
-				<line
-					class="edge optional"
-					x1="800"
-					y1="122"
-					x2="704"
-					y2="122"
-					marker-end="url(#arrow)"
-				/>
-				<text class="edge-label" x="752" y="112" text-anchor="middle">HLS remux</text>
-				<path
-					class="edge optional"
-					d="M800,206 C750,206 745,276 704,276"
-					marker-end="url(#arrow)"
-				/>
+				<rect class="group" x="780" y="40" width="200" height="216" rx="16" />
+				<text class="group-label" x="800" y="68">PHONE &amp; BROWSER</text>
 			</g>
+
+			<g data-flow="control">
+				<rect class="group faint" x="780" y="300" width="200" height="190" rx="16" />
+				<text class="group-label" x="800" y="328">INTERNET</text>
+			</g>
+
+			<!-- Edges (arch/data.js) -->
+			{#each edgeGroups as group (group.edges[0].id)}
+				<g data-flow={group.flow}>
+					{#each group.edges as edge (edge.id)}
+						{#if edge.d}
+							<path
+								class="edge"
+								class:optional={edge.optional}
+								class:faint-edge={edge.faint}
+								d={edge.d}
+							/>
+						{:else}
+							<line
+								class="edge"
+								class:optional={edge.optional}
+								x1={edge.from[0]}
+								y1={edge.from[1]}
+								x2={edge.to[0]}
+								y2={edge.to[1]}
+							/>
+						{/if}
+					{/each}
+					{#each group.labels ?? [] as label (label.text)}
+						<text class="edge-label" x={label.x} y={label.y} text-anchor={label.anchor}
+							>{label.text}</text
+						>
+					{/each}
+				</g>
+			{/each}
 
 			<!-- TV -->
 			<g data-flow="playback control picture">
@@ -195,21 +179,16 @@
 					>search &amp; add · downloads · trailers · push</text
 				>
 			</g>
+			<!-- Sonarr and Radarr under reel-api's arrows, Prowlarr a row down between them -->
 			<g data-flow="control">
-				<rect class="pill" x="400" y="402" width="68" height="34" rx="17" />
-				<text class="pill-text" x="434" y="424" text-anchor="middle">Sonarr</text>
-				<rect class="pill" x="474" y="402" width="68" height="34" rx="17" />
-				<text class="pill-text" x="508" y="424" text-anchor="middle">Radarr</text>
-				<rect class="pill muted-pill" x="548" y="402" width="72" height="34" rx="17" />
-				<text class="pill-text" x="584" y="424" text-anchor="middle">Prowlarr</text>
-				<rect class="pill" x="626" y="402" width="74" height="34" rx="17" />
-				<text class="pill-text" x="663" y="424" text-anchor="middle">qBittorrent</text>
-				<text class="caption" x="400" y="466"
-					>Sonarr and Radarr search through Prowlarr;</text
-				>
-				<text class="caption" x="400" y="484"
-					>reel-api makes qBittorrent download in order.</text
-				>
+				<rect class="pill" x="400" y="384" width="68" height="34" rx="17" />
+				<text class="pill-text" x="434" y="406" text-anchor="middle">Sonarr</text>
+				<rect class="pill" x="496" y="384" width="68" height="34" rx="17" />
+				<text class="pill-text" x="530" y="406" text-anchor="middle">Radarr</text>
+				<rect class="pill muted-pill" x="446" y="456" width="72" height="34" rx="17" />
+				<text class="pill-text" x="482" y="478" text-anchor="middle">Prowlarr</text>
+				<rect class="pill" x="626" y="384" width="74" height="34" rx="17" />
+				<text class="pill-text" x="663" y="406" text-anchor="middle">qBittorrent</text>
 			</g>
 
 			<!-- Phone & browser -->
@@ -220,7 +199,6 @@
 				<rect class="node optional" x="800" y="176" width="160" height="60" rx="12" />
 				<text class="node-title" x="816" y="201">Web client</text>
 				<text class="node-sub" x="816" y="221">Chrome · Firefox · MSE</text>
-				<text class="caption mono" x="800" y="258">one origin: / · /jf · /ml</text>
 			</g>
 
 			<!-- Internet -->
@@ -233,14 +211,33 @@
 			</g>
 		</svg>
 	</div>
-	<figcaption>
-		Hover or tap a flow to highlight it. Only the TV app and Jellyfin are required.
-	</figcaption>
 </figure>
 
 <style>
+	/* Pencil on the page's sketchbook paper (--vr-paper, --vr-paper-grain), in the panel's frame
+	   like the download bar and the trailer timeline under it. Its inks re-point the colour
+	   tokens the rules below paint with: labels handwritten, the boxes washed with gold, and
+	   every line, the media path's too, in the same pen. */
 	.arch {
+		--color-background-tile: var(--vr-paper);
+		--color-background: transparent;
+		--color-font-dark: #3a342b;
+		--color-font-light: #8b8171;
+		--color-border: #6f675a;
+		--vr-ink: #2f2a23;
+		--vr-muted: #5f5748;
+		--vr-cream: rgb(230 180 80 / 0.13);
+		--vr-edge: #5c5446;
 		container-type: inline-size;
+		color: var(--vr-muted);
+		background-color: var(--vr-paper);
+		background-image: var(--vr-paper-grain);
+	}
+
+	/* The drawing's darker gold, set on what the panel holds, so the ticket's perforation round
+	   it stays in the panel palette's gold */
+	.arch > * {
+		--vr-gold: #4c4538;
 	}
 
 	/* The svg's min-width below */
@@ -250,52 +247,33 @@
 		}
 	}
 
+	/* The key: the flow chips, and at the end of their row (under them, once they wrap) what a
+	   dashed line means */
+	.key {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.6rem 1.5rem;
+		margin-bottom: 1rem;
+	}
+
+	/* Room round each chip for its loop, two side by side (one pinned, one previewed) */
 	.legend {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 0.4rem;
-		margin-bottom: 1rem;
+		gap: 0.75rem;
 	}
 
-	.chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		font: inherit;
-		font-size: 0.85rem;
-		border: 0.5px solid var(--color-border);
-		background: var(--color-background);
-		color: var(--color-font-dark);
-		padding: 0.35rem 0.8rem;
-		border-radius: 2rem;
-		cursor: pointer;
-	}
-
-	.chip[aria-pressed='true'] {
-		border-color: var(--vr-ink);
-		box-shadow: inset 0 0 0 1px var(--vr-ink);
-	}
-
-	.swatch {
-		width: 0.9rem;
-		height: 0.25rem;
-		border-radius: 1rem;
-		background: var(--vr-edge);
-	}
-
-	.chip-playback .swatch {
-		background: var(--vr-gold-fill);
-		height: 0.35rem;
-	}
-
-	.key {
-		display: inline-flex;
+	.optional {
+		display: flex;
 		align-items: center;
 		gap: 0.4rem;
-		font-size: 0.8rem;
+		margin-left: auto;
+		font-family: var(--font-secondary);
+		font-size: 0.95rem;
+		font-style: italic;
 		color: var(--color-font-light);
-		margin-left: 0.4rem;
 	}
 
 	.dash {
@@ -303,18 +281,55 @@
 		border-top: 2px dashed var(--vr-gold);
 	}
 
+	/* Hand-drawn, each corner its own ellipse, and positioned for its mark (ChipMark); pinned,
+	   its outline is inked over */
+	.chip {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+		font: inherit;
+		font-family: var(--font-secondary);
+		font-size: 0.95rem;
+		font-style: italic;
+		border: 1.3px solid var(--color-border);
+		background: transparent;
+		color: var(--color-font-dark);
+		padding: 0.35rem 0.8rem;
+		border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+		cursor: pointer;
+	}
+
+	.chip[aria-pressed='true'] {
+		border-color: var(--vr-ink);
+	}
+
+	.swatch {
+		width: 0.9rem;
+		height: 0.15rem;
+		border-radius: 1rem;
+		background: var(--vr-edge);
+	}
+
+	/* The media path's swatch in the chip's own ink, a shade darker than the others */
+	.chip-playback .swatch {
+		background: currentColor;
+	}
+
 	svg {
 		display: block;
 		width: 100%;
 		min-width: 760px;
 		height: auto;
-		font-family: var(--font-primary);
+		font-family: var(--font-secondary);
+		font-style: italic;
 	}
 
 	.group {
 		fill: var(--color-background);
-		stroke: oklch(0.9 0 0);
-		stroke-width: 1;
+		stroke: rgb(76 69 56 / 0.45);
+		stroke-width: 1.3;
+		stroke-linejoin: round;
 	}
 
 	.group.faint {
@@ -323,15 +338,16 @@
 	}
 
 	.group-label {
-		font-size: 11px;
-		letter-spacing: 0.08em;
+		font-size: 11.5px;
+		letter-spacing: 0.14em;
 		fill: var(--color-font-light);
 	}
 
 	.node {
 		fill: var(--vr-cream);
 		stroke: var(--vr-gold);
-		stroke-width: 1.5;
+		stroke-width: 1.3;
+		stroke-linejoin: round;
 	}
 
 	.node.optional {
@@ -344,19 +360,20 @@
 	}
 
 	.node-title {
-		font-size: 15px;
-		font-weight: 500;
+		font-size: 17px;
 		fill: var(--vr-ink);
 	}
 
 	.node-sub {
-		font-size: 11.5px;
+		font-size: 12.5px;
 		fill: var(--vr-muted);
 	}
 
 	.pill {
 		fill: var(--color-background);
 		stroke: var(--vr-edge);
+		stroke-width: 1.3;
+		stroke-linejoin: round;
 	}
 
 	.muted-pill {
@@ -364,19 +381,16 @@
 	}
 
 	.pill-text {
-		font-size: 11.5px;
+		font-size: 12.5px;
 		fill: var(--vr-ink);
 	}
 
 	.edge {
 		fill: none;
 		stroke: var(--vr-edge);
-		stroke-width: 1.5;
-	}
-
-	.edge.media {
-		stroke: var(--vr-gold-fill);
-		stroke-width: 4;
+		stroke-width: 1.3;
+		stroke-linecap: round;
+		marker-end: url(#arch-chevron);
 	}
 
 	.edge.optional {
@@ -387,31 +401,26 @@
 		stroke-dasharray: 3 4;
 	}
 
-	.arrowhead {
-		fill: var(--vr-edge);
-	}
-
-	.edge-label,
-	.caption {
-		font-size: 11px;
-		fill: var(--vr-muted);
+	.chevron {
+		fill: none;
+		stroke: var(--vr-edge);
+		stroke-width: 1.4;
+		stroke-linecap: round;
+		stroke-linejoin: round;
 	}
 
 	/* A halo so labels stay legible where they cross group borders */
 	.edge-label {
+		font-size: 12.5px;
+		fill: var(--vr-muted);
 		paint-order: stroke;
 		stroke: var(--color-background-tile);
 		stroke-width: 4px;
 		stroke-linejoin: round;
 	}
 
-	.mono {
-		font-family: var(--font-mono);
-		fill: var(--vr-gold-ink);
-	}
-
 	.list {
-		font-size: 12px;
+		font-size: 13px;
 		fill: var(--vr-muted);
 	}
 
@@ -424,11 +433,5 @@
 	svg[data-active='picture'] [data-flow]:not([data-flow~='picture']),
 	svg[data-active='phone'] [data-flow]:not([data-flow~='phone']) {
 		opacity: 0.15;
-	}
-
-	figcaption {
-		margin-top: 0.75rem;
-		font-size: 0.85rem;
-		color: var(--color-font-light);
 	}
 </style>
