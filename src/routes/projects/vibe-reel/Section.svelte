@@ -50,14 +50,15 @@
 		max-width: 65ch;
 	}
 
-	/* A second part folded into the section: its claim as a smaller heading */
+	/* A second part folded into the section: its claim as a smaller heading. On trial
+	   (tweaks.js: page.subgap): the page may give the room over it, as --sub-gap. */
 	.body :global(h3) {
 		font-family: var(--font-secondary);
 		font-weight: 400;
 		font-size: min(1.5rem, (100vw - 3.5rem) / 13.5);
 		line-height: 1.25;
 		color: var(--color-font-dark);
-		margin: 3.5rem 0 0.75rem;
+		margin: var(--sub-gap, 3.5rem) 0 0.75rem;
 		max-width: 34ch;
 		scroll-margin-top: 2rem;
 	}
@@ -93,7 +94,8 @@
 	   view, from entering the viewport to a fixed distance later, so tall blocks finish as soon
 	   as short ones, and only the backwards fill holds, so no blur stays behind. The body's
 	   blocks belong to the widgets: :where() keeps their rule at no specificity, so any
-	   animation of their own wins. */
+	   animation of their own wins. On trial (tweaks.js: page.focus): the page may give that
+	   distance, as --focus-band. */
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
 			h2,
@@ -101,7 +103,7 @@
 			:where(.body) > :global(*) {
 				animation: focus linear backwards;
 				animation-timeline: view();
-				animation-range: entry 0% entry 14rem;
+				animation-range: entry 0% entry var(--focus-band, 14rem);
 			}
 		}
 	}

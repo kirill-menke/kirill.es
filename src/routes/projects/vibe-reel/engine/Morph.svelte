@@ -30,6 +30,9 @@
 	import WebClient from './WebClient.svelte';
 	import BrowserSketch, { PLACE as WEB_PLACE } from './BrowserSketch.svelte';
 	import { copy, shots, pathLength } from './shared.js';
+	import { useTweaks } from '../tweaks.js';
+
+	const tweak = useTweaks();
 
 	const DEVICES = [
 		{ key: 'phone', name: 'iPhone', sub: 'home-screen PWA', copy: copy.iphone },
@@ -142,7 +145,8 @@
 
 <div class="morph" style:--quick={quick}>
 	<div class="layout">
-		<div class="picker" role="group" aria-label="Show the player on">
+		<!-- On trial (morph.tabs: 'inked'): the devices not on show in a darker grey -->
+		<div class={['picker', tweak('morph.tabs')]} role="group" aria-label="Show the player on">
 			{#each DEVICES as d, i (d.key)}
 				<button
 					class="pick"
@@ -297,6 +301,21 @@
 	.pick:hover,
 	.pick.on {
 		color: var(--color-font-dark);
+	}
+
+	/* On trial (morph.tabs: 'inked'): the devices not on show in the grey of the running text
+	   rather than the site's lightest, and their small print a step lighter than their names,
+	   so that they read as things to pick; the one on show still in ink */
+	.inked .pick {
+		color: var(--vr-muted);
+	}
+
+	.inked .pick:is(:hover, .on) {
+		color: var(--color-font-dark);
+	}
+
+	.inked .pick:not(.on) .sub {
+		color: color-mix(in srgb, var(--vr-muted) 62%, transparent);
 	}
 
 	.pick:focus-visible {

@@ -9,12 +9,20 @@
 	 * Each stage draws the rail from its node to the next one's, so the stages can be as wide or
 	 * tall as their words make them.
 	 */
+	import { useTweaks } from './tweaks.js';
+
 	let { stages } = $props();
 
+	const tweak = useTweaks();
 	const last = $derived(stages.length - 1);
 	// Side by side, each stage's column as wide as its words are long, so that every stage's
-	// words take the same number of lines (two, across a desktop panel)
-	const columns = $derived(stages.map((stage) => `minmax(0, ${stage.text.length}fr)`).join(' '));
+	// words take the same number of lines (two, across a desktop panel). On trial
+	// (trailers.columns: 'even'): equal columns, the dots a steady beat apart.
+	const columns = $derived(
+		tweak('trailers.columns') === 'even'
+			? `repeat(${stages.length}, minmax(0, 1fr))`
+			: stages.map((stage) => `minmax(0, ${stage.text.length}fr)`).join(' ')
+	);
 	// The notes, a stage each: `time` is written large, the note after it
 	const NOTES = [
 		{ time: '0 s', note: 'you press play, and both streams set off' },
@@ -24,7 +32,8 @@
 	];
 </script>
 
-<figure class="timeline vr-panel">
+<!-- On trial (trailers.rail: 'pencil'): the rail and its dots in the diagram's pencil -->
+<figure class={['timeline', 'vr-panel', tweak('trailers.rail')]}>
 	<ol style:--columns={columns}>
 		{#each stages as stage, i (stage.title)}
 			{@const n = NOTES[i]}
@@ -55,9 +64,9 @@
 	   --vr-paper-grain), in the panel's frame. */
 	.timeline {
 		--color-background-tile: var(--vr-paper);
+		--panel-color: var(--vr-paper);
+		--panel-image: var(--vr-paper-grain);
 		container: timeline / inline-size;
-		background-color: var(--vr-paper);
-		background-image: var(--vr-paper-grain);
 	}
 
 	ol {
@@ -149,6 +158,22 @@
 		width: 1.5px;
 		height: 100%;
 		background: var(--vr-line);
+	}
+
+	/* On trial (trailers.rail: 'pencil'): the rail and its dots in the architecture diagram's
+	   pencil, the rail as its frames are drawn and the dots as its boxes' edges, on the bare
+	   sheet, instead of a pale rail that hardly shows under sepia rings */
+	.pencil .rail {
+		background: var(--vr-pencil-frame);
+	}
+
+	.pencil .node {
+		background: var(--vr-paper);
+		box-shadow: inset 0 0 0 1.3px var(--vr-pencil);
+	}
+
+	.pencil .node.last {
+		background: radial-gradient(circle, var(--vr-pencil) 0 0.17rem, var(--vr-paper) 0.2rem);
 	}
 
 	/* A column per stage, as wide as its words are long (so each stage's words wrap to the same

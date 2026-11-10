@@ -7,6 +7,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import { dev } from '$app/env';
+	import { scrollBehavior } from '#lib/motion.js';
 
 	/*
 	 * A floating panel for trying out variations of a page while developing. It starts in the
@@ -16,9 +17,10 @@
 	 *   let tweaks = $state(defaultsOf(sections));
 	 *   <TweakPanel {sections} bind:values={tweaks} storage="my-page-tweaks" />
 	 *
-	 * sections: [{ legend, items, reset?, folded? }], each a block under a small-caps heading; with
-	 *   `reset` it ends in a button that puts its items back to their defaults, and with `folded`
-	 *   (true or false: how it starts) its heading folds it away. Items:
+	 * sections: [{ legend, items, reset?, folded? }], each a block under a small-caps heading,
+	 *   which says how many of its items are off their defaults; with `reset` it ends in a button
+	 *   that puts its items back to their defaults, and with `folded` (true or false: how it
+	 *   starts) its heading folds it away. Items:
 	 *   { type: 'choice', key, value, options: [{ value, label, about?, group? }], label?, keys? }
 	 *     a grid of options to pick one from: three columns when every label fits, else two, so
 	 *     keep labels to a word or two. A dot marks the default. `label` heads the
@@ -26,7 +28,10 @@
 	 *     `group` starts a sub-heading, and with `keys` the number keys 1–9 pick options too.
 	 *   { type: 'range', key, value, label, min, max, step }  a slider showing its value
 	 *   { type: 'toggle', key, value, label }  a switch
-	 *   `value` is the item's default.
+	 *   `value` is the item's default. Any item may give `where`, a CSS selector for the part of
+	 *   the page it changes: a change made in the panel then brings that part into view, clear
+	 *   of the panel, when little of it shows, and a choice's heading gets a "show" button that
+	 *   goes there and outlines it for a moment.
 	 * values: key -> current value, edited in place. Bind it to a $state object.
 	 * storage: a localStorage key to keep the values (and which sections are folded, and where the
 	 *   panel was dragged to) under across reloads, or null. Only the values that differ from their
@@ -166,6 +171,11 @@
 		for (const item of section.items) values[item.key] = item.value;
 	}
 
+	// How many of a section's items are off their defaults, for its heading: what is switched
+	// on shows also while the section is folded
+	const changedIn = (section) =>
+		section.items.filter((item) => values[item.key] !== item.value).length;
+
 	// An item's options split at each new `group`, each with its index in the whole list (for
 	// the number keys)
 	function partsOf(options) {
@@ -194,6 +204,47 @@
 	}
 
 	const aboutOf = (item) => item.options.find((o) => o.value === values[item.key])?.about;
+
+	// Brings the part of the page an item changes (its `where`) into view: when asked to, and
+	// after a change if less than most of it (or of a screenful of it) shows clear of the
+	// panel, so that a change made at the far end of the page, or behind the panel, is seen.
+	// It goes to the middle of the window; or, where it would lie behind the panel, to the
+	// middle of the room over or under the panel, if it fits there. Asked, it is also outlined
+	// for a moment.
+	function locate(item, asked = false) {
+		const target = item.where && document.querySelector(item.where);
+		if (!target) return;
+		const box = target.getBoundingClientRect();
+		const over = panel.getBoundingClientRect();
+		let [from, to] = [0, window.innerHeight];
+		if (box.right > over.left && box.left < over.right) {
+			const rooms = [
+				[0, over.top],
+				[over.bottom, window.innerHeight]
+			].filter(([a, b]) => b - a >= box.height + 2 * MARGIN);
+			// The larger, if both would do
+			rooms.sort(([a, b], [c, d]) => d - c - (b - a));
+			if (rooms.length) [from, to] = rooms[0];
+		}
+		const seen = Math.min(box.bottom, to) - Math.max(box.top, from);
+		if (asked || seen < Math.min(box.height, to - from) * 0.6)
+			window.scrollTo({
+				top:
+					window.scrollY +
+					box.top -
+					from -
+					Math.max(MARGIN, (to - from - box.height) / 2),
+				behavior: scrollBehavior()
+			});
+		if (asked)
+			target.animate(
+				[
+					{ outline: '2px solid rgb(230 180 80)', outlineOffset: '6px' },
+					{ outline: '2px solid rgb(230 180 80 / 0)', outlineOffset: '6px' }
+				],
+				{ duration: 1400, easing: 'ease-in' }
+			);
+	}
 </script>
 
 <svelte:window {onkeydown} onresize={reclamp} />
@@ -240,16 +291,38 @@
 									onclick={() => (folds[section.legend] = !isFolded(section))}
 									aria-expanded={!isFolded(section)}
 								>
-									{section.legend}
+									<span>
+										{section.legend}
+										{#if changedIn(section)}
+											<span class="changed">{changedIn(section)} changed</span
+											>
+										{/if}
+									</span>
 									<span class="chevron">{isFolded(section) ? '+' : '–'}</span>
 								</button>
 							</legend>
 						{:else if section.legend}
-							<legend>{section.legend}</legend>
+							<legend>
+								{section.legend}
+								{#if changedIn(section)}
+									<span class="changed">{changedIn(section)} changed</span>
+								{/if}
+							</legend>
 						{/if}
 						{#each isFolded(section) ? [] : section.items as item (item.key)}
 							{#if item.type === 'choice'}
-								{#if item.label}<span class="group">{item.label}</span>{/if}
+								{#if item.label}
+									<span class="group">
+										{item.label}
+										{#if item.where}
+											<button
+												class="find"
+												onclick={() => locate(item, true)}
+												title="Show it on the page">show</button
+											>
+										{/if}
+									</span>
+								{/if}
 								{#each partsOf(item.options) as part, p (p)}
 									{#if part.group}<span class="group">{part.group}</span>{/if}
 									<div class="options" {@attach columns}>
@@ -265,6 +338,7 @@
 													name={item.key}
 													value={option.value}
 													bind:group={values[item.key]}
+													onchange={() => locate(item)}
 												/>
 												{#if item.keys && i < 9}<kbd>{i + 1}</kbd>{/if}
 												<span class="name">{option.label}</span>
@@ -282,12 +356,17 @@
 										max={item.max}
 										step={item.step}
 										bind:value={values[item.key]}
+										onchange={() => locate(item)}
 									/>
 									<output>{values[item.key]}</output>
 								</label>
 							{:else if item.type === 'toggle'}
 								<label class="toggle">
-									<input type="checkbox" bind:checked={values[item.key]} />
+									<input
+										type="checkbox"
+										bind:checked={values[item.key]}
+										onchange={() => locate(item)}
+									/>
 									<span>{item.label}</span>
 								</label>
 							{/if}
@@ -397,6 +476,15 @@
 		color: var(--color-font-light);
 	}
 
+	/* How many of a section's items are off their defaults, after its heading */
+	.changed {
+		padding-left: 0.5rem;
+		font-weight: 400;
+		letter-spacing: 0.02em;
+		text-transform: none;
+		color: var(--color-font-light);
+	}
+
 	/* Chrome puts a fieldset's top padding below its legend, so the spacing lives on the legend */
 	fieldset {
 		display: flex;
@@ -460,6 +548,30 @@
 
 	.group {
 		padding: 0.35rem 0 0.25rem;
+	}
+
+	/* A choice's heading with its "show" button at the end of the row */
+	.group:has(.find) {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 0.5rem;
+	}
+
+	.find {
+		padding: 0;
+		border: 0;
+		background: none;
+		font: inherit;
+		letter-spacing: inherit;
+		text-transform: inherit;
+		color: inherit;
+		cursor: pointer;
+	}
+
+	.find:hover,
+	.find:focus-visible {
+		color: var(--color-font-dark);
 	}
 
 	.options {

@@ -1,4 +1,6 @@
 <script>
+	import { setContext } from 'svelte';
+	import TweakPanel, { defaultsOf } from '#lib/components/TweakPanel.svelte';
 	import Section from './Section.svelte';
 	import Hero from './Hero.svelte';
 	import TvScreens from './TvScreens.svelte';
@@ -6,6 +8,13 @@
 	import ArchDiagram from './ArchDiagram.svelte';
 	import DownloadBar from './DownloadBar.svelte';
 	import Pipeline from './Pipeline.svelte';
+	import { sections, END_LINES } from './tweaks.js';
+	import './ticket.css';
+
+	// The refinements on trial (tweaks.js), each at the page as it ships until the dev-only
+	// panel picks a proposal; the widgets read them through context
+	let tweaks = $state(defaultsOf(sections));
+	setContext('tweaks', () => tweaks);
 
 	const trailerStages = [
 		{
@@ -35,7 +44,18 @@
 	/>
 </svelte:head>
 
-<article class="vr">
+<!-- On trial, set for the whole page: how lines break (page.wrap), the tickets' frames
+     (page.ticket, ticket.css), the sketched TVs' power light (hero.light: its gold, the
+     sketchbook's wash at full strength), how far a block scrolls in before it is sharp
+     (page.focus) and the room over a sub-heading (page.subgap); Section reads the last two -->
+<article
+	class="vr"
+	data-wrap={tweaks['page.wrap']}
+	data-ticket={tweaks['page.ticket']}
+	style:--vr-light={tweaks['hero.light'] === 'lit' ? 'rgb(230 180 80)' : null}
+	style:--focus-band={tweaks['page.focus'] === 'short' ? '8rem' : null}
+	style:--sub-gap={tweaks['page.subgap'] === 'roomy' ? '5rem' : null}
+>
 	<Hero />
 
 	<Section
@@ -76,7 +96,16 @@
 		</p>
 		<Pipeline stages={trailerStages} />
 	</Section>
+
+	<!-- The page's last line, on trial (page.end): empty as the page ships -->
+	<div class="vr-end">
+		{#if END_LINES[tweaks['page.end']]}
+			<p>{END_LINES[tweaks['page.end']]}</p>
+		{/if}
+	</div>
 </article>
+
+<TweakPanel {sections} bind:values={tweaks} storage="vibe-reel-refine" />
 
 <style>
 	/* The page in black, white and greys: its gold drained to silver, its ink near black. The
@@ -100,15 +129,21 @@
 		--vr-paper: #fbf8f0;
 		--vr-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.26 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23p)'/%3E%3C/svg%3E");
 		--vr-wash: #f8efdb;
+		/* The architecture diagram's pencil (its lines, the frames round its machines, its small
+		   capitals), for the drawings under it that take it up on trial (tweaks.js) */
+		--vr-pencil: #5c5446;
+		--vr-pencil-frame: rgb(76 69 56 / 0.45);
+		--vr-pencil-faint: #8b8171;
 	}
 
 	/* Building blocks shared by the page's widgets. :where() keeps them at one class of
 	   specificity, so each widget's scoped styles still override them.
 
 	   Panels are tickets in sepia browns on parchment: a stock of the background tinted with
-	   their gold (also the tile colour, --color-background-tile, for what they hold), scooped
-	   corners and a dashed perforation inside the edge. corner-shape keeps the shadow on the
-	   scoops; where it is missing, a mask cuts them instead and the shadow goes. */
+	   their gold (also the tile colour, --color-background-tile, for what they hold), or the
+	   sheet a widget lays in them (--panel-color, --panel-image), scooped corners and a dashed
+	   perforation inside the edge. corner-shape keeps the shadow on the scoops; where it is
+	   missing, a mask cuts them instead and the shadow goes (ticket.css tries another way). */
 	:where(.vr) :global(.vr-panel) {
 		--vr-gold: #94704b;
 		--vr-gold-ink: #6c5034;
@@ -126,7 +161,7 @@
 		--color-background-tile: var(--stock);
 		margin: 0;
 		padding: 1.25rem;
-		background: var(--stock);
+		background: var(--panel-image, none) var(--panel-color, var(--stock));
 		border-radius: 1rem;
 		corner-shape: scoop;
 		box-shadow:
@@ -186,6 +221,55 @@
 
 	:where(.vr) :global(.vr-scroll) {
 		overflow-x: auto;
+	}
+
+	/* On trial (page.wrap): the page's short texts in lines of even length */
+	.vr[data-wrap='balanced']
+		:global(
+			:is(
+				.page-subtitle,
+				.lede,
+				.feature p,
+				.caption .text,
+				.morph .text p,
+				.vr-section .body > p
+			)
+		) {
+		text-wrap: balance;
+	}
+
+	/* On trial (page.end): the last line, in the notes' italic and centred over the footer like
+	   an end title, in the room the last section leaves under it; it comes into focus as the
+	   sections do */
+	.vr-end p {
+		margin: -3rem 0 5rem;
+		text-align: center;
+		font: italic 1.5rem/1.3 var(--font-secondary);
+		color: var(--vr-muted);
+	}
+
+	@media (max-width: 480px) {
+		.vr-end p {
+			font-size: 1.3rem;
+		}
+	}
+
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.vr-end p {
+				animation: focus linear backwards;
+				animation-timeline: view();
+				animation-range: entry 0% entry 10rem;
+			}
+		}
+	}
+
+	@keyframes focus {
+		from {
+			opacity: 0.35;
+			filter: blur(10px);
+			scale: 1.015;
+		}
 	}
 
 	/* Film grain: a fixed layer of noise over the page, under the nav bar, that jumps a few

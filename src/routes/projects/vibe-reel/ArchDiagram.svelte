@@ -9,6 +9,9 @@
 	 */
 	import { flows, edgeGroups } from './arch/data.js';
 	import ChipMark from './arch/ChipMark.svelte';
+	import { useTweaks } from './tweaks.js';
+
+	const tweak = useTweaks();
 
 	let active = $state(null);
 	let pinned = $state(null);
@@ -30,7 +33,8 @@
 	const pick = (key) => (pinned === key ? 'pinned' : shown === key ? 'preview' : undefined);
 </script>
 
-<figure class="arch vr-panel">
+<!-- On trial (arch.media: 'firm'): the media path in a firmer pencil -->
+<figure class={['arch', 'vr-panel', tweak('arch.media')]}>
 	<div class="key">
 		<div class="legend" role="group" aria-label="Highlight a flow">
 			{#each flows as f, i (f.key)}
@@ -57,7 +61,10 @@
 		<span class="optional"><span class="dash" aria-hidden="true"></span>optional</span>
 	</div>
 
-	<p class="vr-hint" aria-hidden="true">Scroll sideways →</p>
+	<!-- On trial (arch.hint: 'note'): in the notes' hand, and so in their lower case -->
+	<p class={['vr-hint', tweak('arch.hint')]} aria-hidden="true">
+		{tweak('arch.hint') === 'note' ? 'scroll sideways →' : 'Scroll sideways →'}
+	</p>
 	<div class="vr-scroll">
 		<svg
 			viewBox="0 0 1000 530"
@@ -88,6 +95,19 @@
 					markerUnits="userSpaceOnUse"
 				>
 					<path d="M0,5 L9,5 M3.5,1.5 L9,5 L3.5,8.5" class="chevron" />
+				</marker>
+				<!-- The same head for the media path in its firmer pencil (on trial) -->
+				<marker
+					id="arch-chevron-firm"
+					viewBox="0 0 10 10"
+					refX="0"
+					refY="5"
+					markerWidth="10"
+					markerHeight="10"
+					orient="auto-start-reverse"
+					markerUnits="userSpaceOnUse"
+				>
+					<path d="M0,5 L9,5 M3.5,1.5 L9,5 L3.5,8.5" class="chevron firm-head" />
 				</marker>
 			</defs>
 
@@ -228,10 +248,10 @@
 		--vr-muted: #5f5748;
 		--vr-cream: rgb(230 180 80 / 0.13);
 		--vr-edge: #5c5446;
+		--panel-color: var(--vr-paper);
+		--panel-image: var(--vr-paper-grain);
 		container-type: inline-size;
 		color: var(--vr-muted);
-		background-color: var(--vr-paper);
-		background-image: var(--vr-paper-grain);
 	}
 
 	/* The drawing's darker gold, set on what the panel holds, so the ticket's perforation round
@@ -245,6 +265,15 @@
 		.vr-hint {
 			display: block;
 		}
+	}
+
+	/* On trial (arch.hint: 'note'): the hint in the notes' italic, as the legend's "optional"
+	   over it is and as the film strip's own hint */
+	.vr-hint.note {
+		font-family: var(--font-secondary);
+		font-style: italic;
+		font-size: 0.95rem;
+		color: var(--color-font-light);
 	}
 
 	/* The key: the flow chips, and at the end of their row (under them, once they wrap) what a
@@ -314,6 +343,11 @@
 	/* The media path's swatch in the chip's own ink, a shade darker than the others */
 	.chip-playback .swatch {
 		background: currentColor;
+	}
+
+	/* On trial (arch.media: 'firm'): the swatch as heavy as the path it stands for */
+	.firm .chip-playback .swatch {
+		height: 0.22rem;
 	}
 
 	svg {
@@ -417,6 +451,24 @@
 		stroke: var(--color-background-tile);
 		stroke-width: 4px;
 		stroke-linejoin: round;
+	}
+
+	/* On trial (arch.media: 'firm'): the media path, Direct Play and the bitstream on to the
+	   soundbar, in a firmer pencil: heavier and in the ink, its heads and labels with it. The
+	   one path that always runs is told apart by weight, not by colour. */
+	.firm g[data-flow='playback'] .edge {
+		stroke: var(--vr-ink);
+		stroke-width: 2;
+		marker-end: url(#arch-chevron-firm);
+	}
+
+	.firm-head {
+		stroke: var(--vr-ink);
+		stroke-width: 2;
+	}
+
+	.firm g[data-flow='playback'] .edge-label {
+		fill: var(--vr-ink);
 	}
 
 	.list {

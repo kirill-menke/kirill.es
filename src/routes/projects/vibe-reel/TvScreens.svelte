@@ -25,6 +25,13 @@
 	import StripSketch from './tv-screens/StripSketch.svelte';
 	import { chevron } from './tv-screens/strip.js';
 	import { screens } from './tv-screens/screens.js';
+	import { useTweaks } from './tweaks.js';
+
+	const tweak = useTweaks();
+	// A caption's number; on trial (strip.count: 'of') with how many frames there are, so that
+	// it says how much film there is to pull
+	const count = (i) =>
+		tweak('strip.count') === 'of' ? `0${i + 1}\u00a0/\u00a00${screens.length}` : `0${i + 1}`;
 
 	// The chevrons on the strip's ends: the way each moves it, in frames
 	const TURNS = [
@@ -292,7 +299,7 @@
 	<div class="captions">
 		{#each screens as s, i (s.title)}
 			<div class="caption" class:shown={i === current} class:leaving={i === leaving}>
-				<span class="count" aria-hidden="true">0{i + 1}</span>
+				<span class="count" aria-hidden="true">{count(i)}</span>
 				<strong>{s.title}</strong>
 				<span class="text">{s.text}</span>
 			</div>

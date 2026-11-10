@@ -43,9 +43,10 @@
 		display: block;
 	}
 
+	/* On trial (tweaks.js: hero.shot): the hero says how long a shot is, as --vr-shot */
 	.cycle,
 	.snow {
-		--shot: 12s;
+		--shot: var(--vr-shot, 12s);
 	}
 
 	/* On the loop's clock: three shots long, a quarter shot in as the set is switched on

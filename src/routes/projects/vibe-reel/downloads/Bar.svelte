@@ -12,6 +12,9 @@
 	 */
 	import { PIECES, pieceStates, progress, complete, summary, liveSummary } from './model.js';
 	import { headFor } from './ink.js';
+	import { useTweaks } from '../tweaks.js';
+
+	const tweak = useTweaks();
 
 	let { dl, live = false } = $props();
 
@@ -80,8 +83,9 @@
 	>
 		<i class="note {frontierSide}" bind:clientWidth={frontierWidth}>download frontier</i>
 	</div>
+	<!-- On trial (downloads.rest: 'paper', 'outline'): what the pieces not yet in are made of -->
 	<div
-		class={['pieces', live && 'live']}
+		class={['pieces', live && 'live', tweak('downloads.rest')]}
 		role="img"
 		aria-label={live ? liveSummary : summary}
 		style="--n: {PIECES}"
@@ -113,16 +117,33 @@
 		padding-top: calc(2 * var(--row) + var(--reach) + 0.2rem);
 	}
 
+	/* --rest: what a piece not yet in is made of */
 	.pieces {
+		--rest: oklch(0.92 0 0);
 		display: grid;
 		grid-template-columns: repeat(var(--n), 1fr);
 		gap: 2px;
 		height: 2.25rem;
 	}
 
+	/* On trial (downloads.rest). 'paper': a darker shade of the sheet they lie on, instead of
+	   a neutral grey. 'outline': empty boxes in the architecture diagram's pencil, the one
+	   loading filling up inside its own. */
+	.pieces.paper {
+		--rest: color-mix(in oklab, var(--vr-paper) 86%, var(--vr-ink));
+	}
+
+	.pieces.outline {
+		--rest: transparent;
+	}
+
+	.pieces.outline span:not(.done) {
+		box-shadow: inset 0 0 0 1px var(--vr-pencil-frame);
+	}
+
 	.pieces span {
 		border-radius: 3px;
-		background: oklch(0.92 0 0);
+		background: var(--rest);
 	}
 
 	.pieces .done {
@@ -141,7 +162,7 @@
 		background: linear-gradient(
 			to top,
 			var(--vr-gold-fill) calc(var(--p) * 100%),
-			oklch(0.92 0 0) 0
+			var(--rest) 0
 		);
 	}
 

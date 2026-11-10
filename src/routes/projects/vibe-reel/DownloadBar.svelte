@@ -63,7 +63,7 @@
 	figure {
 		--color-background-tile: var(--vr-paper);
 		--color-background: #fff;
-		background-color: var(--vr-paper);
-		background-image: var(--vr-paper-grain);
+		--panel-color: var(--vr-paper);
+		--panel-image: var(--vr-paper-grain);
 	}
 </style>

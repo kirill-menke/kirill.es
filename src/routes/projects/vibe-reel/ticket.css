@@ -1,0 +1,72 @@
+/*
+ * On trial (tweaks.js: page.ticket = 'same'): the ticket panels drawn the same in every browser.
+ * +page.svelte's own rules give them scooped corners, a shadow on the scoops and a perforation
+ * that follows them through corner-shape, which only Chromium has; elsewhere a mask cuts the
+ * scoops, which loses the shadow and leaves the perforation square. The rules here apply while
+ * the article carries data-ticket='same', over those.
+ *
+ * Here the panel paints nothing itself: its ::before and ::after draw the ticket behind its
+ * content (z-index -1, held inside the panel by isolation), so the mask that cuts the scoops
+ * cuts only the sheet, never the content or the shadow. ::after is the sheet, the panel's
+ * paper with the scoops masked out and the perforation over it; ::before is the shadow. Both
+ * draw with border images, which keep their corners at one size on a panel of any size, repeat
+ * their edges ('round' fits a whole number of dashes to a side) and paint beyond the panel
+ * (the shadow) without changing its box.
+ *
+ * The shadow SVG blurs the scooped outline with the panel's two box-shadows, the second shrunk
+ * by its spread, which makes its scoops 10px wider, as Chrome does. The blur sits in an SVG
+ * pattern because Chrome keeps a pattern as a picture: it would otherwise draw the corners
+ * again, blur and all, whenever something over them repaints, as the download bar does on
+ * every frame.
+ *
+ * The perforation is the outline as Chrome draws it, which rounds 1.5px and -0.55rem to whole
+ * pixels: a 1px line 7px to 8px in, 3px dashes and 2px gaps, round each scoop at that distance.
+ * Chrome runs its dashes round the whole outline, so they fall differently at each corner;
+ * here every corner is alike, with a dash on the middle of the arc and one across each bend.
+ * An SVG image cannot read custom properties, so it spells out the colours: the panel gold,
+ * #94704b, at 55% for the dashes and rgb(70 50 20) for the shadows.
+ */
+
+.vr[data-ticket='same'] .vr-panel {
+	position: relative;
+	isolation: isolate;
+	background: none;
+	border-radius: 0;
+	box-shadow: none;
+	outline: none;
+	mask: none;
+}
+
+.vr[data-ticket='same'] .vr-panel::before,
+.vr[data-ticket='same'] .vr-panel::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+}
+
+/* The shadow: a 136px ticket in the middle of a 200px SVG, cut 96px in from each side, so that
+   a corner holds 2rem of shadow outside the panel and 4rem inside, where the blur settles. */
+.vr[data-ticket='same'] .vr-panel::before {
+	border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' fill='%23463214' color-interpolation-filters='sRGB'%3E%3Cpattern id='s' patternUnits='userSpaceOnUse' width='200' height='200'%3E%3Cfilter id='a' filterUnits='userSpaceOnUse'%3E%3CfeGaussianBlur stdDeviation='10'/%3E%3CfeOffset dy='8'/%3E%3C/filter%3E%3Cfilter id='b' filterUnits='userSpaceOnUse'%3E%3CfeGaussianBlur stdDeviation='1'/%3E%3CfeOffset dy='1'/%3E%3C/filter%3E%3Cpath filter='url(%23a)' fill-opacity='.3' d='M56 42H144A26 26 0 0 0 158 56V144A26 26 0 0 0 144 158H56A26 26 0 0 0 42 144V56A26 26 0 0 0 56 42Z'/%3E%3Cpath filter='url(%23b)' fill-opacity='.12' d='M48 32H152A16 16 0 0 0 168 48V152A16 16 0 0 0 152 168H48A16 16 0 0 0 32 152V48A16 16 0 0 0 48 32Z'/%3E%3C/pattern%3E%3Crect width='200' height='200' fill='url(%23s)'/%3E%3C/svg%3E")
+		96 / 6rem / 2rem round;
+}
+
+/* The sheet. Each scoop's edge is soft over 1px, as Chrome's. Unclipped, the mask leaves the
+   sheet's edges to the sheet: clipped to its box, it would soften one between device pixels.
+   The perforation's SVG is cut 24px in: a corner holds an arc and its five dashes, an edge one
+   dash between two half gaps. */
+.vr[data-ticket='same'] .vr-panel::after {
+	--scoop: transparent calc(1rem - 0.5px), #000 calc(1rem + 0.5px);
+	background: var(--panel-image, none) var(--panel-color, var(--stock));
+	mask:
+		radial-gradient(circle at 0 0, var(--scoop)),
+		radial-gradient(circle at 100% 0, var(--scoop)),
+		radial-gradient(circle at 0 100%, var(--scoop)),
+		radial-gradient(circle at 100% 100%, var(--scoop));
+	mask-composite: intersect;
+	mask-clip: no-clip;
+	border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='53' height='53' fill='none' stroke='%2394704b' stroke-opacity='.55'%3E%3Cg stroke-dasharray='3 2' stroke-dashoffset='4'%3E%3Cpath id='c' pathLength='25' d='M24 7.5H22.27A23.5 23.5 0 0 1 7.5 22.27V24'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 1 53 0)'/%3E%3Cuse href='%23c' transform='matrix(1 0 0 -1 0 53)'/%3E%3Cuse href='%23c' transform='rotate(180 26.5 26.5)'/%3E%3C/g%3E%3Cpath d='M25 7.5h3M25 45.5h3M7.5 25v3M45.5 25v3'/%3E%3C/svg%3E")
+		24 / 1.5rem round;
+}

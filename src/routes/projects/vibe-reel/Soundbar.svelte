@@ -110,6 +110,9 @@
 	 * under the readout, TRANSCODE at the right end.
 	 */
 	import Note from './soundbar/Note.svelte';
+	import { useTweaks } from './tweaks.js';
+
+	const tweak = useTweaks();
 
 	const lit = ['HEVC', 'AV1', 'HDR10', 'Dolby Vision', 'DD+', 'Atmos', 'PGS'];
 
@@ -177,8 +180,9 @@
 	</span>
 {/snippet}
 
+<!-- On trial (hero.pen): 'medium' and 'fine' lighten the bar's pen -->
 <div
-	class="body"
+	class={['body', tweak('hero.pen')]}
 	style:margin-inline="calc({SIDES[0]}% - 1.5px) calc({SIDES[1]}% - 1.5px)"
 	bind:clientWidth={bodyW}
 	bind:clientHeight={bodyH}
@@ -381,6 +385,54 @@
 	.shade {
 		stroke-width: 0.8;
 		opacity: 0.7;
+	}
+
+	/* On trial (hero.pen): the bar in the sketched TV's pen, which on a hero-sized set is about
+	   1.1px the outline, 0.7 gone over, 0.9 the screen's edge and 0.5 the hatching
+	   (TvSketchPen), so that set and bar read as one drawing; or halfway there */
+	.medium .line {
+		stroke-width: 1.45;
+	}
+
+	.medium .again {
+		stroke-width: 0.85;
+	}
+
+	.medium .edge {
+		stroke-width: 1.1;
+	}
+
+	.medium .grille-edge {
+		stroke-width: 0.7;
+	}
+
+	.medium .mesh {
+		stroke-width: 0.55;
+	}
+
+	.medium .shade {
+		stroke-width: 0.65;
+	}
+
+	.fine .line {
+		stroke-width: 1.1;
+	}
+
+	.fine .again {
+		stroke-width: 0.7;
+	}
+
+	.fine .edge {
+		stroke-width: 0.9;
+	}
+
+	.fine .grille-edge {
+		stroke-width: 0.6;
+	}
+
+	.fine .mesh,
+	.fine .shade {
+		stroke-width: 0.5;
 	}
 
 	@media (prefers-reduced-motion: no-preference) {

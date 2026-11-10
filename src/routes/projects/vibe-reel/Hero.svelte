@@ -17,6 +17,11 @@
 	import BiasLight from './hero/BiasLight.svelte';
 	import Features from './hero/Features.svelte';
 	import { REPO, img } from './media.js';
+	import { useTweaks } from './tweaks.js';
+
+	const tweak = useTweaks();
+	// On trial (hero.opening): the title and the blurb come into focus as the page opens
+	const opening = $derived(tweak('hero.opening') === 'focus' && 'focus');
 
 	const TV = [img('tv-home'), img('tv-detail'), img('tv-player')];
 	const BLURB =
@@ -39,11 +44,18 @@
 </script>
 
 <header class="hero">
-	<h1 class="page-heading">VibeReel.</h1>
-	<p class="page-subtitle">{BLURB}</p>
+	<h1 class={['page-heading', opening]}>VibeReel.</h1>
+	<!-- On trial (hero.blurb): 'ink' and 'lede' restyle the site's subtitle -->
+	<p class={['page-subtitle', tweak('hero.blurb'), opening]}>{BLURB}</p>
 
-	<!-- The TV's screen powers on once its frame is drawn (TvSketchPen's DRAWN) -->
-	<div class="stage" style:--power-at="{DRAWN}ms">
+	<!-- The TV's screen powers on once its frame is drawn (TvSketchPen's DRAWN). On trial: how
+	     long each shot stays (hero.shot), and where the source note goes on a narrow
+	     side-by-side stage (hero.laptop). -->
+	<div
+		class={['stage', tweak('hero.laptop') === 'above' && 'note-above']}
+		style:--power-at="{DRAWN}ms"
+		style:--vr-shot="{tweak('hero.shot')}s"
+	>
 		<div class="meta">
 			<SourceLink href={REPO} />
 		</div>
@@ -83,6 +95,49 @@
 	.hero :global(.page-subtitle) {
 		position: relative;
 		z-index: 1;
+	}
+
+	/* On trial (hero.blurb). 'ink': the grey of the page's running text, as the feature lines
+	   beside the TV. 'lede': the notes' italic serif, as every section's lede is, a size up
+	   for the page's own. */
+	.hero .page-subtitle.ink {
+		color: var(--vr-muted);
+	}
+
+	.hero .page-subtitle.lede {
+		max-width: 50ch;
+		font-family: var(--font-secondary);
+		font-style: italic;
+		font-size: 1.4rem;
+		line-height: 1.45;
+		color: var(--vr-muted);
+	}
+
+	@media (max-width: 480px) {
+		.hero .page-subtitle.lede {
+			font-size: 1.25rem;
+		}
+	}
+
+	/* On trial (hero.opening): from soft to sharp as the sections come in on scroll
+	   (Section.svelte), the title first; about their left edge, where the page's column is */
+	@media (prefers-reduced-motion: no-preference) {
+		.hero .focus {
+			transform-origin: 0 50%;
+			animation: focus 700ms var(--ease-cubic-out) backwards;
+		}
+
+		.hero p.focus {
+			animation-delay: 150ms;
+		}
+	}
+
+	@keyframes focus {
+		from {
+			opacity: 0;
+			filter: blur(12px);
+			scale: 1.015;
+		}
 	}
 
 	/* The set, and the features under it or, on a wide stage, beside it. Its own stacking
@@ -157,6 +212,22 @@
 			margin: 0;
 			translate: 48px -44px;
 			scale: 1.2;
+		}
+	}
+
+	/* On trial (hero.laptop): on a stage that is side by side but narrow (the page's 950px
+	   column, in a window 1024 to 1279px wide) the features stand taller than the set and reach
+	   up into the link, so there it takes its row above the set, as on a narrow stage
+	   (SourceLink gives it that stage's margins) */
+	@container (880px <= width < 1000px) {
+		.note-above .meta {
+			position: relative;
+			top: auto;
+			left: auto;
+			width: 100%;
+			margin: 0 0 1rem;
+			translate: none;
+			scale: none;
 		}
 	}
 
