@@ -1,5 +1,5 @@
 <script>
-	import { byCode, flags, imageUrl, meta, stats } from '#lib/flags/index.js';
+	import { byCode, flags, imageUrl, stats } from '#lib/flags/index.js';
 
 	let { onselect = () => {}, delay = 0 } = $props();
 
@@ -33,7 +33,7 @@
 {/snippet}
 
 <div class="grid-container stats">
-	<section class="tile grid-item span-2-cols enter" style={stagger(0)}>
+	<section class="tile grid-item span-2-cols census-tile enter" style={stagger(0)}>
 		<header><span class="tile-header-text">Flags · Colour census</span></header>
 		<div class="body">
 			<h3>
@@ -53,7 +53,6 @@
 					</li>
 				{/each}
 			</ul>
-			<p class="note">A flag counts when the colour covers at least 2% of it.</p>
 		</div>
 	</section>
 
@@ -61,6 +60,7 @@
 		<header><span class="tile-header-text">Flags · Colour twins</span></header>
 		<div class="body">
 			<h3>Same colours, different flags.</h3>
+			<p class="note lede">Their palettes match exactly; only the layout tells them apart.</p>
 			<ul class="groups">
 				{#each stats.twins as group (group.join())}
 					<li>
@@ -71,7 +71,6 @@
 					</li>
 				{/each}
 			</ul>
-			<p class="note">Their palettes match exactly; only the layout tells them apart.</p>
 		</div>
 	</section>
 
@@ -94,6 +93,23 @@
 	</section>
 
 	<section class="tile enter" style={stagger(3)}>
+		<header><span class="tile-header-text">Flags · Palettes</span></header>
+		<div class="body">
+			<h3>
+				{join(colourful.map((flag) => flag.name))} use {stats.colourCounts[
+					colourful[0].code
+				]} colours.
+			</h3>
+			<span class="row">
+				{#each colourful as flag (flag.code)}{@render mini(flag.code, 'large')}{/each}
+			</span>
+			<p class="note">
+				{stats.twoColour} flags make do with just two. Colours under 1% of a flag are not counted.
+			</p>
+		</div>
+	</section>
+
+	<section class="tile enter" style={stagger(4)}>
 		<header><span class="tile-header-text">Flags · Odd shapes</span></header>
 		<div class="body">
 			<h3>Only one flag isn't a rectangle.</h3>
@@ -121,80 +137,6 @@
 			</ul>
 		</div>
 	</section>
-
-	<section class="tile enter" style={stagger(4)}>
-		<header><span class="tile-header-text">Flags · Palettes</span></header>
-		<div class="body">
-			<h3>
-				{join(colourful.map((flag) => flag.name))} use {stats.colourCounts[
-					colourful[0].code
-				]} colours.
-			</h3>
-			<span class="row">
-				{#each colourful as flag (flag.code)}{@render mini(flag.code, 'large')}{/each}
-			</span>
-			<p class="note">
-				{stats.twoColour} flags make do with just two. Colours under 1% of a flag are not counted.
-			</p>
-		</div>
-	</section>
-
-	<section class="tile grid-item span-2-cols enter" style={stagger(5)}>
-		<header><span class="tile-header-text">Flags · How the circle was made</span></header>
-		<ol class="steps body">
-			<li>
-				<p>
-					<span class="strong">Download.</span> All {count} flags of the UN member states, as
-					SVG from flagcdn.com.
-				</p>
-			</li>
-			<li>
-				<p>
-					<span class="strong">Count.</span> Draw each flag at 1,500 px and count every pixel's
-					colour, merging shades the eye can't tell apart.
-				</p>
-			</li>
-			<li>
-				<p>
-					<span class="strong">Compare.</span> Two flags are as different as the least colour
-					you must change to repaint one palette into the other. Hue counts twice as much as
-					saturation and brightness, and any colour covering a tenth of a flag counts in full,
-					so shape barely matters.
-				</p>
-			</li>
-			<li>
-				<p>
-					<span class="strong">Arrange.</span> Find the circle with the smallest
-					difference between neighbours, plus a pull of {meta.pull} per place towards each flag's
-					{meta.matches} closest matches, so whole colour families end up together. Neighbours
-					are now {meta.mean_similarity}% alike on average.
-				</p>
-			</li>
-		</ol>
-		<p class="note body credits">
-			Sources: flags from <a
-				href="https://flagcdn.com"
-				target="_blank"
-				rel="noopener noreferrer">flagcdn.com</a
-			>; capitals and borders from
-			<a href="https://github.com/mledoze/countries" target="_blank" rel="noopener noreferrer"
-				>mledoze/countries</a
-			>
-			(ODbL); flag descriptions quote the first sentences of each flag's English Wikipedia article
-			(<a
-				href="https://creativecommons.org/licenses/by-sa/4.0/"
-				target="_blank"
-				rel="noopener noreferrer">CC BY-SA 4.0</a
-			>).
-		</p>
-	</section>
-
-	<section class="tile grid-item full enter" style={stagger(6)}>
-		<header><span class="tile-header-text">Flags · The circle, unrolled</span></header>
-		<div class="strip body">
-			{#each flags as flag (flag.code)}{@render mini(flag.code)}{/each}
-		</div>
-	</section>
 </div>
 
 <style>
@@ -204,10 +146,6 @@
 
 	.tile {
 		padding-bottom: 1.25rem;
-	}
-
-	.full {
-		grid-column: 1 / -1;
 	}
 
 	header {
@@ -233,25 +171,21 @@
 		color: var(--color-font-light);
 	}
 
-	.credits {
-		margin-top: 1.25rem;
+	/* A subtitle right under the heading */
+	h3:has(+ .lede) {
+		margin-bottom: 0.4rem;
+	}
+
+	.lede {
+		margin: 0 0 1rem;
 		line-height: 1.5;
-	}
-
-	.credits a {
-		color: var(--color-font-light);
-	}
-
-	.credits a:hover {
-		color: var(--color-font-dark);
 	}
 
 	.strong {
 		color: var(--color-font-dark);
 	}
 
-	ul,
-	ol {
+	ul {
 		margin: 0;
 		padding: 0;
 		list-style: none;
@@ -284,6 +218,23 @@
 	.number {
 		text-align: right;
 		color: var(--color-font-dark);
+	}
+
+	/* Four columns: the census takes a row of its own, its bars in two columns, so the four
+	   small tiles fill the row below it */
+	@media (min-width: 1280px) {
+		.census-tile {
+			grid-column: 1 / -1;
+		}
+
+		.census {
+			columns: 2;
+			column-gap: 3rem;
+		}
+
+		.census li {
+			break-inside: avoid;
+		}
 	}
 
 	.groups li {
@@ -341,38 +292,5 @@
 	.mini.tall img,
 	.mini.square img {
 		width: 1.4rem;
-	}
-
-	.steps {
-		display: grid;
-		gap: 0.8rem;
-		margin-top: 1.25rem;
-		font-size: 0.95rem;
-		line-height: 1.6;
-		color: var(--color-font-light);
-		counter-reset: step;
-	}
-
-	.steps li {
-		counter-increment: step;
-		display: grid;
-		grid-template-columns: 1.5rem 1fr;
-	}
-
-	.steps p {
-		margin: 0;
-	}
-
-	.steps li::before {
-		content: counter(step);
-		font-family: var(--font-secondary);
-		color: var(--color-font-dark);
-	}
-
-	.strip {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.3rem;
-		margin-top: 1rem;
 	}
 </style>

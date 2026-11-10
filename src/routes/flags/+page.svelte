@@ -3,16 +3,16 @@
 	import { goto } from '$app/navigation';
 	import { scrollBehavior } from '#lib/motion.js';
 	import { byCode, flags, meta } from '#lib/flags/index.js';
-	import FlagCircle from './FlagCircle.svelte';
 	import FlagDetails from './FlagDetails.svelte';
 	import FlagSearch from './FlagSearch.svelte';
 	import FlagStats from './FlagStats.svelte';
+	import FlagWreath from './FlagWreath.svelte';
 
 	let selected = $state(null); // pinned flag
 	let hovered = $state(null); // flag under the mouse
 	let shown = $derived(hovered ?? selected);
-	let size = $state(0); // ring width, 0 until measured (and while prerendering)
-	let compact = $derived(size > 0 && size < 620); // centre too small: details go below the ring
+	let size = $state(0); // wreath width, 0 until measured (and while prerendering)
+	let compact = $derived(size > 0 && size < 620); // middle too small: details go below the wreath
 	let circleTile = $state(null);
 
 	onMount(() => {
@@ -23,7 +23,7 @@
 	function select(code) {
 		selected = code;
 		hovered = null;
-		// Shallow, so it stays on this page: on flags.kirill.es the page itself lives at `/`.
+		// Shallow and replacing: the pinned flag lives in the hash, with no navigation or history entry.
 		goto(code ? `#${code}` : location.pathname, { shallow: true, replace: true });
 	}
 
@@ -62,25 +62,18 @@
 <h1 class="page-heading">flags.</h1>
 <p class="page-subtitle">
 	All {flags.length} UN member states in one circle, each flag beside the ones with the most similar
-	colours.<br />
-	<span class="hint-pointer">Hover the ring to look closer, click a flag to pin it.</span>
-	<span class="hint-touch">Tap the ring or search for a country to pin its flag.</span>
+	colours.
+	<span class="hint-touch"><br />Tap the wreath or search for a country to pin its flag.</span>
 </p>
 
 {#snippet details(variant)}
-	<FlagDetails
-		code={shown}
-		pinned={shown === selected}
-		{variant}
-		onselect={select}
-		onstep={step}
-	/>
+	<FlagDetails code={shown} {variant} onselect={select} />
 {/snippet}
 
 <section class="tile circle-tile enter" bind:this={circleTile}>
-	<!-- The ring and the stats are prerendered; what goes in the centre depends on the measured
+	<!-- The wreath and the stats are prerendered; what goes in the middle depends on the measured
 	     size, so it waits for the client rather than show the wrong layout first. -->
-	<FlagCircle {selected} onhover={(code) => (hovered = code)} onselect={toggle} bind:size>
+	<FlagWreath {selected} onhover={(code) => (hovered = code)} onselect={toggle} bind:size>
 		{#if compact}
 			<p class="ring-label">{shown ? byCode[shown].name : `${flags.length} flags`}</p>
 		{:else if size && shown}
@@ -91,12 +84,12 @@
 				<p class="tagline">flags, one circle</p>
 				<p class="hint">
 					Neighbours are {meta.mean_similarity}% alike on average. Use ← → to walk around
-					the ring.
+					the circle.
 				</p>
 				<FlagSearch onselect={select} />
 			</div>
 		{/if}
-	</FlagCircle>
+	</FlagWreath>
 
 	{#if compact}
 		<div class="below">
@@ -111,23 +104,25 @@
 <FlagStats onselect={selectAndShow} delay={250} />
 
 <style>
-	/* Touch screens cannot hover, so they get their own hint */
+	/* Touch screens cannot hover the wreath, so they get a hint */
 	.hint-touch {
 		display: none;
 	}
 
 	@media (hover: none) {
-		.hint-pointer {
-			display: none;
-		}
-
 		.hint-touch {
 			display: inline;
 		}
 	}
 
+	/* --halo: the text in the middle of the wreath sits on it, so it follows the tile's colour */
 	.circle-tile {
+		--halo: var(--color-background-tile);
 		padding: 1.5rem 1rem;
+	}
+
+	.circle-tile:hover {
+		--halo: var(--color-background-tile-hover);
 	}
 
 	.intro {

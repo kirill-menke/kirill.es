@@ -21,14 +21,13 @@ export const projects = {
 		name: 'Flags',
 		title: 'flags, one circle',
 		link: '/flags',
-		count: 193,
-		// Every sixth flag of the /flags circle, in ring order, so the colour gradient survives.
-		// Listed here so the home page does not pull in all of flags.json.
-		ring: (
-			'kz bb ga ng sd iq hu in it tm qa mc ca vn cy de ' +
-			'sn gw kn et td am bz py lu ws gb th er uy ni bw'
-		).split(' '),
-		tileType: 'flags',
+		// Four looks; the count and the flags they show come from flags.json at build time
+		// (virtual:flags-tile in vite.config.js). Switch by changing this one word:
+		// 'badges'  a sunflower of 55 upright round flags, the count in the middle; spreads on hover
+		// 'fan'     a half-open fan of paint strips that swings into one full circle on hover
+		// 'corner'  paint strips fanned from the bottom-left corner, chips named by colour
+		// 'chips'   a pile of flag paint chips that spreads into a circle on hover
+		tileType: 'badges',
 		layout: 'square'
 	}
 };

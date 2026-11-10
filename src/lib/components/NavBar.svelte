@@ -10,9 +10,6 @@
 	];
 
 	let currentPath = $derived(page.url.pathname);
-	// flags.kirill.es serves /flags at its root (Cloudflare rewrite); its links lead back to kirill.es.
-	// Prerendering sees no such host, so the HTML has relative links and hydration fixes them up.
-	let siteOrigin = $derived(page.url.hostname.startsWith('flags.') ? 'https://kirill.es' : '');
 
 	let scrollY = $state(0);
 	let isFaded = $derived(scrollY >= 35);
@@ -26,7 +23,6 @@
 	);
 
 	function current(href) {
-		if (siteOrigin) return undefined;
 		if (currentPath === href) return 'page';
 		// Sub-pages (/projects/vibe-reel) mark their section; '/' would match everything
 		if (href !== '/' && currentPath.startsWith(href + '/')) return 'true';
@@ -74,7 +70,7 @@
 					onfocusin={handleFocusIn}
 				>
 					<a
-						href={siteOrigin + item.href}
+						href={item.href}
 						class="nav-link"
 						class:active={ariaCurrent}
 						aria-current={ariaCurrent}
