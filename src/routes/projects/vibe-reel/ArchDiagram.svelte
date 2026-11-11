@@ -3,7 +3,8 @@
 	 * How VibeReel fits together, sketched in pencil on the page's sketchbook paper: the TV, the
 	 * NAS, the phone and browser and the internet, the boxes in each and the edges between them
 	 * (arch/data.js), the optional parts dashed. A still drawing: nothing in it is picked or
-	 * pointed at. Narrower than its 760px, it scrolls sideways under a hint.
+	 * pointed at. Narrower than its 760px, it scrolls sideways under a hint, out to the
+	 * ticket's edges, where it fades out.
 	 */
 	import { edgeGroups } from './arch/data.js';
 </script>
@@ -195,6 +196,33 @@
 		height: auto;
 		font-family: var(--font-secondary);
 		font-style: italic;
+	}
+
+	/* Scrolling, the drawing runs out through the panel's padding (--panel-pad) to the ticket's
+	   edges and fades out across it, short of the perforation: the ticket no longer cuts it
+	   off where its padding begins, it runs on under the edge. The drawing brings that padding
+	   along as its own, so at either end of the scroll the padding is empty again and the
+	   drawing whole. A pan past an end stays in the drawing (no swipe back through the
+	   history). */
+	@container (width < 760px) {
+		.scroll {
+			margin-inline: calc(var(--panel-pad) * -1);
+			overscroll-behavior-x: contain;
+			mask-image: linear-gradient(
+				90deg,
+				transparent 0.6rem,
+				#000 var(--panel-pad),
+				#000 calc(100% - var(--panel-pad)),
+				transparent calc(100% - 0.6rem)
+			);
+		}
+
+		svg {
+			box-sizing: content-box;
+			width: 760px;
+			min-width: 0;
+			padding-inline: var(--panel-pad);
+		}
 	}
 
 	.group {

@@ -8,16 +8,17 @@
 	 *
 	 * The app takes the mouse as soon as it is over the phone: PhoneCursor draws a grease pencil
 	 * in place of the pointer, and dragging scrolls as a finger would. A frame too small to use
-	 * (a phone's layout) opens the demo full screen instead. `running` (bindable) says the app
-	 * is up and usable in place. `shown` says whether the phone is on show: Morph fades it out
-	 * for the TV and the browser with the app running on behind it, so that it never reloads,
-	 * and out of sight whatever the app is playing is paused. `screen` binds the screen inside
-	 * the bezel, as PhoneFrame's does.
+	 * (a phone's layout) never loads it and opens the demo full screen instead, the whole
+	 * screen a link to it. `tryable` (bindable) says the phone can be tried, either way: the
+	 * app is up in it, or a tap opens it. `shown` says whether the phone is on show: Morph
+	 * fades it out for the TV and the browser with the app running on behind it, so that it
+	 * never reloads, and out of sight whatever the app is playing is paused. `screen` binds
+	 * the screen inside the bezel, as PhoneFrame's does.
 	 *
 	 * The note (phone-note/Note.svelte: "try it out", "it's the real app" and an arrow) stands
 	 * beside the phone, well clear of it, the words at the top and the arrow running from under
 	 * them onto the phone's edge, and is sized from the phone's width: this is its container. It
-	 * draws itself the first time the phone is half on screen and shown with the app up, and
+	 * draws itself the first time the phone is half on screen, shown and can be tried, and
 	 * from then on comes and goes with the phone.
 	 */
 	import { onMount } from 'svelte';
@@ -25,12 +26,16 @@
 	import PhoneCursor from './PhoneCursor.svelte';
 	import Note from './phone-note/Note.svelte';
 
-	let { src, alt, shown = true, running = $bindable(false), screen = $bindable() } = $props();
+	let { src, alt, shown = true, tryable = $bindable(false), screen = $bindable() } = $props();
 
 	const DEMO = '/vibe-reel-demo/index.html';
 	// The iPhone 15's viewport, which the demo lays out for
 	const W = 393;
+	// The narrowest screen the app is usable in, under the mouse and under a finger. A finger
+	// needs its buttons larger: at 220px they are 0.56 of their size, which a tablet's layout
+	// gives the phone and no phone's does, the largest one's neither.
 	const MIN_LIVE = 150;
+	const MIN_TOUCH = 220;
 
 	let live = $state();
 	let frame = $state();
@@ -48,12 +53,15 @@
 		if (settled && !small && !failed) load = true;
 	});
 
+	// The app is up in the phone, or the frame is too small for it and opens it instead
+	const can = $derived(ready || small);
+
 	$effect(() => {
-		running = ready && !small;
+		tryable = can;
 	});
 
 	$effect(() => {
-		if (ready && shown && onScreen) drawn = true;
+		if (can && shown && onScreen) drawn = true;
 	});
 
 	// Out of sight, the trailer playing in the app stops where it is
@@ -64,9 +72,10 @@
 	});
 
 	onMount(() => {
+		const min = matchMedia('(pointer: coarse)').matches ? MIN_TOUCH : MIN_LIVE;
 		const measure = () => {
 			scale = screen.clientWidth / W;
-			small = screen.clientWidth < MIN_LIVE;
+			small = screen.clientWidth < min;
 		};
 		measure();
 		const ro = new ResizeObserver(measure);
@@ -132,7 +141,7 @@
 		<PhoneCursor {frame} />
 	{/if}
 
-	<Note go={drawn && !small} />
+	<Note go={drawn} />
 </div>
 
 <style>

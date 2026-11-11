@@ -251,11 +251,13 @@
 		padding-left: 1.5rem;
 	}
 
+	/* Where it has to wrap (a phone), in lines of even length, no word left over on the last */
 	.ends span:last-child {
 		flex-shrink: 1;
 		max-width: 26rem;
 		padding: 0 1.5rem 0 0;
 		text-align: right;
+		text-wrap: balance;
 	}
 
 	.arrow {

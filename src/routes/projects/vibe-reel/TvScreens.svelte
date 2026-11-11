@@ -573,10 +573,11 @@
 		border-radius: 0.2em 0.45em 0.35em 0.25em;
 	}
 
+	/* Its title steps down with the section's heading on a phone (--vr-sub) */
 	.caption strong {
 		font-family: var(--font-secondary);
 		font-weight: 400;
-		font-size: 1.35rem;
+		font-size: min(1.35rem, var(--vr-sub));
 		line-height: 1.2;
 		color: var(--color-font-dark);
 	}
@@ -626,6 +627,15 @@
 
 	.turn.on {
 		right: 0;
+	}
+
+	/* On a phone the page's margin is no wider than the film's lead, 1.25rem, and a chevron
+	   centred on the strip's end would reach past the window's edge: the page would scroll
+	   sideways by that much. There they hang out as far as the margin goes and no further. */
+	@media (width < 640px) {
+		.turn {
+			margin-inline: -1.25rem;
+		}
 	}
 
 	/* Lit from the keyboard, in the gold ink ringed in paper, so that it shows on the paper and

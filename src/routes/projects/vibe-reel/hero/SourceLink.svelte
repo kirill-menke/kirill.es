@@ -31,6 +31,16 @@
 		color: var(--color-font-dark);
 	}
 
+	/* Under a finger the link takes a tap on about 44px of height, not only on its line of
+	   words */
+	@media (pointer: coarse) {
+		a::after {
+			content: '';
+			position: absolute;
+			inset: -0.7rem -0.5rem;
+		}
+	}
+
 	/* The words sit a little right of the arrow's tip and a size up, about their bottom-left
 	   corner; the arrow stays where it is. Their own stacking context, for the band behind
 	   them. */

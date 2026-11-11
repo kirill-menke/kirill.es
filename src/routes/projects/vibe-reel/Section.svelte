@@ -23,12 +23,12 @@
 		scroll-margin-top: 2rem;
 	}
 
-	/* Headings stay on one line: on a phone they shrink with the column (3.5rem of page
-	   padding), sized for the longest, about 14 em wide */
+	/* Headings stay on one line: on a phone they shrink with the column, sized for the longest
+	   of them (--vr-h2, among the page's sizes) */
 	h2 {
 		font-family: var(--font-secondary);
 		font-weight: 400;
-		font-size: min(2rem, (100vw - 3.5rem) / 14);
+		font-size: var(--vr-h2);
 		line-height: 1.2;
 		color: var(--color-font-dark);
 		margin: 0 0 0.5rem;
@@ -41,10 +41,12 @@
 		}
 	}
 
+	/* On a phone the lede steps down with its heading, to about three quarters of it: at its
+	   full size it would stand as tall as a heading shrunk to fit, and run a line longer */
 	.lede {
 		font-family: var(--font-secondary);
 		font-style: italic;
-		font-size: 1.3rem;
+		font-size: clamp(1.05rem, var(--vr-h2) * 0.735, 1.3rem);
 		line-height: 1.4;
 		color: var(--vr-muted);
 		margin: 0 0 1.75rem;
@@ -52,11 +54,12 @@
 	}
 
 	/* A second part folded into the section: its claim as a smaller heading, set well clear
-	   of the part before it */
+	   of the part before it. On one line too, and on a phone a step under the section's own
+	   heading (--vr-sub), which it would otherwise match or pass. */
 	.body :global(h3) {
 		font-family: var(--font-secondary);
 		font-weight: 400;
-		font-size: min(1.5rem, (100vw - 3.5rem) / 13.5);
+		font-size: min(1.5rem, var(--vr-sub));
 		line-height: 1.25;
 		color: var(--color-font-dark);
 		margin: 5rem 0 0.75rem;

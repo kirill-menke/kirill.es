@@ -33,8 +33,10 @@
 		padding: 0;
 	}
 
+	/* On a phone a name steps down with the sections' headings (--vr-sub), and so keeps to one
+	   line on a narrow one */
 	.feature {
-		--name: 1.35em;
+		--name: min(1.35em, var(--vr-sub));
 		--enter-duration: 333ms;
 		--enter-delay: calc(var(--power-at) + 567ms + var(--i) * 73ms);
 		--enter-y: 0.75rem;

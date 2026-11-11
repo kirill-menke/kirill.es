@@ -14,10 +14,12 @@
 	 * Hovering a name, focusing it from the keyboard, or clicking or tapping it picks that
 	 * device for good, and a change picked so runs 1.5 times as fast as one it makes by itself,
 	 * a drawn set's lines and all. Until a device is picked, and while on screen, it moves on by
-	 * itself every few seconds, unless the pointer rests on the stage; but once the live app is
-	 * up it rests on the iPhone and stays there, so that the phone is never taken from under a
-	 * finger trying it (a tap gives no hover to pause it). Under prefers-reduced-motion it never
-	 * moves on by itself, and every change is instant.
+	 * itself every few seconds, unless the pointer rests on the stage; but once the live phone
+	 * can be tried (its app is up, or, on a phone's small stage, a tap opens it: from the
+	 * start) it rests on the iPhone and stays there, so that the phone is never taken from
+	 * under a finger trying it (a tap gives no hover to pause it), nor its paragraph from
+	 * under a reader. Under prefers-reduced-motion it never moves on by itself, and every
+	 * change is instant.
 	 *
 	 * Beside it is the paragraph about the device on show, the other two hidden in its place,
 	 * so that the column keeps its height as they cross-fade.
@@ -66,7 +68,8 @@
 	let picked = $state(false);
 	let seen = $state(false);
 	let stage = $state();
-	let running = $state(false);
+	// Whether the live phone can be tried (LivePhone's `tryable`)
+	let tryable = $state(false);
 	let screen = $state();
 	// The live phone's screen in the stage's units, which the frame's iPhone shape ends on
 	let fit = $state();
@@ -97,10 +100,10 @@
 	}
 
 	// The next device every few seconds until one is picked, unless the pointer rests on the
-	// stage or the live app is up on the iPhone
+	// stage or the live phone, on show, can be tried
 	$effect(() => {
 		if (prefersReducedMotion.current || picked || !seen) return;
-		if (running && shown === 'phone') return;
+		if (tryable && shown === 'phone') return;
 		const id = setInterval(() => {
 			if (!stage.matches(':hover')) turn = (turn + 1) % DEVICES.length;
 		}, 3400);
@@ -210,7 +213,7 @@
 					src={shots.demo.src}
 					alt={shots.demo.alt}
 					shown={shown === 'phone'}
-					bind:running
+					bind:tryable
 					bind:screen
 				/>
 			</div>
@@ -261,15 +264,18 @@
 		}
 	}
 
+	/* The names in a row, closer together where a narrow phone would otherwise send the last
+	   of them to a row of its own (the three, with their small print, are about 15rem wide) */
 	.picker {
 		grid-area: picker;
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem 1.75rem;
+		gap: 0.5rem clamp(0.75rem, (100cqw - 15.25rem) / 2, 1.75rem);
 	}
 
 	/* The devices not on show in the grey of the running text, so that they read as things to
-	   pick; the one on show, or pointed at, in ink */
+	   pick; the one on show, or pointed at, in ink. A tap is answered by the band swept on
+	   behind the name, not by the browser's grey flash over it. */
 	.pick {
 		position: relative;
 		display: flex;
@@ -283,6 +289,7 @@
 		cursor: pointer;
 		color: var(--vr-muted);
 		transition: color 200ms;
+		-webkit-tap-highlight-color: transparent;
 	}
 
 	.pick:hover,
@@ -296,12 +303,14 @@
 		border-radius: 0.25rem;
 	}
 
+	/* On a phone a name steps down with the section's heading (--vr-h2), staying a little
+	   larger than the titles under one (the page's --vr-sub), as it is on a wide page */
 	.name {
 		position: relative;
 		isolation: isolate;
 		font-family: var(--font-secondary);
 		font-style: italic;
-		font-size: 1.45rem;
+		font-size: min(1.45rem, var(--vr-h2) * 0.915);
 		line-height: 1.1;
 	}
 

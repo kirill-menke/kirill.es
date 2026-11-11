@@ -7,6 +7,8 @@
 	import DownloadBar from './DownloadBar.svelte';
 	import Pipeline from './Pipeline.svelte';
 
+	// The trailer timeline's stages. No-break spaces keep a number with its unit, and the RFC
+	// with its number, where a line ends.
 	const trailerStages = [
 		{
 			title: 'YouTube DASH',
@@ -18,11 +20,11 @@
 		},
 		{
 			title: 'Event playlist',
-			text: 'a growing HLS playlist with an RFC 6381 codec string the TV accepts'
+			text: 'a growing HLS playlist with an RFC\u00a06381 codec string the TV accepts'
 		},
 		{
 			title: 'MSE on the TV',
-			text: '45 s buffered ahead, 15 s behind; gaps under 1 s are jumped'
+			text: '45\u00a0s buffered ahead, 15\u00a0s behind; gaps under 1\u00a0s are jumped'
 		}
 	];
 </script>
@@ -63,9 +65,10 @@
 
 		<h3 id="downloads">Watch while it downloads</h3>
 		<p>
-			Sonarr and Radarr grab a title long before Jellyfin knows about it. reel-api has
-			qBittorrent fetch it <strong>in order, first and last pieces first</strong>, and serves
-			the growing file, so it plays right away.
+			Sonarr and Radarr grab a title long before Jellyfin knows about it.
+			<span class="nowrap">reel-api</span> has qBittorrent fetch it
+			<strong>in order, first and last pieces first</strong>, and serves the growing file, so
+			it plays right away.
 		</p>
 		<DownloadBar />
 
@@ -112,6 +115,17 @@
 		/* The power light of the sets the page draws (TvSketch), lit: the sketchbook's gold at
 		   full strength */
 		--vr-light: rgb(230 180 80);
+		/* The page's sizes on a phone. A section's heading stays on one line, so there it is
+		   only as large as the column lets the longest of them be (about 14em wide; the 3.5rem
+		   are the page's margins and a scrollbar), and what ranks under it steps down with it,
+		   so that the order of sizes holds on any phone: --vr-sub, 0.85 of it but never under
+		   1.1rem, for the titles under a heading (a section's smaller headings, the film
+		   strip's captions, the hero's features), each up to its own size; the Shape-shifter's
+		   names (Morph) a little over that, and the ledes (Section) three quarters of the
+		   heading. From 640px the heading is larger, and by then all of them are at their own
+		   sizes. */
+		--vr-h2: min(2rem, (100vw - 3.5rem) / 14);
+		--vr-sub: max(1.1rem, var(--vr-h2) * 0.85);
 		/* The page's last line (.vr-end) is placed from the article's foot */
 		position: relative;
 	}
@@ -122,7 +136,8 @@
 	   Panels are tickets in sepia browns on parchment: a stock of the background tinted with
 	   their gold (also the tile colour, --color-background-tile, for what they hold), or the
 	   sheet a widget lays in them (--panel-color, --panel-image), with scooped corners, a
-	   shadow that follows the scoops and a dashed perforation inside the edge.
+	   shadow that follows the scoops and a dashed perforation inside the edge. --panel-pad is
+	   the room they leave round what they hold, for a widget that reaches out into it.
 
 	   That is the look of border-radius: 1rem with corner-shape: scoop, two box-shadows and a
 	   dashed outline 0.55rem in. Only Chromium has corner-shape, so the ticket is drawn
@@ -151,15 +166,16 @@
 		--color-border: #dccfba;
 		--stock: color-mix(in oklab, var(--color-background), var(--vr-gold-fill) 16%);
 		--color-background-tile: var(--stock);
+		--panel-pad: 1.25rem;
 		position: relative;
 		isolation: isolate;
 		margin: 0;
-		padding: 1.25rem;
+		padding: var(--panel-pad);
 	}
 
 	@media (min-width: 640px) {
 		:where(.vr) :global(.vr-panel) {
-			padding: 2rem;
+			--panel-pad: 2rem;
 		}
 	}
 
@@ -214,10 +230,16 @@
 				.feature p,
 				.caption .text,
 				.morph .text p,
+				.lane p,
 				.vr-section .body > p
 			)
 		) {
 		text-wrap: balance;
+	}
+
+	/* A name written with a hyphen is not broken at it where a line ends */
+	.nowrap {
+		white-space: nowrap;
 	}
 
 	/* The page's last line, in the notes' italic like an end title, halfway between the last

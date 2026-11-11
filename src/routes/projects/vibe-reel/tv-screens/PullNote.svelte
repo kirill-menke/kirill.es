@@ -3,9 +3,10 @@
 	 * The note over the film strip: "pull the film sideways" in the italic serif, and the "try it
 	 * out" note's gold brush arrow (phone-note/BrushArrow) from the start of the words over and
 	 * down onto the film. It sits in its own row above the strip, at the right, clear of the
-	 * section's words and of the frames, the arrow's head just short of the film's edge. It is
-	 * written, then drawn, as it scrolls into view (a scroll-driven animation); without one, or
-	 * with reduced motion, it is simply there.
+	 * section's words and of the frames, the arrow's head just short of the film's edge: beside
+	 * the lede's end on a wide page, and a row under it over a narrow strip (a phone), where
+	 * the lede runs the width of the page. It is written, then drawn, as it scrolls into view
+	 * (a scroll-driven animation); without one, or with reduced motion, it is simply there.
 	 */
 	import BrushArrow from '../phone-note/BrushArrow.svelte';
 
@@ -38,6 +39,15 @@
 		translate: min(100px, var(--margin) - (var(--s) - 1) * 201px) -34px;
 		scale: var(--s);
 		transform-origin: 12.6% 93.75%;
+	}
+
+	/* Over a narrow strip (TvScreens' own breakpoint: a phone, or a column up to 40rem) the
+	   lede's last line runs on under the words, which the lift would write over it: there the
+	   note stands 1.5rem further down, the film with it, so that it has a row to itself */
+	@container (max-width: 40rem) {
+		.note {
+			margin-top: 1.5rem;
+		}
 	}
 
 	text {

@@ -12,12 +12,13 @@
 	let { stages } = $props();
 
 	const last = $derived(stages.length - 1);
-	// The notes, a stage each: `time` is written large, the note after it
+	// The notes, a stage each: `time` is written large, the note after it. A number stays with
+	// its unit where a line ends (no-break spaces), as in the stages' words.
 	const NOTES = [
-		{ time: '0 s', note: 'you press play, and both streams set off' },
+		{ time: '0\u00a0s', note: 'you press play, and both streams set off' },
 		{ note: 'a straight copy, so nothing is lost' },
 		{ note: 'the TV starts long before it ends' },
-		{ time: '~4–5 s', note: 'to the first frame, under 1 s once cached' }
+		{ time: '~4–5\u00a0s', note: 'to the first frame, under 1\u00a0s once cached' }
 	];
 </script>
 
@@ -94,6 +95,8 @@
 		color: var(--vr-muted);
 	}
 
+	/* No short last line under a note that wraps (a phone): evened out where `pretty` is not
+	   known (Firefox) */
 	.timeline li p.aside {
 		max-width: none;
 		margin: 0.45rem 0 0;
@@ -102,6 +105,7 @@
 		font-size: 0.92rem;
 		line-height: 1.3;
 		color: var(--vr-gold-ink);
+		text-wrap: balance;
 		text-wrap: pretty;
 	}
 
