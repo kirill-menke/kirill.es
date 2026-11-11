@@ -38,12 +38,12 @@ export const sections = [
 				key: 'hero.numerals',
 				label: 'Fact numbers',
 				where: '.hero .features',
-				value: 'outline',
+				value: 'marker',
 				options: [
 					{
 						value: 'outline',
 						label: 'Outlined',
-						about: 'As it ships: large numerals in outline, in the pencil’s grey.'
+						about: 'As it was: large numerals in outline, in the pencil’s grey.'
 					},
 					{
 						value: 'washed',
@@ -82,7 +82,7 @@ export const sections = [
 					{
 						value: 'bare',
 						label: 'Bare',
-						about: 'As it ships: the grilles hatched on the bar’s grey wash. With the marker gone from Direct Play, the bar has no gold.'
+						about: 'As it ships: the grilles hatched on the bar’s grey wash.'
 					},
 					{
 						value: 'gold',
@@ -95,11 +95,36 @@ export const sections = [
 						about: 'The same wash laid on twice as strong, for the hatching to stand on.'
 					}
 				]
+			},
+			{
+				type: 'choice',
+				key: 'hero.display',
+				label: 'Soundbar display',
+				where: '.hero .soundbar',
+				value: 'bare',
+				options: [
+					{
+						value: 'bare',
+						label: 'Bare',
+						about: 'As it ships: Direct Play and the legends written on the bar’s grey wash.'
+					},
+					{
+						value: 'gold',
+						label: 'Gold wash',
+						about: 'The display in the middle washed in the sketchbook’s gold. A bar under 640 px (a phone, a window 1024–1279 px wide) is all display.'
+					},
+					{
+						value: 'deep',
+						label: 'Deeper gold',
+						about: 'The same wash laid on twice as strong.'
+					}
+				]
 			}
 		]
 	},
 	{
-		// Each detail of the strip by itself, so that any of them can be tried together
+		// Each detail of the strip by itself, so that any of them can be tried together. The
+		// holes and the last frame are on: Kirill's picks of 2026-11-11.
 		legend: 'New · Film strip in gold',
 		reset: true,
 		folded: false,
@@ -109,7 +134,7 @@ export const sections = [
 				key: 'strip.holes',
 				label: 'Sprocket holes',
 				where: '.filmstrip .reel',
-				value: false
+				value: true
 			},
 			{
 				type: 'toggle',
@@ -130,7 +155,46 @@ export const sections = [
 				key: 'strip.ending',
 				label: 'Last frame (pull the film to its end)',
 				where: '.filmstrip .reel',
-				value: false
+				value: true
+			}
+		]
+	},
+	{
+		// Kirill, 2026-11-11: scrolled fast, the next part shows late or as a soft stand-in.
+		// The focus pull is the page's share of that (Section.svelte); the rest is the browser,
+		// which scrolls ahead of its painting.
+		legend: 'New · Scrolling',
+		reset: true,
+		folded: false,
+		items: [
+			{
+				type: 'choice',
+				key: 'page.focus',
+				label: 'Focus pull on scroll',
+				where: '#phone',
+				value: 'long',
+				options: [
+					{
+						value: 'long',
+						label: 'Over 14 rem',
+						about: 'As it ships: every block, the drawings and tickets too, comes in faint and blurred and is sharp 14 rem into the window. Scrolled fast, it is what Firefox paints slowest: parts show late, or soft.'
+					},
+					{
+						value: 'short',
+						label: 'Over 8 rem',
+						about: 'Sharp sooner: the soft band along the foot of the window is little more than half as deep. As heavy to paint.'
+					},
+					{
+						value: 'words',
+						label: 'Words only',
+						about: 'Only headings and ledes pull focus; the drawings and tickets under them are simply there. Firefox then needs about half the time for a frame while the wheel turns fast.'
+					},
+					{
+						value: 'off',
+						label: 'Off',
+						about: 'Nothing pulls focus: every part is simply there.'
+					}
+				]
 			}
 		]
 	},
@@ -499,25 +563,6 @@ export const sections = [
 						value: 'balanced',
 						label: 'Balanced',
 						about: 'The blurb, ledes, feature lines, captions and paragraphs break into lines of even length.'
-					}
-				]
-			},
-			{
-				type: 'choice',
-				key: 'page.focus',
-				label: 'Focus pull on scroll',
-				where: '#phone',
-				value: 'long',
-				options: [
-					{
-						value: 'long',
-						label: 'Over 14 rem',
-						about: 'As it ships: a block is sharp once it is 14 rem into the window, so what rests in the bottom fifth of a tall one stays soft.'
-					},
-					{
-						value: 'short',
-						label: 'Over 8 rem',
-						about: 'Sharp sooner: the soft band along the foot of the window is little more than half as deep. Scroll to see.'
 					}
 				]
 			},

@@ -157,17 +157,22 @@
 	{/each}
 {/snippet}
 
+<!-- On trial (hero.display, hero.speakers: 'gold', 'deep'): a part of the bar washed in the
+     sketchbook's gold, slipped a little off its edge as the bar's own wash is off its line -->
+{#snippet tint(w, h, r, strength)}
+	{#if strength !== 'bare'}
+		<rect class={['tint', strength]} x="2.2" y="2" width={w - 2} height={h - 2} rx={r} />
+	{/if}
+{/snippet}
+
 {#snippet display(w, h)}
+	{@render tint(w, h, 6, tweak('hero.display'))}
 	<path class="edge" d={drawDisplay(w, h)} pathLength="1" />
 {/snippet}
 
 {#snippet grille(w, h, side)}
 	{@const lines = drawGrille(w, h, side)}
-	<!-- On trial (hero.speakers: 'gold', 'deep'): the grille washed in the sketchbook's gold,
-	     slipped a little off its edge as the bar's own wash is off its line -->
-	{#if tweak('hero.speakers') !== 'bare'}
-		<rect class="tint" x="2.2" y="2" width={w - 2} height={h - 2} rx="5" />
-	{/if}
+	{@render tint(w, h, 5, tweak('hero.speakers'))}
 	<path class="edge grille-edge" d={lines.edge} pathLength="1" />
 	{#each lines.mesh as d, i (i)}
 		<path class="mesh" {d} pathLength="1" style:--i={i} />
@@ -185,10 +190,9 @@
 	</span>
 {/snippet}
 
-<!-- On trial: 'medium' and 'fine' lighten the bar's pen (hero.pen); 'gold' and 'deep' wash
-     its grilles (hero.speakers) -->
+<!-- On trial (hero.pen): 'medium' and 'fine' lighten the bar's pen -->
 <div
-	class={['body', tweak('hero.pen'), tweak('hero.speakers')]}
+	class={['body', tweak('hero.pen')]}
 	style:margin-inline="calc({SIDES[0]}% - 1.5px) calc({SIDES[1]}% - 1.5px)"
 	bind:clientWidth={bodyW}
 	bind:clientHeight={bodyH}
@@ -305,14 +309,15 @@
 		translate: 0 1px;
 	}
 
-	/* On trial (hero.speakers): the bar's touch of the sketchbook's gold, on its grilles. 'gold'
-	   is the wash as the TV's nameplate has it (--vr-wash, the diagram's 13% of gold on the
-	   paper); 'deep' lays it on twice, for the hatching to stand on. */
+	/* On trial (hero.display, hero.speakers): the bar's touch of the sketchbook's gold, on its
+	   display or its grilles. 'gold' is the wash as the TV's nameplate has it (--vr-wash, the
+	   diagram's 13% of gold on the paper); 'deep' lays it on twice, for the hatching, or the
+	   writing, to stand on. */
 	.tint {
 		fill: var(--vr-wash);
 	}
 
-	.deep .tint {
+	.tint.deep {
 		fill: color-mix(in srgb, var(--vr-paper), rgb(230 180 80) 26%);
 	}
 

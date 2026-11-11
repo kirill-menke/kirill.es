@@ -46,12 +46,14 @@
 
 <!-- On trial, set for the whole page: how lines break (page.wrap), the tickets' frames
      (page.ticket, ticket.css), the sketched TVs' power light (hero.light: its gold, the
-     sketchbook's wash at full strength), how far a block scrolls in before it is sharp
-     (page.focus) and the room over a sub-heading (page.subgap); Section reads the last two -->
+     sketchbook's wash at full strength), which blocks pull focus as they scroll in and how far
+     in they are sharp (page.focus) and the room over a sub-heading (page.subgap); Section
+     reads the last two -->
 <article
 	class="vr"
 	data-wrap={tweaks['page.wrap']}
 	data-ticket={tweaks['page.ticket']}
+	data-focus={tweaks['page.focus']}
 	style:--vr-light={tweaks['hero.light'] === 'lit' ? 'rgb(230 180 80)' : null}
 	style:--focus-band={tweaks['page.focus'] === 'short' ? '8rem' : null}
 	style:--sub-gap={tweaks['page.subgap'] === 'roomy' ? '5rem' : null}
@@ -280,6 +282,11 @@
 				animation-range: entry 0% entry 10rem;
 			}
 		}
+	}
+
+	/* On trial (page.focus: 'off'): nothing pulls focus, the last line neither */
+	.vr[data-focus='off'] .vr-end p {
+		animation: none;
 	}
 
 	@keyframes focus {

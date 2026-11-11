@@ -95,7 +95,7 @@
 	   as short ones, and only the backwards fill holds, so no blur stays behind. The body's
 	   blocks belong to the widgets: :where() keeps their rule at no specificity, so any
 	   animation of their own wins. On trial (tweaks.js: page.focus): the page may give that
-	   distance, as --focus-band. */
+	   distance, as --focus-band, and say which blocks pull focus at all (below). */
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
 			h2,
@@ -106,6 +106,17 @@
 				animation-range: entry 0% entry var(--focus-band, 14rem);
 			}
 		}
+	}
+
+	/* On trial (page.focus), by the article's data-focus. 'words': only the heading and the
+	   lede pull focus; what stands under them, the drawings and the tickets, is simply there.
+	   'off': nothing does. Blurring and fading a large drawing on every scrolled frame is what
+	   Firefox paints slowest on this page (about half its time for a frame while the wheel
+	   turns fast, by the measurements of 2026-11-11), and it scrolls ahead of its painting, so
+	   whatever it has not painted yet shows late, or soft. */
+	:global(.vr:is([data-focus='words'], [data-focus='off'])) .body > :global(*),
+	:global(.vr[data-focus='off']) :is(h2, .lede) {
+		animation: none;
 	}
 
 	/* From soft to sharp, the picture breathing a little as the lens moves */
