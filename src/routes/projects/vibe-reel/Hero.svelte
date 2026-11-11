@@ -21,19 +21,27 @@
 	const TV = [img('tv-home'), img('tv-detail'), img('tv-player')];
 	const BLURB =
 		'A Jellyfin client for the TV, the iPhone and the browser, with an optional backend for Sonarr and Radarr. On LG webOS TVs it plays the original file, untouched.';
-	// What sets it apart, each in a line from the section that tells more
+	// What sets it apart, each in a line from the section that tells more. A line is given in
+	// its phrases: on a phone it breaks between them (Features).
 	const FEATURES = [
 		{
 			name: 'Play while downloading',
-			line: 'reel-api has qBittorrent fetch a title in order, first and last pieces first, so it plays right away.'
+			line: [
+				'reel-api has qBittorrent fetch a title in order,',
+				'first and last pieces first,',
+				'so it plays right away.'
+			]
 		},
 		{
 			name: 'In-app YouTube trailers',
-			line: 'Up to 4K and in the original language, straight from YouTube into its own player.'
+			line: [
+				'Up to 4K and in the original language,',
+				'straight from YouTube into its own player.'
+			]
 		},
 		{
 			name: 'One backend for all devices',
-			line: 'The TV, the iPhone and the browser share one engine and one reel-api.'
+			line: ['The TV, the iPhone and the browser', 'share one engine and one reel-api.']
 		}
 	];
 </script>
@@ -100,6 +108,19 @@
 		margin-top: 3.75rem;
 	}
 
+	/* In a window under 1024px the stage is the stacked one (the page's column is then under
+	   880px wide): the source link is its first row and reads as the blurb's last word, so it
+	   stands close under the blurb, and the set soon after it */
+	@media (width < 1024px) {
+		.hero .page-subtitle {
+			margin-bottom: 1.75rem;
+		}
+
+		.stage {
+			margin-top: 0;
+		}
+	}
+
 	/* The bottom margin leaves room for the soundbar's note */
 	.set {
 		container-type: inline-size;
@@ -157,6 +178,13 @@
 		width: 100%;
 		margin-bottom: 1rem;
 		transform-origin: 0 50%;
+	}
+
+	/* Over the stacked set the link brings its own room under it (SourceLink) */
+	@container (width < 880px) {
+		.meta {
+			margin-bottom: 0;
+		}
 	}
 
 	@container (width >= 1000px) {

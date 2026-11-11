@@ -141,7 +141,7 @@
 		<PhoneCursor {frame} />
 	{/if}
 
-	<Note go={drawn} />
+	<Note go={drawn} tap={small} />
 </div>
 
 <style>

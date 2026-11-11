@@ -6,8 +6,11 @@
 	 *
 	 * Sized in em, so that the stage can scale them all. The stage is the container their
 	 * queries ask about: three abreast from 600 px, and from 880 px beside the set, one under
-	 * the other again. Each comes in with the page's .enter once the TV has powered on (after
-	 * Hero's --power-at), --i of them apart.
+	 * the other again. On a phone (under 600 px) they stand under the set and are centred as
+	 * it is: the number over the name, the line under it. A line comes in its phrases (`line`
+	 * is a list of them), and there it breaks between them, not within one, as long as a
+	 * phrase has room on a line. Each feature comes in with the page's .enter once the TV has
+	 * powered on (after Hero's --power-at), --i of them apart.
 	 */
 	let { features } = $props();
 </script>
@@ -18,7 +21,10 @@
 			<span class="numeral" aria-hidden="true">0{i + 1}</span>
 			<div class="text">
 				<span class="name">{name}</span>
-				<p>{line}</p>
+				<p>
+					{#each line as phrase, j (j)}{j ? ' ' : ''}<span class="phrase">{phrase}</span
+						>{/each}
+				</p>
 			</div>
 		</li>
 	{/each}
@@ -76,6 +82,35 @@
 		color: var(--vr-gold-ink);
 		background: var(--vr-wash);
 		border-radius: 0.2em 0.45em 0.35em 0.25em;
+	}
+
+	/* On a phone: centred under the centred set, the number over the name, and the line broken
+	   between its phrases (each a box that wraps as a whole, and only inside itself when it is
+	   wider than the column) */
+	@container (width < 600px) {
+		.features {
+			gap: 2em;
+		}
+
+		.feature {
+			flex-direction: column;
+			align-items: center;
+			gap: 0.45em;
+			text-align: center;
+		}
+
+		.numeral {
+			margin-left: 0;
+		}
+
+		.feature p {
+			max-width: none;
+		}
+
+		.phrase {
+			display: inline-block;
+			text-wrap: balance;
+		}
 	}
 
 	/* Three abreast under the set while there is room for them */

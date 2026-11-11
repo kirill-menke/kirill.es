@@ -106,8 +106,9 @@
 	 * outline runs (TvSketch's SIDES), so that its outline runs under the TV's. Each part is
 	 * drawn once it is measured, in an SVG of its size that lets the pointer through and may
 	 * draw past its edges; until then (as when prerendering) the readout and legends are there
-	 * undrawn. On a narrow stage the display takes the whole bar, the legends spread across it
-	 * under the readout, TRANSCODE at the right end.
+	 * undrawn. On a narrow set the display takes the whole bar, the legends spread across it
+	 * under the readout, TRANSCODE at the right end; on a phone it holds the legends alone,
+	 * without the readout.
 	 */
 	import Note from './soundbar/Note.svelte';
 
@@ -301,7 +302,7 @@
 		color: color-mix(in srgb, var(--vr-ink) 30%, transparent);
 	}
 
-	/* On a narrow stage the display takes the whole bar, its writing a little smaller, and
+	/* On a narrow set the display takes the whole bar, its writing a little smaller, and
 	   the legends a line of their own, spread across it */
 	@container (max-width: 640px) {
 		.grille {
@@ -323,6 +324,24 @@
 			justify-content: space-between;
 			gap: 0.05rem 0.6rem;
 			font-size: 0.74rem;
+		}
+	}
+
+	/* On a phone (the window, not the set: a set this narrow also stands beside the features
+	   on a small desktop) the display holds the legends alone, written as large as it has
+	   room for: the readout over them made too much writing for so small a bar */
+	@media (width < 640px) {
+		.display {
+			padding: 0.55rem 0.8rem;
+		}
+
+		.readout {
+			display: none;
+		}
+
+		ul {
+			gap: 0.1rem 0.6rem;
+			font-size: clamp(0.74rem, 3.7cqw, 0.92rem);
 		}
 	}
 

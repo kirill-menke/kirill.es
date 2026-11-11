@@ -6,16 +6,21 @@
 	 * phone, its box (224 × 180) with (30, 20) on the phone's top-right corner, the phone's right
 	 * edge running down from there at x 30 and the words 40 clear of it. It is sized from the
 	 * phone's width (LivePhone is its container), up to a limit past which a larger phone keeps
-	 * the same note. `go` draws it, once the app is up: the words fade in, the arrow runs to the
-	 * phone, the head lands.
+	 * the same note. `go` draws it, once the phone can be tried: the words fade in, the arrow
+	 * runs to the phone, the head lands.
+	 *
+	 * Where the phone is only a link to the app (`tap`: a phone's layout), the note says what
+	 * to do, "click on screen", smaller so that the longer words end where the stage does.
 	 */
 	import BrushArrow from './BrushArrow.svelte';
 
-	let { go } = $props();
+	let { go, tap = false } = $props();
 </script>
 
 <svg class={['note', { go }]} viewBox="0 0 224 180" aria-hidden="true" focusable="false">
-	<text class="label" x="70" y="58" style:font-size="31px">try it out</text>
+	<text class="label" x="70" y="58" style:font-size={tap ? '23px' : '31px'}
+		>{tap ? 'click on screen' : 'try it out'}</text
+	>
 	<text class="label sub" x="74" y="80" style:font-size="15px">it’s the real app</text>
 	<BrushArrow
 		d="M142 92C180 108 168 140 122 142C92 143 62 140 37 134"
