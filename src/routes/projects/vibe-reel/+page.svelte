@@ -225,8 +225,8 @@
 	   (it runs out through the article, which so ends at the ticket's edge), then the footer's
 	   padding, 6rem on a phone and 10rem from 640px, and the 1rem Rosie stands inside her box
 	   (Footer.svelte): 15rem, or 19rem. The line lies over the middle of it and takes none of
-	   it, so the page ends where it would without one. It comes into focus as the sections
-	   do. */
+	   it, so the page ends where it would without one. It comes into focus as the sections'
+	   headings do. */
 	.vr-end {
 		position: absolute;
 		inset: calc(100% + 7.5rem) 0 auto;

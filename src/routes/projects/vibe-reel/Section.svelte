@@ -1,7 +1,8 @@
 <script>
 	/**
 	 * A page section: a claim heading, a one-line lede in the italic serif of the page's
-	 * handwritten notes, and the body. Each block comes into focus as it scrolls in.
+	 * handwritten notes, and the body. The heading and the lede come into focus as they
+	 * scroll in.
 	 */
 	let { id, heading, lede = '', children } = $props();
 </script>
@@ -90,19 +91,17 @@
 		font-weight: 500;
 	}
 
-	/* The entrance is scroll-driven, so nothing waits on script. Each block runs on its own
-	   view, from entering the viewport to a fixed distance later, so tall blocks finish as soon
-	   as short ones, and only the backwards fill holds, so no blur stays behind. The body's
-	   blocks belong to the widgets: :where() keeps their rule at no specificity, so any
-	   animation of their own wins. The price: blurring and fading the body's large blocks on
-	   every scrolled frame is what Firefox paints slowest on this page, about half its time
-	   for a frame while the wheel turns fast (measured 2026-11-11), and it scrolls ahead of
-	   its painting, so on a fast scroll a block can show late, or still soft. */
+	/* The heading and the lede come into focus as they scroll in. Scroll-driven, so nothing
+	   waits on script: each runs on its own view, from entering the viewport to a fixed
+	   distance later, and only the backwards fill holds, so no blur stays behind. The body is
+	   simply there: blurring and fading its large blocks on every scrolled frame was what
+	   Firefox painted slowest on this page, about half its time for a frame while the wheel
+	   turns fast (measured 2026-11-11), and as it scrolls ahead of its painting, a block then
+	   showed late, or still soft. */
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
 			h2,
-			.lede,
-			:where(.body) > :global(*) {
+			.lede {
 				animation: focus linear backwards;
 				animation-timeline: view();
 				animation-range: entry 0% entry 14rem;
