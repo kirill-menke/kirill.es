@@ -233,8 +233,9 @@
 			ondragstart={(event) => event.preventDefault()}
 			{onclick}
 		>
+			<!-- On trial (strip.print): the edge print on strokes of highlighter -->
 			<ol
-				class="track"
+				class={['track', tweak('strip.print') && 'marked']}
 				bind:this={track}
 				style:--screens={screens.length}
 				style:--count={screens.length + 1}
@@ -528,6 +529,16 @@
 	.edge.bottom {
 		bottom: 1.5rem;
 		right: 0.2rem;
+	}
+
+	/* On trial (strip.print): each piece of edge print on a stroke of highlighter in the
+	   sketchbook's gold, as the caption's number is (.count); the stroke reaches out round the
+	   letters, which stay where they are */
+	.marked .edge {
+		margin: -0.35em -0.5em;
+		padding: 0.35em 0.5em 0.3em;
+		background: var(--vr-wash);
+		border-radius: 0.2em 0.45em 0.35em 0.25em;
 	}
 
 	/* The captions on top of each other in one cell, so the tallest sets its height and nothing

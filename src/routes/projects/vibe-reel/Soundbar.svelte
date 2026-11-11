@@ -97,10 +97,10 @@
 	 * The soundbar under the hero's TV, drawn in ink by the hand that drew the TV as the page
 	 * loads: a wobbly outline gone over twice round a cream wash slightly off it, the display's
 	 * edge, a speaker grille either side hatched both ways and hatching along its shaded side.
-	 * Then the display's readout and legends are written in by hand, one by one: what reaches
-	 * the TV untouched, in four columns (video, HDR, audio, subtitles), Direct Play over a
-	 * highlighter's band of the sketchbook's gold. The last legend, TRANSCODE, stays faint,
-	 * never gone over in ink, and a hand-written note points at it (soundbar/Note.svelte).
+	 * Then the display's readout and legends are written in by hand, one by one: Direct Play
+	 * and what reaches the TV untouched, in four columns (video, HDR, audio, subtitles). The
+	 * last legend, TRANSCODE, stays faint, never gone over in ink, and a hand-written note
+	 * points at it (soundbar/Note.svelte).
 	 *
 	 * The bar is given the TV's width and keeps as far in from its left and right as the TV's
 	 * outline runs (TvSketch's SIDES), so that its outline runs under the TV's. Each part is
@@ -163,6 +163,11 @@
 
 {#snippet grille(w, h, side)}
 	{@const lines = drawGrille(w, h, side)}
+	<!-- On trial (hero.speakers: 'gold', 'deep'): the grille washed in the sketchbook's gold,
+	     slipped a little off its edge as the bar's own wash is off its line -->
+	{#if tweak('hero.speakers') !== 'bare'}
+		<rect class="tint" x="2.2" y="2" width={w - 2} height={h - 2} rx="5" />
+	{/if}
 	<path class="edge grille-edge" d={lines.edge} pathLength="1" />
 	{#each lines.mesh as d, i (i)}
 		<path class="mesh" {d} pathLength="1" style:--i={i} />
@@ -180,9 +185,10 @@
 	</span>
 {/snippet}
 
-<!-- On trial (hero.pen): 'medium' and 'fine' lighten the bar's pen -->
+<!-- On trial: 'medium' and 'fine' lighten the bar's pen (hero.pen); 'gold' and 'deep' wash
+     its grilles (hero.speakers) -->
 <div
-	class={['body', tweak('hero.pen')]}
+	class={['body', tweak('hero.pen'), tweak('hero.speakers')]}
 	style:margin-inline="calc({SIDES[0]}% - 1.5px) calc({SIDES[1]}% - 1.5px)"
 	bind:clientWidth={bodyW}
 	bind:clientHeight={bodyH}
@@ -299,21 +305,15 @@
 		translate: 0 1px;
 	}
 
-	/* The bar's one touch of the sketchbook's gold (--vr-wash): a highlighter's band behind
-	   Direct Play, written in with it, inside its box so that the pen's mask never cuts it */
-	.readout .name {
-		position: relative;
-		isolation: isolate;
+	/* On trial (hero.speakers): the bar's touch of the sketchbook's gold, on its grilles. 'gold'
+	   is the wash as the TV's nameplate has it (--vr-wash, the diagram's 13% of gold on the
+	   paper); 'deep' lays it on twice, for the hatching to stand on. */
+	.tint {
+		fill: var(--vr-wash);
 	}
 
-	.readout .name::before {
-		content: '';
-		position: absolute;
-		z-index: -1;
-		inset: auto 0 0.08em -0.08em;
-		height: 0.5em;
-		border-radius: 0.1em 0.3em 0.18em 0.35em / 0.25em;
-		background: var(--vr-wash);
+	.deep .tint {
+		fill: color-mix(in srgb, var(--vr-paper), rgb(230 180 80) 26%);
 	}
 
 	/* The note hangs from TRANSCODE */

@@ -1,13 +1,17 @@
 /*
  * The refinements on trial on the VibeReel page, for the dev-only Tweaks panel
- * (#lib/components/TweakPanel.svelte). Each item is one proposed change: its default (`value`)
- * is the page as it ships and comes first, the other options are the proposals, and `where`
- * is the part of the page it changes, which the panel brings into view.
+ * (#lib/components/TweakPanel.svelte). Each item is one proposed change: its default (`value`,
+ * the option with the dot in the panel) is the page as it ships, the other options are the
+ * proposals, and `where` is the part of the page it changes, which the panel brings into view.
+ *
+ * Two rounds so far. The sections called "New" hold the second round's proposals. The first
+ * round's sections follow them: Kirill's picks of 2026-11-11 are their defaults now, and what
+ * the page did before them stays to switch back to ("As it was").
  *
  * The page keeps the values and provides them through context; a component reads one with
  * `const tweak = useTweaks()` and `tweak('hero.blurb')`, in markup or a $derived, so that it
- * follows the panel. Once a proposal is picked, bake it into the code and drop its item here;
- * with none left, the panel and this file go.
+ * follows the panel. Once the picks are final, bake them into the code and drop their items
+ * here; with none left, the panel and this file go.
  */
 import { getContext } from 'svelte';
 
@@ -25,6 +29,112 @@ export const END_LINES = {
 
 export const sections = [
 	{
+		legend: 'New · Hero',
+		reset: true,
+		folded: false,
+		items: [
+			{
+				type: 'choice',
+				key: 'hero.numerals',
+				label: 'Fact numbers',
+				where: '.hero .features',
+				value: 'outline',
+				options: [
+					{
+						value: 'outline',
+						label: 'Outlined',
+						about: 'As it ships: large numerals in outline, in the pencil’s grey.'
+					},
+					{
+						value: 'washed',
+						label: 'Washed',
+						about: 'The same outlines over a wash of the sketchbook’s gold that has slipped a little off them, as on the TV’s nameplate.'
+					},
+					{
+						value: 'circled',
+						label: 'Circled',
+						about: 'Small numerals in ink, each circled by hand in pencil.'
+					},
+					{
+						value: 'marker',
+						label: 'Highlighter',
+						about: '01 to 03 in the film’s edge-print mono on a stroke of the gold, as the film strip’s captions are numbered.'
+					},
+					{
+						value: 'tally',
+						label: 'Tally marks',
+						about: 'Counted off in pencil strokes: one, two, three.'
+					},
+					{
+						value: 'hand',
+						label: 'Handwritten',
+						about: 'In the notes’ italic, like the Source note over them.'
+					}
+				]
+			},
+			{
+				type: 'choice',
+				key: 'hero.speakers',
+				label: 'Soundbar speakers',
+				where: '.hero .soundbar',
+				value: 'bare',
+				options: [
+					{
+						value: 'bare',
+						label: 'Bare',
+						about: 'As it ships: the grilles hatched on the bar’s grey wash. With the marker gone from Direct Play, the bar has no gold.'
+					},
+					{
+						value: 'gold',
+						label: 'Gold wash',
+						about: 'Both grilles washed in the sketchbook’s gold, as the TV’s nameplate is. A bar under 640 px has no grilles: on a phone, and in a window 1024–1279 px wide.'
+					},
+					{
+						value: 'deep',
+						label: 'Deeper gold',
+						about: 'The same wash laid on twice as strong, for the hatching to stand on.'
+					}
+				]
+			}
+		]
+	},
+	{
+		// Each detail of the strip by itself, so that any of them can be tried together
+		legend: 'New · Film strip in gold',
+		reset: true,
+		folded: false,
+		items: [
+			{
+				type: 'toggle',
+				key: 'strip.holes',
+				label: 'Sprocket holes',
+				where: '.filmstrip .reel',
+				value: false
+			},
+			{
+				type: 'toggle',
+				key: 'strip.lines',
+				label: 'Frame lines (the hatched gaps)',
+				where: '.filmstrip .reel',
+				value: false
+			},
+			{
+				type: 'toggle',
+				key: 'strip.print',
+				label: 'Edge print',
+				where: '.filmstrip .reel',
+				value: false
+			},
+			{
+				type: 'toggle',
+				key: 'strip.ending',
+				label: 'Last frame (pull the film to its end)',
+				where: '.filmstrip .reel',
+				value: false
+			}
+		]
+	},
+	{
 		legend: 'Hero',
 		reset: true,
 		folded: false,
@@ -34,12 +144,12 @@ export const sections = [
 				key: 'hero.blurb',
 				label: 'Blurb',
 				where: '.hero .page-subtitle',
-				value: 'grey',
+				value: 'ink',
 				options: [
 					{
 						value: 'grey',
 						label: 'Grey sans',
-						about: 'As it ships: the site’s pale grey subtitle, the lightest text on the page (2.7:1 on the paper).'
+						about: 'As it was: the site’s pale grey subtitle, the lightest text on the page (2.7:1 on the paper).'
 					},
 					{
 						value: 'ink',
@@ -77,17 +187,17 @@ export const sections = [
 				key: 'hero.source',
 				label: 'Source link, pointed at',
 				where: '.hero .meta',
-				value: 'grey',
+				value: 'marker',
 				options: [
 					{
 						value: 'grey',
 						label: 'Fade to grey',
-						about: 'As it ships: hovered, the words fade from ink to mid grey (the gold it once faded to, drained).'
+						about: 'As it was: hovered, the words fade from ink to mid grey (the gold it once faded to, drained).'
 					},
 					{
 						value: 'marker',
 						label: 'Highlighter',
-						about: 'Hovered, a band of the sketchbook’s gold sweeps in behind the words, as behind Direct Play and the device on show. No underline.'
+						about: 'Hovered, a band of the sketchbook’s gold sweeps in behind the words, as behind the device on show in the Shape-shifter. No underline.'
 					},
 					{
 						value: 'sepia',
@@ -101,12 +211,12 @@ export const sections = [
 				key: 'hero.pen',
 				label: 'Soundbar pen',
 				where: '.hero .soundbar',
-				value: 'own',
+				value: 'fine',
 				options: [
 					{
 						value: 'own',
 						label: 'Own pen',
-						about: 'As it ships: its outline 1.8 px, under a TV drawn at 1.1 px.'
+						about: 'As it was: its outline 1.8 px, under a TV drawn at 1.1 px.'
 					},
 					{
 						value: 'medium',
@@ -125,12 +235,12 @@ export const sections = [
 				key: 'hero.light',
 				label: 'Power light',
 				where: '.hero .tv-box',
-				value: 'ring',
+				value: 'lit',
 				options: [
 					{
 						value: 'ring',
 						label: 'Ring',
-						about: 'As it ships: the little light on the TV’s chin is an empty ring.'
+						about: 'As it was: the little light on the TV’s chin is an empty ring.'
 					},
 					{
 						value: 'lit',
@@ -144,12 +254,12 @@ export const sections = [
 				key: 'hero.laptop',
 				label: 'Window 1024–1279 px wide',
 				where: '.hero .stage',
-				value: 'beside',
+				value: 'above',
 				options: [
 					{
 						value: 'beside',
 						label: 'Note beside',
-						about: 'As it ships: at that width the features reach up into the Source note and its arrow crosses the 1. Narrow the window to see.'
+						about: 'As it was: at that width the features reach up into the Source note and its arrow crosses the 1. Narrow the window to see.'
 					},
 					{
 						value: 'above',
@@ -163,14 +273,10 @@ export const sections = [
 				key: 'hero.shot',
 				label: 'Seconds per shot',
 				where: '.hero .tv-box',
-				value: 12,
+				value: 8,
 				options: [
-					{
-						value: 12,
-						label: '12 s',
-						about: 'As it ships: “200% longer” read as three times the old 4 s.'
-					},
-					{ value: 8, label: '8 s', about: 'Twice the old 4 s, if that was the meaning.' }
+					{ value: 12, label: '12 s', about: 'As it was: three times the old 4 s.' },
+					{ value: 8, label: '8 s', about: 'Twice the old 4 s.' }
 				]
 			}
 		]
@@ -185,12 +291,12 @@ export const sections = [
 				key: 'strip.count',
 				label: 'Caption number',
 				where: '.filmstrip .captions',
-				value: 'one',
+				value: 'of',
 				options: [
 					{
 						value: 'one',
 						label: '01',
-						about: 'As it ships: only the frame’s own number.'
+						about: 'As it was: only the frame’s own number.'
 					},
 					{
 						value: 'of',
@@ -211,12 +317,12 @@ export const sections = [
 				key: 'morph.tabs',
 				label: 'Devices not on show',
 				where: '.morph .picker',
-				value: 'pale',
+				value: 'inked',
 				options: [
 					{
 						value: 'pale',
 						label: 'Pale',
-						about: 'As it ships: their names in the site’s light grey, paler than the small print under them.'
+						about: 'As it was: their names in the site’s light grey, paler than the small print under them.'
 					},
 					{
 						value: 'inked',
@@ -242,7 +348,7 @@ export const sections = [
 					{
 						value: 'same',
 						label: 'Same pen',
-						about: 'As it ships: drawn like every other line; only its chip’s swatch is a shade darker.'
+						about: 'As it ships: drawn like every other line.'
 					},
 					{
 						value: 'firm',
@@ -256,12 +362,12 @@ export const sections = [
 				key: 'arch.hint',
 				label: 'Scroll hint (under 760 px)',
 				where: '.arch',
-				value: 'sans',
+				value: 'note',
 				options: [
 					{
 						value: 'sans',
 						label: 'Sans',
-						about: 'As it ships: “Scroll sideways →” in the body sans, on a narrow page.'
+						about: 'As it was: “Scroll sideways →” in the body sans, on a narrow page.'
 					},
 					{
 						value: 'note',
@@ -282,12 +388,12 @@ export const sections = [
 				key: 'downloads.rest',
 				label: 'Pieces still missing',
 				where: '.bar-wrap',
-				value: 'grey',
+				value: 'outline',
 				options: [
 					{
 						value: 'grey',
 						label: 'Cool grey',
-						about: 'As it ships: a neutral grey, the one cold tone on the warm sheet.'
+						about: 'As it was: a neutral grey, the one cold tone on the warm sheet.'
 					},
 					{
 						value: 'paper',
@@ -306,12 +412,12 @@ export const sections = [
 				key: 'downloads.lanes',
 				label: 'TV · iPhone & web',
 				where: '.lanes',
-				value: 'cards',
+				value: 'frames',
 				options: [
 					{
 						value: 'cards',
 						label: 'White cards',
-						about: 'As it ships: two white cards with sans small caps, the page’s last app-style boxes.'
+						about: 'As it was: two white cards with sans small caps, the page’s last app-style boxes.'
 					},
 					{
 						value: 'frames',
@@ -337,12 +443,12 @@ export const sections = [
 				key: 'trailers.columns',
 				label: 'Stage spacing',
 				where: '.timeline',
-				value: 'words',
+				value: 'even',
 				options: [
 					{
 						value: 'words',
 						label: 'By words',
-						about: 'As it ships: each column as wide as its words are long, which keeps them to two lines and spaces the dots unevenly.'
+						about: 'As it was: each column as wide as its words are long, which keeps them to two lines and spaces the dots unevenly.'
 					},
 					{
 						value: 'even',
@@ -356,12 +462,12 @@ export const sections = [
 				key: 'trailers.rail',
 				label: 'Rail and dots',
 				where: '.timeline',
-				value: 'faint',
+				value: 'pencil',
 				options: [
 					{
 						value: 'faint',
 						label: 'Faint',
-						about: 'As it ships: a pale rail that hardly shows, under sepia rings.'
+						about: 'As it was: a pale rail that hardly shows, under sepia rings.'
 					},
 					{
 						value: 'pencil',
@@ -382,12 +488,12 @@ export const sections = [
 				key: 'page.wrap',
 				label: 'Line breaks',
 				where: '#tv .lede',
-				value: 'plain',
+				value: 'balanced',
 				options: [
 					{
 						value: 'plain',
 						label: 'As they fall',
-						about: 'As it ships: lines fill up and the last is often short (“the TV remote.”).'
+						about: 'As it was: lines fill up and the last is often short (“the TV remote.”).'
 					},
 					{
 						value: 'balanced',
@@ -420,12 +526,12 @@ export const sections = [
 				key: 'page.subgap',
 				label: 'Room over a sub-heading',
 				where: '#downloads',
-				value: 'close',
+				value: 'roomy',
 				options: [
 					{
 						value: 'close',
 						label: '3.5 rem',
-						about: 'As it ships: “Watch while it downloads” and “YouTube trailers” follow close under the ticket before them.'
+						about: 'As it was: “Watch while it downloads” and “YouTube trailers” follow close under the ticket before them.'
 					},
 					{
 						value: 'roomy',
@@ -439,12 +545,12 @@ export const sections = [
 				key: 'page.ticket',
 				label: 'Tickets in Firefox & Safari',
 				where: '.arch',
-				value: 'browser',
+				value: 'same',
 				options: [
 					{
 						value: 'browser',
 						label: 'Browser’s',
-						about: 'As it ships: without corner-shape (Firefox, Safari) a ticket has no shadow and its perforation runs square into the scoops.'
+						about: 'As it was: without corner-shape (Firefox, Safari) a ticket has no shadow and its perforation runs square into the scoops.'
 					},
 					{
 						value: 'same',
@@ -456,14 +562,14 @@ export const sections = [
 			{
 				type: 'choice',
 				key: 'page.end',
-				label: 'Last line',
+				label: 'Last line (halfway to the footer)',
 				where: '.vr-end',
-				value: 'none',
+				value: 'thanks',
 				options: [
 					{
 						value: 'none',
 						label: 'Nothing',
-						about: 'As it ships: the page stops after the trailer timeline.'
+						about: 'As it was: the page stops after the trailer timeline.'
 					},
 					{ value: 'watch', label: 'Go watch', about: `“${END_LINES.watch}”` },
 					{ value: 'thanks', label: 'Thanks', about: `“${END_LINES.thanks}”` }

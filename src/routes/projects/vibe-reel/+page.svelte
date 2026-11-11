@@ -97,7 +97,7 @@
 		<Pipeline stages={trailerStages} />
 	</Section>
 
-	<!-- The page's last line, on trial (page.end): empty as the page ships -->
+	<!-- The page's last line, on trial (page.end) -->
 	<div class="vr-end">
 		{#if END_LINES[tweaks['page.end']]}
 			<p>{END_LINES[tweaks['page.end']]}</p>
@@ -134,6 +134,8 @@
 		--vr-pencil: #5c5446;
 		--vr-pencil-frame: rgb(76 69 56 / 0.45);
 		--vr-pencil-faint: #8b8171;
+		/* The page's last line (.vr-end) is placed from the article's foot */
+		position: relative;
 	}
 
 	/* Building blocks shared by the page's widgets. :where() keeps them at one class of
@@ -238,11 +240,27 @@
 		text-wrap: balance;
 	}
 
-	/* On trial (page.end): the last line, in the notes' italic and centred over the footer like
-	   an end title, in the room the last section leaves under it; it comes into focus as the
-	   sections do */
+	/* On trial (page.end): the last line, in the notes' italic like an end title, halfway
+	   between the last ticket and Rosie in the footer. The room between them is the last
+	   section's margin, 8rem (it runs out through the article, which so ends at the ticket's
+	   edge), then the footer's padding, 6rem on a phone and 10rem from 640px, and the 1rem
+	   Rosie stands inside her box (Footer.svelte): 15rem, or 19rem. The line lies over the
+	   middle of it and takes none of it, so the page ends where it would without one. It
+	   comes into focus as the sections do. */
+	.vr-end {
+		position: absolute;
+		inset: calc(100% + 7.5rem) 0 auto;
+		translate: 0 -50%;
+	}
+
+	@media (min-width: 640px) {
+		.vr-end {
+			top: calc(100% + 9.5rem);
+		}
+	}
+
 	.vr-end p {
-		margin: -3rem 0 5rem;
+		margin: 0;
 		text-align: center;
 		font: italic 1.5rem/1.3 var(--font-secondary);
 		color: var(--vr-muted);

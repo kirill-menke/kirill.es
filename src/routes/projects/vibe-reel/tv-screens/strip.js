@@ -109,16 +109,26 @@ function holes({ width, height, count, frame, pitch, lead }, seed) {
 	};
 }
 
-/* Pencil hatching over every frame line between the rows of holes, the half ones at the cut
-   ends too: strokes rising to the right, a little uneven in spacing and slope */
-function hatching({ width, height, count, frame, pitch, lead }, seed) {
-	const rand = random(seed);
+/* The frame lines' stretches of film, as [x0, x1]: one before each frame and one after the
+   last, the half ones at the cut ends too */
+function frameLines({ width, count, frame, pitch, lead }) {
 	const gap = pitch - frame;
-	const strokes = [];
+	const lines = [];
 	for (let k = 0; k <= count; k++) {
 		const x0 = Math.max(2, lead + k * pitch - gap + 2.5);
 		const x1 = Math.min(width - 2, lead + k * pitch - 2.5);
-		if (x1 - x0 < 2) continue;
+		if (x1 - x0 >= 2) lines.push([x0, x1]);
+	}
+	return lines;
+}
+
+/* Pencil hatching over every frame line between the rows of holes: strokes rising to the
+   right, a little uneven in spacing and slope */
+function hatching(size, seed) {
+	const rand = random(seed);
+	const { height } = size;
+	const strokes = [];
+	for (const [x0, x1] of frameLines(size)) {
 		const rise = (x1 - x0) * 0.85;
 		for (let y = CLEAR + rise; y < height - CLEAR; y += 4.2 + rand() * 0.7) {
 			const a = [x0 + rand() * 0.6, y + rand() * 0.8];
@@ -139,6 +149,22 @@ const blank = ({ height, count, frame, pitch, lead, inset }) => ({
 
 /* The same box `d` further in all round */
 const within = ({ x, y, w, h }, d) => ({ x: x + d, y: y + d, w: w - 2 * d, h: h - 2 * d });
+
+/* On trial (tweaks.js: strip.lines, strip.ending): what a wash of the sketchbook's gold would
+   cover, as paths: the frame lines under their hatching, and the ending frame in its box. Each
+   has slipped a little right and down off the pencil, as the washes of the page's sets have. */
+function washes(size) {
+	const plot = ({ x, y, w, h }) => `M${f(x)} ${f(y)}h${f(w)}v${f(h)}h${f(-w)}z`;
+	const ending = blank(size);
+	return {
+		lines: frameLines(size)
+			.map(([x0, x1]) =>
+				plot({ x: x0 + 1.5, y: CLEAR + 1.5, w: x1 - x0, h: size.height - 2 * CLEAR })
+			)
+			.join(''),
+		ending: plot({ ...ending, x: ending.x + 3, y: ending.y + 2.5 })
+	};
+}
 
 /* A box as a hand draws one, a stroke along each side in turn, clockwise from the top left:
    each starts and ends up to `nudge` off the corners and runs on past them by up to `over`,
@@ -213,7 +239,8 @@ export function drawStrip(count, layout) {
 			[0.05, 0.5],
 			[0.15, 0.6]
 		],
-		hatching: { d: hatching(size, 401), a: 0.6, b: 1 }
+		hatching: { d: hatching(size, 401), a: 0.6, b: 1 },
+		gold: washes(size)
 	};
 }
 

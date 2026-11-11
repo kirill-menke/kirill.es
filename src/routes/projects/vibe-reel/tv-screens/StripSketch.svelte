@@ -10,10 +10,12 @@
 	 * with reduced motion, it is simply drawn.
 	 */
 	import { drawStrip, WIDE } from './strip.js';
+	import { useTweaks } from '../tweaks.js';
 
 	let { count, size = WIDE } = $props();
 	const uid = $props.id();
 
+	const tweak = useTweaks();
 	const drawing = $derived(drawStrip(count, size));
 </script>
 
@@ -28,8 +30,26 @@
 			<path id="{uid}-hole-{j}" {d} />
 		{/each}
 	</defs>
+	<!-- On trial: details of the strip in the sketchbook's gold. Washes under the frame lines'
+	     hatching (strip.lines) and in the ending frame (strip.ending), which come on with the
+	     pencil that draws over them, and the sprocket holes filled in (strip.holes). -->
+	{#if tweak('strip.lines')}
+		<path
+			class="gold wipe"
+			d={drawing.gold.lines}
+			style:--a={drawing.hatching.a}
+			style:--b={drawing.hatching.b}
+		/>
+	{/if}
+	{#if tweak('strip.ending')}
+		<path class="gold wipe" d={drawing.gold.ending} style:--a={0.45} style:--b={0.75} />
+	{/if}
 	{#each drawing.holes.rows as row, r (r)}
-		<g class="holes wipe" style:--a={drawing.wipes[r][0]} style:--b={drawing.wipes[r][1]}>
+		<g
+			class={['holes', 'wipe', tweak('strip.holes') && 'filled']}
+			style:--a={drawing.wipes[r][0]}
+			style:--b={drawing.wipes[r][1]}
+		>
 			{#each row as [x, y, shape], k (k)}
 				<use href="#{uid}-hole-{shape}" {x} {y} />
 			{/each}
@@ -88,6 +108,19 @@
 	.hatching {
 		stroke-width: 0.7;
 		opacity: 0.55;
+	}
+
+	/* On trial (strip.lines, strip.ending, strip.holes): the gold. A filled hole keeps its
+	   pencil as light as it was and its wash at full strength. */
+	.gold {
+		fill: var(--vr-wash);
+		stroke: none;
+	}
+
+	.holes.filled {
+		fill: var(--vr-wash);
+		opacity: 1;
+		stroke-opacity: 0.8;
 	}
 
 	/* Each part takes its share (--a to --b) of the drawing-on, from the reel's top showing a
