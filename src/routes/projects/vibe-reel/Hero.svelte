@@ -75,8 +75,10 @@
 		}
 	}
 
+	/* In the grey of the page's running text, as the feature lines beside the TV */
 	.hero .page-subtitle {
 		max-width: 60ch;
+		color: var(--vr-muted);
 	}
 
 	/* Over the stage, whose light on the wall reaches up behind it */
@@ -122,7 +124,8 @@
 	}
 
 	/* From 880 px the set takes the left 60 of the stage, and the features the rest after a gap,
-	   centred on the set (whose margin they share) */
+	   centred on the set (whose margin they share). The gap is 6, and half as much again, 9,
+	   on a stage wide enough to spare it (from 1200px, a window of 1280px or more). */
 	@container (width >= 880px) {
 		.set {
 			width: 60cqw;
@@ -135,10 +138,18 @@
 		}
 	}
 
-	/* The source link, at the top of the stage: a row of its own above the set on a narrow
-	   stage, and on a wide one over the features' column (the set's 60 and the features' gap of
-	   6 to its left), moved up beside the TV's top and scaled up about its left edge, where the
-	   note's arrow comes in */
+	@container (width >= 1200px) {
+		.features {
+			margin-left: 9cqw;
+		}
+	}
+
+	/* The source link, at the top of the stage: a row of its own above the set, and from
+	   1000 px over the features' column (the set's 60 and the features' gap of 6, or 9, to its
+	   left), moved up beside the TV's top and scaled up about its left edge, where the note's
+	   arrow comes in. A stage that is side by side but narrower than that (the page's 950px
+	   column, in a window 1024 to 1279px wide) keeps the row: there the features stand taller
+	   than the set and would reach up into the link. */
 	.meta {
 		position: relative;
 		z-index: 1;
@@ -148,7 +159,7 @@
 		transform-origin: 0 50%;
 	}
 
-	@container (width >= 880px) {
+	@container (width >= 1000px) {
 		.meta {
 			position: absolute;
 			top: 0;
@@ -157,6 +168,12 @@
 			margin: 0;
 			translate: 48px -44px;
 			scale: 1.2;
+		}
+	}
+
+	@container (width >= 1200px) {
+		.meta {
+			left: 69cqw;
 		}
 	}
 

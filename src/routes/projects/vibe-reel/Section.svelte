@@ -50,14 +50,15 @@
 		max-width: 65ch;
 	}
 
-	/* A second part folded into the section: its claim as a smaller heading */
+	/* A second part folded into the section: its claim as a smaller heading, set well clear
+	   of the part before it */
 	.body :global(h3) {
 		font-family: var(--font-secondary);
 		font-weight: 400;
 		font-size: min(1.5rem, (100vw - 3.5rem) / 13.5);
 		line-height: 1.25;
 		color: var(--color-font-dark);
-		margin: 3.5rem 0 0.75rem;
+		margin: 5rem 0 0.75rem;
 		max-width: 34ch;
 		scroll-margin-top: 2rem;
 	}
@@ -93,7 +94,10 @@
 	   view, from entering the viewport to a fixed distance later, so tall blocks finish as soon
 	   as short ones, and only the backwards fill holds, so no blur stays behind. The body's
 	   blocks belong to the widgets: :where() keeps their rule at no specificity, so any
-	   animation of their own wins. */
+	   animation of their own wins. The price: blurring and fading the body's large blocks on
+	   every scrolled frame is what Firefox paints slowest on this page, about half its time
+	   for a frame while the wheel turns fast (measured 2026-11-11), and it scrolls ahead of
+	   its painting, so on a fast scroll a block can show late, or still soft. */
 	@supports (animation-timeline: view()) {
 		@media (prefers-reduced-motion: no-preference) {
 			h2,

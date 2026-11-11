@@ -12,9 +12,6 @@
 	let { stages } = $props();
 
 	const last = $derived(stages.length - 1);
-	// Side by side, each stage's column as wide as its words are long, so that every stage's
-	// words take the same number of lines (two, across a desktop panel)
-	const columns = $derived(stages.map((stage) => `minmax(0, ${stage.text.length}fr)`).join(' '));
 	// The notes, a stage each: `time` is written large, the note after it
 	const NOTES = [
 		{ time: '0 s', note: 'you press play, and both streams set off' },
@@ -25,7 +22,7 @@
 </script>
 
 <figure class="timeline vr-panel">
-	<ol style:--columns={columns}>
+	<ol style:--stages={stages.length}>
 		{#each stages as stage, i (stage.title)}
 			{@const n = NOTES[i]}
 			<li>
@@ -55,9 +52,9 @@
 	   --vr-paper-grain), in the panel's frame. */
 	.timeline {
 		--color-background-tile: var(--vr-paper);
+		--panel-color: var(--vr-paper);
+		--panel-image: var(--vr-paper-grain);
 		container: timeline / inline-size;
-		background-color: var(--vr-paper);
-		background-image: var(--vr-paper-grain);
 	}
 
 	ol {
@@ -118,6 +115,8 @@
 		color: var(--vr-gold-ink);
 	}
 
+	/* The rail and its dots in the architecture diagram's pencil, on the bare sheet: the dots
+	   drawn as its boxes' edges are, the rail as its frames */
 	.node {
 		position: absolute;
 		z-index: 1;
@@ -127,18 +126,14 @@
 		height: 0.8rem;
 		translate: -50% -50%;
 		border-radius: 50%;
-		background: var(--color-background);
-		box-shadow: inset 0 0 0 2px var(--vr-gold);
+		background: var(--vr-paper);
+		box-shadow: inset 0 0 0 1.3px var(--vr-pencil);
 	}
 
 	.node.last {
 		width: 1rem;
 		height: 1rem;
-		background: radial-gradient(
-			circle,
-			var(--vr-gold-fill) 0 0.17rem,
-			var(--color-background) 0.2rem
-		);
+		background: radial-gradient(circle, var(--vr-pencil) 0 0.17rem, var(--vr-paper) 0.2rem);
 	}
 
 	/* This stage's stretch of the rail: from its node down to the next stage's */
@@ -148,19 +143,19 @@
 		top: var(--ny);
 		width: 1.5px;
 		height: 100%;
-		background: var(--vr-line);
+		background: var(--vr-pencil-frame);
 	}
 
-	/* A column per stage, as wide as its words are long (so each stage's words wrap to the same
-	   number of lines, balanced): three rows shared by all of them (a subgrid), the words on
-	   top, the rail in the middle, the notes under it. Each node sits under the start of its
-	   words and its stretch of the rail reaches across the gap to the next one's. */
+	/* A column per stage, all of one width, so that the dots are a steady beat apart: three
+	   rows shared by all of them (a subgrid), the words on top, the rail in the middle, the
+	   notes under it. Each node sits under the start of its words and its stretch of the rail
+	   reaches across the gap to the next one's. */
 	@container timeline (min-width: 38rem) {
 		ol {
 			--gap: clamp(1.25rem, 3cqi, 2rem);
 			--rx: 0.4rem;
 			display: grid;
-			grid-template-columns: var(--columns);
+			grid-template-columns: repeat(var(--stages), minmax(0, 1fr));
 			grid-template-rows: auto 2.4rem auto;
 			column-gap: var(--gap);
 		}

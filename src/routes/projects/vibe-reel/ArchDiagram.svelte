@@ -2,69 +2,18 @@
 	/*
 	 * How VibeReel fits together, sketched in pencil on the page's sketchbook paper: the TV, the
 	 * NAS, the phone and browser and the internet, the boxes in each and the edges between them
-	 * (arch/data.js). Every part tags itself with the flows that run through it (data-flow); the
-	 * chips over the drawing pick one, which dims everything outside it, the frames round the
-	 * machines included, and circles the chip by hand (arch/ChipMark.svelte). Narrower than its
-	 * 760px, the drawing scrolls sideways under a hint.
+	 * (arch/data.js), the optional parts dashed. A still drawing: nothing in it is picked or
+	 * pointed at. Narrower than its 760px, it scrolls sideways under a hint.
 	 */
-	import { flows, edgeGroups } from './arch/data.js';
-	import ChipMark from './arch/ChipMark.svelte';
-
-	let active = $state(null);
-	let pinned = $state(null);
-	const shown = $derived(active ?? pinned);
-
-	// A hover or keyboard focus previews a flow; a click pins it. Touch fires no hover, and a click
-	// clears the preview, so a tap or Enter always shows the new pinned state. Leaving a chip
-	// clears only its own preview: clicking another chip blurs this one after the new one's
-	// hover has started, and clearing then would flash the old pinned flow.
-	const preview = (key) => (e) => {
-		if (e.pointerType === 'mouse' || e.currentTarget.matches(':focus-visible')) active = key;
-	};
-	const unpreview = (key) => () => {
-		if (active === key) active = null;
-	};
-
-	// A chip's part in that: pinned, previewed (on show over the pinned flow) or neither. The
-	// pinned chip keeps its mark while another is previewed.
-	const pick = (key) => (pinned === key ? 'pinned' : shown === key ? 'preview' : undefined);
+	import { edgeGroups } from './arch/data.js';
 </script>
 
 <figure class="arch vr-panel">
-	<div class="key">
-		<div class="legend" role="group" aria-label="Highlight a flow">
-			{#each flows as f, i (f.key)}
-				{@const picked = pick(f.key)}
-				<button
-					class="chip chip-{f.key}"
-					aria-pressed={pinned === f.key}
-					onpointerenter={preview(f.key)}
-					onpointerleave={unpreview(f.key)}
-					onfocus={preview(f.key)}
-					onblur={unpreview(f.key)}
-					onclick={() => {
-						pinned = pinned === f.key ? null : f.key;
-						active = null;
-					}}
-				>
-					<span class="swatch" aria-hidden="true"></span>{f.label}
-					{#if picked}
-						<ChipMark pinned={picked === 'pinned'} seed={i + 1} />
-					{/if}
-				</button>
-			{/each}
-		</div>
-		<span class="optional"><span class="dash" aria-hidden="true"></span>optional</span>
-	</div>
-
-	<p class="vr-hint" aria-hidden="true">Scroll sideways →</p>
-	<div class="vr-scroll">
-		<svg
-			viewBox="0 0 1000 530"
-			role="img"
-			aria-labelledby="arch-title arch-desc"
-			data-active={shown}
-		>
+	<p class="hint" aria-hidden="true">scroll sideways →</p>
+	<div class="scroll">
+		<!-- The drawing reaches from 20 to 980 across and from 40 to 510 down: the view leaves
+		     20 round it on every side -->
+		<svg viewBox="0 20 1000 510" role="img" aria-labelledby="arch-title arch-desc">
 			<title id="arch-title">VibeReel architecture</title>
 			<desc id="arch-desc">
 				The TV app Direct Plays files from Jellyfin on the NAS and sends audio to the
@@ -91,31 +40,22 @@
 				</marker>
 			</defs>
 
-			<!-- Groups, each as part of the flows that run through it, so that a picked flow
-			     fades the frames it leaves out with the rest -->
-			<g data-flow="playback control picture">
-				<rect class="group" x="20" y="40" width="300" height="290" rx="16" />
-				<text class="group-label" x="40" y="68">LIVING-ROOM TV · LG WEBOS</text>
-			</g>
+			<!-- The machines' frames -->
+			<rect class="group" x="20" y="40" width="300" height="290" rx="16" />
+			<text class="group-label" x="40" y="68">LIVING-ROOM TV · LG WEBOS</text>
 
-			<g data-flow="playback control phone">
-				<rect class="group" x="380" y="40" width="340" height="470" rx="16" />
-				<text class="group-label" x="400" y="68">NAS · NIXOS</text>
-			</g>
+			<rect class="group" x="380" y="40" width="340" height="470" rx="16" />
+			<text class="group-label" x="400" y="68">NAS · NIXOS</text>
 
-			<g data-flow="phone">
-				<rect class="group" x="780" y="40" width="200" height="216" rx="16" />
-				<text class="group-label" x="800" y="68">PHONE &amp; BROWSER</text>
-			</g>
+			<rect class="group" x="780" y="40" width="200" height="216" rx="16" />
+			<text class="group-label" x="800" y="68">PHONE &amp; BROWSER</text>
 
-			<g data-flow="control">
-				<rect class="group faint" x="780" y="300" width="200" height="190" rx="16" />
-				<text class="group-label" x="800" y="328">INTERNET</text>
-			</g>
+			<rect class="group faint" x="780" y="300" width="200" height="190" rx="16" />
+			<text class="group-label" x="800" y="328">INTERNET</text>
 
-			<!-- Edges (arch/data.js) -->
+			<!-- Edges (arch/data.js), each group with its labels -->
 			{#each edgeGroups as group (group.edges[0].id)}
-				<g data-flow={group.flow}>
+				<g>
 					{#each group.edges as edge (edge.id)}
 						{#if edge.d}
 							<path
@@ -144,71 +84,57 @@
 			{/each}
 
 			<!-- TV -->
-			<g data-flow="playback control picture">
-				<rect class="node" x="40" y="90" width="260" height="86" rx="12" />
-				<text class="node-title" x="58" y="118">TV app</text>
-				<text class="node-sub" x="58" y="140">Svelte 5 · webOS IPK · Chromium 120</text>
-				<text class="node-sub" x="58" y="160"
-					>&lt;video&gt; on the hardware video plane</text
-				>
-			</g>
-			<g data-flow="picture">
-				<rect class="node optional" x="40" y="226" width="180" height="84" rx="12" />
-				<text class="node-title" x="58" y="254">Companion service</text>
-				<text class="node-sub" x="58" y="275">root · Node · port 8791</text>
-				<text class="node-sub" x="58" y="294">Luna → settingsservice</text>
-			</g>
-			<g data-flow="playback">
-				<rect class="node device" x="200" y="408" width="120" height="56" rx="12" />
-				<text class="node-title" x="218" y="434">Soundbar</text>
-				<text class="node-sub" x="218" y="452">AV receiver</text>
-			</g>
+			<rect class="node" x="40" y="90" width="260" height="86" rx="12" />
+			<text class="node-title" x="58" y="118">TV app</text>
+			<text class="node-sub" x="58" y="140">Svelte 5 · webOS IPK · Chromium 120</text>
+			<text class="node-sub" x="58" y="160">&lt;video&gt; on the hardware video plane</text>
+
+			<rect class="node optional" x="40" y="226" width="180" height="84" rx="12" />
+			<text class="node-title" x="58" y="254">Companion service</text>
+			<text class="node-sub" x="58" y="275">root · Node · port 8791</text>
+			<text class="node-sub" x="58" y="294">Luna → settingsservice</text>
+
+			<rect class="node device" x="200" y="408" width="120" height="56" rx="12" />
+			<text class="node-title" x="218" y="434">Soundbar</text>
+			<text class="node-sub" x="218" y="452">AV receiver</text>
 
 			<!-- NAS -->
-			<g data-flow="playback control phone">
-				<rect class="node" x="400" y="90" width="300" height="86" rx="12" />
-				<text class="node-title" x="418" y="118">Jellyfin 12.1</text>
-				<text class="node-sub" x="418" y="140">library · PlaybackInfo · trickplay</text>
-				<text class="node-sub" x="418" y="160">Intro Skipper plugin → media segments</text>
-			</g>
-			<g data-flow="control phone">
-				<rect class="node optional" x="400" y="246" width="300" height="86" rx="12" />
-				<text class="node-title" x="418" y="274">reel-api</text>
-				<text class="node-sub" x="418" y="296">FastAPI · Python 3.12 · one worker</text>
-				<text class="node-sub" x="418" y="316"
-					>search &amp; add · downloads · trailers · push</text
-				>
-			</g>
+			<rect class="node" x="400" y="90" width="300" height="86" rx="12" />
+			<text class="node-title" x="418" y="118">Jellyfin 12.1</text>
+			<text class="node-sub" x="418" y="140">library · PlaybackInfo · trickplay</text>
+			<text class="node-sub" x="418" y="160">Intro Skipper plugin → media segments</text>
+
+			<rect class="node optional" x="400" y="246" width="300" height="86" rx="12" />
+			<text class="node-title" x="418" y="274">reel-api</text>
+			<text class="node-sub" x="418" y="296">FastAPI · Python 3.12 · one worker</text>
+			<text class="node-sub" x="418" y="316"
+				>search &amp; add · downloads · trailers · push</text
+			>
+
 			<!-- Sonarr and Radarr under reel-api's arrows, Prowlarr a row down between them -->
-			<g data-flow="control">
-				<rect class="pill" x="400" y="384" width="68" height="34" rx="17" />
-				<text class="pill-text" x="434" y="406" text-anchor="middle">Sonarr</text>
-				<rect class="pill" x="496" y="384" width="68" height="34" rx="17" />
-				<text class="pill-text" x="530" y="406" text-anchor="middle">Radarr</text>
-				<rect class="pill muted-pill" x="446" y="456" width="72" height="34" rx="17" />
-				<text class="pill-text" x="482" y="478" text-anchor="middle">Prowlarr</text>
-				<rect class="pill" x="626" y="384" width="74" height="34" rx="17" />
-				<text class="pill-text" x="663" y="406" text-anchor="middle">qBittorrent</text>
-			</g>
+			<rect class="pill" x="400" y="384" width="68" height="34" rx="17" />
+			<text class="pill-text" x="434" y="406" text-anchor="middle">Sonarr</text>
+			<rect class="pill" x="496" y="384" width="68" height="34" rx="17" />
+			<text class="pill-text" x="530" y="406" text-anchor="middle">Radarr</text>
+			<rect class="pill muted-pill" x="446" y="456" width="72" height="34" rx="17" />
+			<text class="pill-text" x="482" y="478" text-anchor="middle">Prowlarr</text>
+			<rect class="pill" x="626" y="384" width="74" height="34" rx="17" />
+			<text class="pill-text" x="663" y="406" text-anchor="middle">qBittorrent</text>
 
 			<!-- Phone & browser -->
-			<g data-flow="phone">
-				<rect class="node optional" x="800" y="92" width="160" height="60" rx="12" />
-				<text class="node-title" x="816" y="117">iPhone PWA</text>
-				<text class="node-sub" x="816" y="137">Safari · offline · push</text>
-				<rect class="node optional" x="800" y="176" width="160" height="60" rx="12" />
-				<text class="node-title" x="816" y="201">Web client</text>
-				<text class="node-sub" x="816" y="221">Chrome · Firefox · MSE</text>
-			</g>
+			<rect class="node optional" x="800" y="92" width="160" height="60" rx="12" />
+			<text class="node-title" x="816" y="117">iPhone PWA</text>
+			<text class="node-sub" x="816" y="137">Safari · offline · push</text>
+			<rect class="node optional" x="800" y="176" width="160" height="60" rx="12" />
+			<text class="node-title" x="816" y="201">Web client</text>
+			<text class="node-sub" x="816" y="221">Chrome · Firefox · MSE</text>
 
 			<!-- Internet -->
-			<g data-flow="control">
-				<text class="list" x="800" y="362">IMDb trending &amp; charts</text>
-				<text class="list" x="800" y="388">IntroDB skip markers</text>
-				<text class="list" x="800" y="414">YouTube trailers (yt-dlp)</text>
-				<text class="list" x="800" y="440">Radarr collections</text>
-				<text class="list" x="800" y="466">Web Push to the iPhone</text>
-			</g>
+			<text class="list" x="800" y="362">IMDb trending &amp; charts</text>
+			<text class="list" x="800" y="388">IntroDB skip markers</text>
+			<text class="list" x="800" y="414">YouTube trailers (yt-dlp)</text>
+			<text class="list" x="800" y="440">Radarr collections</text>
+			<text class="list" x="800" y="466">Web Push to the iPhone</text>
 		</svg>
 	</div>
 </figure>
@@ -228,10 +154,10 @@
 		--vr-muted: #5f5748;
 		--vr-cream: rgb(230 180 80 / 0.13);
 		--vr-edge: #5c5446;
+		--panel-color: var(--vr-paper);
+		--panel-image: var(--vr-paper-grain);
 		container-type: inline-size;
 		color: var(--vr-muted);
-		background-color: var(--vr-paper);
-		background-image: var(--vr-paper-grain);
 	}
 
 	/* The drawing's darker gold, set on what the panel holds, so the ticket's perforation round
@@ -240,80 +166,26 @@
 		--vr-gold: #4c4538;
 	}
 
-	/* The svg's min-width below */
-	@container (width < 760px) {
-		.vr-hint {
-			display: block;
-		}
+	/* A drawing with a min-width scrolls sideways inside its panel, under a hint that shows
+	   once the panel is narrower than that (the svg's min-width below). The hint is in the
+	   notes' hand, italic and in lower case, as the film strip's own hint is. */
+	.scroll {
+		overflow-x: auto;
 	}
 
-	/* The key: the flow chips, and at the end of their row (under them, once they wrap) what a
-	   dashed line means */
-	.key {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.6rem 1.5rem;
-		margin-bottom: 1rem;
-	}
-
-	/* Room round each chip for its loop, two side by side (one pinned, one previewed) */
-	.legend {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.optional {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		margin-left: auto;
+	.arch .hint {
+		display: none;
+		margin: 0 0 0.5rem;
 		font-family: var(--font-secondary);
 		font-size: 0.95rem;
 		font-style: italic;
 		color: var(--color-font-light);
 	}
 
-	.dash {
-		width: 1.2rem;
-		border-top: 2px dashed var(--vr-gold);
-	}
-
-	/* Hand-drawn, each corner its own ellipse, and positioned for its mark (ChipMark); pinned,
-	   its outline is inked over */
-	.chip {
-		position: relative;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.45rem;
-		font: inherit;
-		font-family: var(--font-secondary);
-		font-size: 0.95rem;
-		font-style: italic;
-		border: 1.3px solid var(--color-border);
-		background: transparent;
-		color: var(--color-font-dark);
-		padding: 0.35rem 0.8rem;
-		border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-		cursor: pointer;
-	}
-
-	.chip[aria-pressed='true'] {
-		border-color: var(--vr-ink);
-	}
-
-	.swatch {
-		width: 0.9rem;
-		height: 0.15rem;
-		border-radius: 1rem;
-		background: var(--vr-edge);
-	}
-
-	/* The media path's swatch in the chip's own ink, a shade darker than the others */
-	.chip-playback .swatch {
-		background: currentColor;
+	@container (width < 760px) {
+		.arch .hint {
+			display: block;
+		}
 	}
 
 	svg {
@@ -422,16 +294,5 @@
 	.list {
 		font-size: 13px;
 		fill: var(--vr-muted);
-	}
-
-	[data-flow] {
-		transition: opacity 0.15s ease;
-	}
-
-	svg[data-active='playback'] [data-flow]:not([data-flow~='playback']),
-	svg[data-active='control'] [data-flow]:not([data-flow~='control']),
-	svg[data-active='picture'] [data-flow]:not([data-flow~='picture']),
-	svg[data-active='phone'] [data-flow]:not([data-flow~='phone']) {
-		opacity: 0.15;
 	}
 </style>

@@ -76,6 +76,9 @@
 		</p>
 		<Pipeline stages={trailerStages} />
 	</Section>
+
+	<!-- The page's last line, like an end title -->
+	<div class="vr-end"><p>Thanks for watching.</p></div>
 </article>
 
 <style>
@@ -100,15 +103,39 @@
 		--vr-paper: #fbf8f0;
 		--vr-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.36 0 0 0 0 0.26 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23p)'/%3E%3C/svg%3E");
 		--vr-wash: #f8efdb;
+		/* The architecture diagram's pencil (its lines, the frames round its machines, its small
+		   capitals), which the drawings under it take up: the download bar's empty pieces and
+		   its two frames, the trailer timeline's rail */
+		--vr-pencil: #5c5446;
+		--vr-pencil-frame: rgb(76 69 56 / 0.45);
+		--vr-pencil-faint: #8b8171;
+		/* The power light of the sets the page draws (TvSketch), lit: the sketchbook's gold at
+		   full strength */
+		--vr-light: rgb(230 180 80);
+		/* The page's last line (.vr-end) is placed from the article's foot */
+		position: relative;
 	}
 
-	/* Building blocks shared by the page's widgets. :where() keeps them at one class of
-	   specificity, so each widget's scoped styles still override them.
+	/* The panel shared by the page's widgets. :where() keeps it at one class of specificity,
+	   so each widget's scoped styles still override it.
 
 	   Panels are tickets in sepia browns on parchment: a stock of the background tinted with
-	   their gold (also the tile colour, --color-background-tile, for what they hold), scooped
-	   corners and a dashed perforation inside the edge. corner-shape keeps the shadow on the
-	   scoops; where it is missing, a mask cuts them instead and the shadow goes. */
+	   their gold (also the tile colour, --color-background-tile, for what they hold), or the
+	   sheet a widget lays in them (--panel-color, --panel-image), with scooped corners, a
+	   shadow that follows the scoops and a dashed perforation inside the edge.
+
+	   That is the look of border-radius: 1rem with corner-shape: scoop, two box-shadows and a
+	   dashed outline 0.55rem in. Only Chromium has corner-shape, so the ticket is drawn
+	   instead, the same in every browser. The panel paints nothing itself: its ::before and
+	   ::after draw the ticket behind its content (z-index -1, held inside the panel by
+	   isolation), so the mask that cuts the scoops cuts only the sheet, never the content or
+	   the shadow. ::after is the sheet, the panel's paper with the scoops masked out and the
+	   perforation over it; ::before is the shadow. Both draw with border images, which keep
+	   their corners at one size on a panel of any size, repeat their edges ('round' fits a
+	   whole number of dashes to a side) and paint beyond the panel (the shadow) without
+	   changing its box. An SVG image cannot read custom properties, so theirs spell out the
+	   colours: the panel gold, #94704b, at 55% for the dashes and rgb(70 50 20) for the
+	   shadows. */
 	:where(.vr) :global(.vr-panel) {
 		--vr-gold: #94704b;
 		--vr-gold-ink: #6c5034;
@@ -124,16 +151,10 @@
 		--color-border: #dccfba;
 		--stock: color-mix(in oklab, var(--color-background), var(--vr-gold-fill) 16%);
 		--color-background-tile: var(--stock);
+		position: relative;
+		isolation: isolate;
 		margin: 0;
 		padding: 1.25rem;
-		background: var(--stock);
-		border-radius: 1rem;
-		corner-shape: scoop;
-		box-shadow:
-			0 1px 2px rgb(70 50 20 / 0.12),
-			0 8px 20px -10px rgb(70 50 20 / 0.3);
-		outline: 1.5px dashed color-mix(in oklab, var(--vr-gold) 55%, transparent);
-		outline-offset: -0.55rem;
 	}
 
 	@media (min-width: 640px) {
@@ -142,50 +163,111 @@
 		}
 	}
 
-	@supports not (corner-shape: scoop) {
-		:where(.vr) :global(.vr-panel) {
-			border-radius: 0;
-			mask:
-				radial-gradient(circle at 0 0, transparent 1rem, #000 calc(1rem + 0.5px)) 0 0 / 51%
-					51% no-repeat,
-				radial-gradient(circle at 100% 0, transparent 1rem, #000 calc(1rem + 0.5px)) 100%
-					0 / 51% 51% no-repeat,
-				radial-gradient(circle at 0 100%, transparent 1rem, #000 calc(1rem + 0.5px)) 0
-					100% / 51% 51% no-repeat,
-				radial-gradient(circle at 100% 100%, transparent 1rem, #000 calc(1rem + 0.5px)) 100%
-					100% / 51% 51% no-repeat;
+	:where(.vr) :global(.vr-panel::before),
+	:where(.vr) :global(.vr-panel::after) {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	/* The shadow. Its SVG blurs the scooped outline as the two box-shadows would (0 1px 2px
+	   at 12% and 0 8px 20px -10px at 30%), the second shrunk by its spread, which makes its
+	   scoops 10px wider, as Chrome draws it. The blur sits in an SVG pattern because Chrome
+	   keeps a pattern as a picture: it would otherwise draw the corners again, blur and all,
+	   whenever something over them repaints, as the download bar does on every frame. A 136px
+	   ticket in the middle of a 200px SVG, cut 96px in from each side, so that a corner holds
+	   2rem of shadow outside the panel and 4rem inside, where the blur settles. */
+	:where(.vr) :global(.vr-panel::before) {
+		border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' fill='%23463214' color-interpolation-filters='sRGB'%3E%3Cpattern id='s' patternUnits='userSpaceOnUse' width='200' height='200'%3E%3Cfilter id='a' filterUnits='userSpaceOnUse'%3E%3CfeGaussianBlur stdDeviation='10'/%3E%3CfeOffset dy='8'/%3E%3C/filter%3E%3Cfilter id='b' filterUnits='userSpaceOnUse'%3E%3CfeGaussianBlur stdDeviation='1'/%3E%3CfeOffset dy='1'/%3E%3C/filter%3E%3Cpath filter='url(%23a)' fill-opacity='.3' d='M56 42H144A26 26 0 0 0 158 56V144A26 26 0 0 0 144 158H56A26 26 0 0 0 42 144V56A26 26 0 0 0 56 42Z'/%3E%3Cpath filter='url(%23b)' fill-opacity='.12' d='M48 32H152A16 16 0 0 0 168 48V152A16 16 0 0 0 152 168H48A16 16 0 0 0 32 152V48A16 16 0 0 0 48 32Z'/%3E%3C/pattern%3E%3Crect width='200' height='200' fill='url(%23s)'/%3E%3C/svg%3E")
+			96 / 6rem / 2rem round;
+	}
+
+	/* The sheet. Each scoop's edge is soft over 1px. Unclipped, the mask leaves the sheet's
+	   edges to the sheet: clipped to its box, it would soften one between device pixels. The
+	   perforation is the dashed outline as Chrome draws it, which rounds 1.5px and -0.55rem to
+	   whole pixels: a 1px line 7px to 8px in, 3px dashes and 2px gaps, round each scoop at
+	   that distance; but every corner alike, with a dash on the middle of the arc and one
+	   across each bend. Its SVG is cut 24px in: a corner holds an arc and its five dashes, an
+	   edge one dash between two half gaps. */
+	:where(.vr) :global(.vr-panel::after) {
+		--scoop: transparent calc(1rem - 0.5px), #000 calc(1rem + 0.5px);
+		background: var(--panel-image, none) var(--panel-color, var(--stock));
+		mask:
+			radial-gradient(circle at 0 0, var(--scoop)),
+			radial-gradient(circle at 100% 0, var(--scoop)),
+			radial-gradient(circle at 0 100%, var(--scoop)),
+			radial-gradient(circle at 100% 100%, var(--scoop));
+		mask-composite: intersect;
+		mask-clip: no-clip;
+		border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='53' height='53' fill='none' stroke='%2394704b' stroke-opacity='.55'%3E%3Cg stroke-dasharray='3 2' stroke-dashoffset='4'%3E%3Cpath id='c' pathLength='25' d='M24 7.5H22.27A23.5 23.5 0 0 1 7.5 22.27V24'/%3E%3Cuse href='%23c' transform='matrix(-1 0 0 1 53 0)'/%3E%3Cuse href='%23c' transform='matrix(1 0 0 -1 0 53)'/%3E%3Cuse href='%23c' transform='rotate(180 26.5 26.5)'/%3E%3C/g%3E%3Cpath d='M25 7.5h3M25 45.5h3M7.5 25v3M45.5 25v3'/%3E%3C/svg%3E")
+			24 / 1.5rem round;
+	}
+
+	/* The page's short texts in lines of even length */
+	.vr
+		:global(
+			:is(
+				.page-subtitle,
+				.lede,
+				.feature p,
+				.caption .text,
+				.morph .text p,
+				.vr-section .body > p
+			)
+		) {
+		text-wrap: balance;
+	}
+
+	/* The page's last line, in the notes' italic like an end title, halfway between the last
+	   ticket and Rosie in the footer. The room between them is the last section's margin, 8rem
+	   (it runs out through the article, which so ends at the ticket's edge), then the footer's
+	   padding, 6rem on a phone and 10rem from 640px, and the 1rem Rosie stands inside her box
+	   (Footer.svelte): 15rem, or 19rem. The line lies over the middle of it and takes none of
+	   it, so the page ends where it would without one. It comes into focus as the sections
+	   do. */
+	.vr-end {
+		position: absolute;
+		inset: calc(100% + 7.5rem) 0 auto;
+		translate: 0 -50%;
+	}
+
+	@media (min-width: 640px) {
+		.vr-end {
+			top: calc(100% + 9.5rem);
 		}
 	}
 
-	:where(.vr) :global(.vr-card) {
-		background: var(--color-background);
-		border-radius: 0.5rem;
-		padding: 0.9rem 1rem;
+	.vr-end p {
+		margin: 0;
+		text-align: center;
+		font: italic 1.5rem/1.3 var(--font-secondary);
+		color: var(--vr-muted);
 	}
 
-	:where(.vr) :global(.vr-card > p) {
-		margin: 0.4rem 0 0;
-		font-size: 0.9rem;
+	@media (max-width: 480px) {
+		.vr-end p {
+			font-size: 1.3rem;
+		}
 	}
 
-	:where(.vr) :global(.vr-eyebrow) {
-		font-size: 0.75rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--vr-gold-ink);
-		font-weight: 600;
+	@supports (animation-timeline: view()) {
+		@media (prefers-reduced-motion: no-preference) {
+			.vr-end p {
+				animation: focus linear backwards;
+				animation-timeline: view();
+				animation-range: entry 0% entry 10rem;
+			}
+		}
 	}
 
-	/* Diagrams with a min-width scroll inside their panel; each widget shows the hint with a
-	   container query at its own min-width */
-	:where(.vr) :global(.vr-hint) {
-		display: none;
-		margin: 0 0 0.5rem;
-		font-size: 0.8rem;
-	}
-
-	:where(.vr) :global(.vr-scroll) {
-		overflow-x: auto;
+	@keyframes focus {
+		from {
+			opacity: 0.35;
+			filter: blur(10px);
+			scale: 1.015;
+		}
 	}
 
 	/* Film grain: a fixed layer of noise over the page, under the nav bar, that jumps a few

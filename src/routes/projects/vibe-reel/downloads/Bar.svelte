@@ -122,7 +122,11 @@
 
 	.pieces span {
 		border-radius: 3px;
-		background: oklch(0.92 0 0);
+	}
+
+	/* A piece not yet in: an empty box in the architecture diagram's pencil */
+	.pieces span:not(.done) {
+		box-shadow: inset 0 0 0 1px var(--vr-pencil-frame);
 	}
 
 	.pieces .done {
@@ -135,13 +139,13 @@
 		opacity: 0.6;
 	}
 
-	/* Live, it fills from the bottom as it comes in */
+	/* Live, it fills up from the bottom inside its box as it comes in */
 	.pieces.live .loading {
 		opacity: 1;
 		background: linear-gradient(
 			to top,
 			var(--vr-gold-fill) calc(var(--p) * 100%),
-			oklch(0.92 0 0) 0
+			transparent 0
 		);
 	}
 

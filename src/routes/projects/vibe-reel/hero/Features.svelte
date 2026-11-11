@@ -1,7 +1,8 @@
 <script>
 	/*
-	 * The hero's three features, like a magazine's contents: a large outlined gold numeral
-	 * beside each name in serif, a muted line under it.
+	 * The hero's three features: each name in serif after its number, a muted line under it.
+	 * The numbers are written as the film strip's captions have theirs (TvScreens' .count): in
+	 * the edge print's mono on a stroke of highlighter, on the name's first line.
 	 *
 	 * Sized in em, so that the stage can scale them all. The stage is the container their
 	 * queries ask about: three abreast from 600 px, and from 880 px beside the set, one under
@@ -14,7 +15,7 @@
 <ul class="features">
 	{#each features as { name, line }, i (name)}
 		<li class="feature enter" style:--i={i}>
-			<span class="numeral" aria-hidden="true">{i + 1}</span>
+			<span class="numeral" aria-hidden="true">0{i + 1}</span>
 			<div class="text">
 				<span class="name">{name}</span>
 				<p>{line}</p>
@@ -39,7 +40,7 @@
 		--enter-y: 0.75rem;
 		--enter-ease: var(--ease-cubic-out);
 		display: flex;
-		align-items: flex-start;
+		align-items: baseline;
 		gap: 0.8em;
 	}
 
@@ -62,16 +63,17 @@
 		color: var(--vr-muted);
 	}
 
-	/* Outlined, standing as tall as the name and the line's first two rows */
+	/* The stroke of highlighter hangs out to the left by its own padding, so that the digits
+	   keep to the column's edge; on the right the last digit's spacing is part of its room */
 	.numeral {
 		flex: none;
-		width: 1.1em;
-		font-family: var(--font-secondary);
-		font-size: 3.4em;
-		line-height: 0.85;
-		color: transparent;
-		-webkit-text-stroke: 1.25px var(--vr-gold);
-		text-align: center;
+		margin-left: -0.3em;
+		padding: 0.1em 0.18em 0.05em 0.3em;
+		font: 0.9em var(--font-mono);
+		letter-spacing: 0.12em;
+		color: var(--vr-gold-ink);
+		background: var(--vr-wash);
+		border-radius: 0.2em 0.45em 0.35em 0.25em;
 	}
 
 	/* Three abreast under the set while there is room for them */
@@ -87,10 +89,6 @@
 
 		.feature p {
 			font-size: 0.9em;
-		}
-
-		.numeral {
-			font-size: 2.6em;
 		}
 	}
 

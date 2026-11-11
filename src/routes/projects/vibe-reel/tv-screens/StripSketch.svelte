@@ -2,12 +2,13 @@
 	/*
 	 * The film strip drawn by hand in graphite round its screenshots (strip.js has the lines):
 	 * its edges, torn ends and sprocket holes, the frame lines hatched and the ending frame, the
-	 * last of `count`, boxed in. It covers the whole strip, behind the frames, in px of the strip
-	 * as laid out (`size`, which TvScreens measures; until then a wide page's, stretched to fit).
-	 * The holes are a few shapes drawn once and used along both rows. As the strip scrolls into
-	 * view (the reel's --strip timeline) the pencil runs along it: each stroke drawn in turn, the
-	 * rows of holes and the hatching wiped on behind it. Without scroll-driven animations, or
-	 * with reduced motion, it is simply drawn.
+	 * last of `count`, boxed in. Two of its details are in the sketchbook's gold: the holes are
+	 * filled in with it and the ending frame is washed in it. It covers the whole strip, behind
+	 * the frames, in px of the strip as laid out (`size`, which TvScreens measures; until then a
+	 * wide page's, stretched to fit). The holes are a few shapes drawn once and used along both
+	 * rows. As the strip scrolls into view (the reel's --strip timeline) the pencil runs along
+	 * it: each stroke drawn in turn, the rows of holes, the hatching and the wash wiped on
+	 * behind it. Without scroll-driven animations, or with reduced motion, it is simply drawn.
 	 */
 	import { drawStrip, WIDE } from './strip.js';
 
@@ -28,6 +29,12 @@
 			<path id="{uid}-hole-{j}" {d} />
 		{/each}
 	</defs>
+	<path
+		class="wash wipe"
+		d={drawing.wash.d}
+		style:--a={drawing.wash.a}
+		style:--b={drawing.wash.b}
+	/>
 	{#each drawing.holes.rows as row, r (r)}
 		<g class="holes wipe" style:--a={drawing.wipes[r][0]} style:--b={drawing.wipes[r][1]}>
 			{#each row as [x, y, shape], k (k)}
@@ -79,15 +86,27 @@
 		opacity: 0.45;
 	}
 
-	.end,
-	.holes {
+	.end {
 		stroke-width: 0.9;
 		opacity: 0.8;
+	}
+
+	/* Filled in with the gold at full strength, their pencil as light as the torn ends' */
+	.holes {
+		stroke-width: 0.9;
+		stroke-opacity: 0.8;
+		fill: var(--vr-wash);
 	}
 
 	.hatching {
 		stroke-width: 0.7;
 		opacity: 0.55;
+	}
+
+	/* The ending frame's wash, under the pencil of its box */
+	.wash {
+		fill: var(--vr-wash);
+		stroke: none;
 	}
 
 	/* Each part takes its share (--a to --b) of the drawing-on, from the reel's top showing a

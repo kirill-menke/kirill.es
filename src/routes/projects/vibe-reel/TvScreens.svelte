@@ -292,7 +292,8 @@
 	<div class="captions">
 		{#each screens as s, i (s.title)}
 			<div class="caption" class:shown={i === current} class:leaving={i === leaving}>
-				<span class="count" aria-hidden="true">0{i + 1}</span>
+				<!-- Its number, and of how many, so that it says how much film there is to pull -->
+				<span class="count" aria-hidden="true">0{i + 1}&nbsp;/&nbsp;0{screens.length}</span>
 				<strong>{s.title}</strong>
 				<span class="text">{s.text}</span>
 			</div>

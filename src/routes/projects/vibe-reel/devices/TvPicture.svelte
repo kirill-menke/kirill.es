@@ -1,7 +1,7 @@
 <script>
 	/*
 	 * The TV's picture: one screenshot, or the hero's three in a loop, each held for a shot of
-	 * 12 s (--shot). Towards the end of each shot the picture gives way to snow for half a
+	 * 8 s (--shot). Towards the end of each shot the picture gives way to snow for half a
 	 * second, as on a set that has lost its channel, then cuts to the next.
 	 *
 	 * Each source plays the whole loop of three shots. The delays start it a quarter of a shot
@@ -45,7 +45,7 @@
 
 	.cycle,
 	.snow {
-		--shot: 12s;
+		--shot: 8s;
 	}
 
 	/* On the loop's clock: three shots long, a quarter shot in as the set is switched on

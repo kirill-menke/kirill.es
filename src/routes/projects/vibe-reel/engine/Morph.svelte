@@ -29,7 +29,7 @@
 	import TvSketch, { PLACE as TV_PLACE } from '#lib/components/sketch/TvSketch.svelte';
 	import WebClient from './WebClient.svelte';
 	import BrowserSketch, { PLACE as WEB_PLACE } from './BrowserSketch.svelte';
-	import { copy, shots, pathLength } from './shared.js';
+	import { copy, shots } from './shared.js';
 
 	const DEVICES = [
 		{ key: 'phone', name: 'iPhone', sub: 'home-screen PWA', copy: copy.iphone },
@@ -38,8 +38,6 @@
 	];
 	// How much faster a change the visitor asks for runs than one it makes by itself
 	const QUICK = 1.5;
-	const SWASH = 'M3 8C28 3.5 66 3 97 6.5';
-	const SWASH_LENGTH = pathLength(SWASH);
 
 	/* A drawn set `width` of the stage's 100 wide and centred in it, and the screen its drawing
 	   places (`place`: TvSketch's or BrowserSketch's), which the frame lands on; all in the
@@ -154,15 +152,6 @@
 				>
 					<span class="name">{d.name}</span>
 					<span class="sub">{d.sub}</span>
-					<svg
-						class="swash"
-						viewBox="0 0 100 10"
-						preserveAspectRatio="none"
-						aria-hidden="true"
-						focusable="false"
-					>
-						<path d={SWASH} style:--len={SWASH_LENGTH} />
-					</svg>
 				</button>
 			{/each}
 		</div>
@@ -279,18 +268,20 @@
 		gap: 0.5rem 1.75rem;
 	}
 
+	/* The devices not on show in the grey of the running text, so that they read as things to
+	   pick; the one on show, or pointed at, in ink */
 	.pick {
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		padding: 0.2rem 0 0.7rem;
+		padding: 0.2rem 0;
 		border: 0;
 		background: none;
 		font: inherit;
 		text-align: left;
 		cursor: pointer;
-		color: var(--color-font-light);
+		color: var(--vr-muted);
 		transition: color 200ms;
 	}
 
@@ -315,8 +306,7 @@
 	}
 
 	/* The name on show highlighted as the sketchbook would: a band of its gold (--vr-wash)
-	   behind the lower part of the letters, a little crooked, swept on from the left as the
-	   swash is drawn in */
+	   behind the lower part of the letters, a little crooked, swept on from the left */
 	.name::before {
 		content: '';
 		position: absolute;
@@ -334,36 +324,15 @@
 		clip-path: inset(0);
 	}
 
+	/* The small print of a device not on show a step lighter than its name */
 	.sub {
 		font-size: 0.72rem;
 		letter-spacing: 0.04em;
 		color: var(--vr-muted);
 	}
 
-	.swash {
-		position: absolute;
-		left: -0.2rem;
-		right: -0.2rem;
-		bottom: 0;
-		width: calc(100% + 0.4rem);
-		height: 0.6rem;
-		overflow: visible;
-	}
-
-	/* Drawn in under the device on show; its length (--len) measured, a unit over */
-	.swash path {
-		--dash: calc(var(--len) * 1px + 1px);
-		fill: none;
-		stroke: var(--vr-gold-fill);
-		stroke-width: 2.4;
-		stroke-linecap: round;
-		stroke-dasharray: var(--dash);
-		stroke-dashoffset: var(--dash);
-		transition: stroke-dashoffset calc(450ms / var(--quick)) ease-out;
-	}
-
-	.on .swash path {
-		stroke-dashoffset: 0;
+	.pick:not(.on) .sub {
+		color: color-mix(in srgb, var(--vr-muted) 62%, transparent);
 	}
 
 	/* The stage is as tall as the live phone needs (94 of its 100 wide), so that every shape
@@ -485,7 +454,6 @@
 		.frame,
 		.layer,
 		.phone,
-		.swash path,
 		.name::before,
 		.text p {
 			transition: none;

@@ -140,6 +140,10 @@ const blank = ({ height, count, frame, pitch, lead, inset }) => ({
 /* The same box `d` further in all round */
 const within = ({ x, y, w, h }, d) => ({ x: x + d, y: y + d, w: w - 2 * d, h: h - 2 * d });
 
+/* What a wash of the sketchbook's gold covers in a box, as a path: the box, slipped a little
+   right and down off the pencil, as the washes of the page's sets have */
+const washed = ({ x, y, w, h }) => `M${f(x + 3)} ${f(y + 2.5)}h${f(w)}v${f(h)}h${f(-w)}z`;
+
 /* A box as a hand draws one, a stroke along each side in turn, clockwise from the top left:
    each starts and ends up to `nudge` off the corners and runs on past them by up to `over`,
    so that with any the strokes cross there, and bows by up to `wobble` */
@@ -171,9 +175,10 @@ const bitten = (i, width, inset = 0) => {
 /* The drawing for a strip of `count` frames laid out as `layout`, the last the ending one:
    each edge quick strokes that cross where they meet, gone over once more and lighter, the torn
    ends gone over twice, the holes pencilled in, the frame lines hatched and the ending frame
-   boxed in the same quick strokes, gone over once more. As `strokes`, each drawn on along its
-   length; `holes`, each row wiped on from the left over its share in `wipes`; and the
-   `hatching`, wiped on likewise. */
+   boxed in the same quick strokes, gone over once more, over a wash of gold. As `strokes`,
+   each drawn on along its length; `holes`, each row wiped on from the left over its share in
+   `wipes`; and the `hatching` and the ending frame's `wash`, wiped on likewise, the wash while
+   its box is drawn. */
 export function drawStrip(count, layout) {
 	const size = { ...layout, count };
 	const { width, height } = size;
@@ -213,7 +218,8 @@ export function drawStrip(count, layout) {
 			[0.05, 0.5],
 			[0.15, 0.6]
 		],
-		hatching: { d: hatching(size, 401), a: 0.6, b: 1 }
+		hatching: { d: hatching(size, 401), a: 0.6, b: 1 },
+		wash: { d: washed(ending), a: 0.45, b: 0.75 }
 	};
 }
 

@@ -131,6 +131,9 @@
 	style:border-radius="{PLATE.r}cqw"
 ></span>
 <span class="name" aria-hidden="true" style:top="{CHIN}cqw">LG</span>
+<!-- On the ring of the set's light (LINES), 6 in from the right and 2 up from the foot -->
+<span class="light" aria-hidden="true" style:left="{RIGHT - 6}cqw" style:top="{BOTTOM - 2}cqw"
+></span>
 
 <style>
 	/* 2.4 round the screen inside the line, the chin under it */
@@ -168,6 +171,23 @@
 		animation: write 400ms 1360ms ease-out both;
 	}
 
+	/* The set's light, lit: a set's user gives its colour as --vr-light (the VibeReel page
+	   does, for the sets it draws); without one it stays the empty ring the pen drew. A dot
+	   inside the ring with a little glow, coming on once the set is drawn, with the hero's
+	   picture (its --power-at). */
+	.light {
+		position: absolute;
+		width: 0.3cqw;
+		height: 0.3cqw;
+		border-radius: 50%;
+		translate: -50% -50%;
+		background: var(--vr-light, transparent);
+		box-shadow: 0 0 0.7cqw 0.1cqw
+			color-mix(in srgb, var(--vr-light, transparent) 55%, transparent);
+		pointer-events: none;
+		animation: wash 400ms calc(var(--power-at, 1120ms) + 350ms) ease-out both;
+	}
+
 	@keyframes wash {
 		from {
 			opacity: 0;
@@ -189,7 +209,8 @@
 
 	@media (prefers-reduced-motion: reduce) {
 		.plate,
-		.name {
+		.name,
+		.light {
 			animation: none;
 		}
 	}

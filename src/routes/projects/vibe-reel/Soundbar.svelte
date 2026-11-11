@@ -97,10 +97,10 @@
 	 * The soundbar under the hero's TV, drawn in ink by the hand that drew the TV as the page
 	 * loads: a wobbly outline gone over twice round a cream wash slightly off it, the display's
 	 * edge, a speaker grille either side hatched both ways and hatching along its shaded side.
-	 * Then the display's readout and legends are written in by hand, one by one: what reaches
-	 * the TV untouched, in four columns (video, HDR, audio, subtitles), Direct Play over a
-	 * highlighter's band of the sketchbook's gold. The last legend, TRANSCODE, stays faint,
-	 * never gone over in ink, and a hand-written note points at it (soundbar/Note.svelte).
+	 * Then the display's readout and legends are written in by hand, one by one: Direct Play
+	 * and what reaches the TV untouched, in four columns (video, HDR, audio, subtitles). The
+	 * last legend, TRANSCODE, stays faint, never gone over in ink, and a hand-written note
+	 * points at it (soundbar/Note.svelte).
 	 *
 	 * The bar is given the TV's width and keeps as far in from its left and right as the TV's
 	 * outline runs (TvSketch's SIDES), so that its outline runs under the TV's. Each part is
@@ -295,23 +295,6 @@
 		translate: 0 1px;
 	}
 
-	/* The bar's one touch of the sketchbook's gold (--vr-wash): a highlighter's band behind
-	   Direct Play, written in with it, inside its box so that the pen's mask never cuts it */
-	.readout .name {
-		position: relative;
-		isolation: isolate;
-	}
-
-	.readout .name::before {
-		content: '';
-		position: absolute;
-		z-index: -1;
-		inset: auto 0 0.08em -0.08em;
-		height: 0.5em;
-		border-radius: 0.1em 0.3em 0.18em 0.35em / 0.25em;
-		background: var(--vr-wash);
-	}
-
 	/* The note hangs from TRANSCODE */
 	li.off {
 		position: relative;
@@ -347,7 +330,9 @@
 		fill: color-mix(in srgb, var(--vr-cream) 92%, transparent);
 	}
 
-	/* The sketched TV's pen, about as heavy in px as it draws the set */
+	/* The sketched TV's pen, as heavy in px as it draws a hero-sized set: about 1.1 the
+	   outline, 0.7 gone over, 0.9 the screen's edge and 0.5 the hatching (TvSketchPen), so
+	   that set and bar read as one drawing */
 	path {
 		fill: none;
 		stroke: var(--vr-ink);
@@ -356,30 +341,30 @@
 	}
 
 	.line {
-		stroke-width: 1.8;
+		stroke-width: 1.1;
 	}
 
 	.again {
-		stroke-width: 1;
+		stroke-width: 0.7;
 		opacity: 0.55;
 	}
 
 	.edge {
-		stroke-width: 1.3;
+		stroke-width: 0.9;
 	}
 
 	.grille-edge {
-		stroke-width: 0.8;
+		stroke-width: 0.6;
 		opacity: 0.6;
 	}
 
 	.mesh {
-		stroke-width: 0.6;
+		stroke-width: 0.5;
 		opacity: 0.5;
 	}
 
 	.shade {
-		stroke-width: 0.8;
+		stroke-width: 0.5;
 		opacity: 0.7;
 	}
 
